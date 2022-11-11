@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @charset "UTF-8";
 
 * {
@@ -257,4 +258,265 @@ h4 span.emoji {
     .container {
         width: 1450px
     }
+=======
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    transition-timing-function: ease-in-out
+}
+
+body {
+    width: 100%;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.5em;
+    font-family: Microsoft YaHei;
+    background: #212121
+}
+
+a,
+a:hover,
+a:link,
+a:visited {
+    color: #fff;
+    text-decoration: none
+}
+
+a:hover {
+    text-decoration: underline
+}
+
+.clear:after {
+    content: "";
+    display: block;
+    height: 0;
+    visibility: hidden;
+    clear: both
+}
+
+.container {
+    position: relative;
+    width: 1100px;
+    padding: 40px 0;
+    margin: 0 auto
+}
+
+.ch.header {
+    background: url(/source/img/bg.png) #333;
+    background-size: cover;
+    background-position: 50%
+}
+
+.header h1.title {
+    padding-top: 200px;
+    font-size: 40px
+}
+
+.header h1.title .sub {
+    font-size: 20px;
+    padding-left: 30px
+}
+
+h2.title {
+    margin: 30px 0
+}
+
+.type {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch
+}
+
+.item {
+    background: #333;
+    box-sizing: border-box;
+    transform: translateY(0);
+    transition: all .3s;
+    opacity: 1;
+    width: 340px;
+    margin: 0 20px 20px 0;
+    position: relative;
+    padding-bottom: 55px
+}
+
+.item:hover {
+    box-shadow: 0 0 200px rgba(0, 0, 0, .7);
+    z-index: 50;
+    transform: translateY(-5px)
+}
+
+.item .content {
+    padding: 20px
+}
+
+.item .content p.slogan {
+    padding-bottom: 5px;
+    font-style: italic;
+    color: #ccc
+}
+
+.item .content p {
+    font-size: 13px;
+    color: #999;
+    margin: 5px 0
+}
+
+.item .footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    box-sizing: border-box;
+    background-color: #282828
+}
+
+.item .footer .action-box {
+    display: flex;
+    flex-wrap: nowrap
+}
+
+a.btn {
+    height: 55px;
+    line-height: 55px;
+    padding: 0 20px;
+    width: 100%;
+    font-size: 13px;
+    box-sizing: border-box;
+    display: inline-block;
+    background-color: #282828;
+    text-decoration: none;
+    transition: all .1s
+}
+
+a.btn:before {
+    content: "🔗";
+    margin-right: 5px
+}
+
+a.btn:hover {
+    background-color: #ccc;
+    color: #000
+}
+
+.item .cover-img {
+    height: 200px;
+    width: 340px;
+    background-size: cover;
+    background-position: 50%
+}
+
+.title-links {
+    display: inline-block;
+    margin-left: 30px
+}
+
+.tags {
+    margin: 10px 0;
+    font-size: 12px;
+    color: #ccc
+}
+
+.tags span {
+    display: inline-block;
+    margin-right: .5em
+}
+
+.tags span.tag:before {
+    content: "#";
+    color: #666;
+    margin-right: .3em
+}
+
+.links {
+    padding: 5px 0;
+    font-size: 12px
+}
+
+.links h5 {
+    font-size: 13px;
+    font-weight: 400;
+    padding-bottom: 5px;
+    color: #666
+}
+
+.links .link {
+    display: block;
+    color: #777;
+    transition: all .1s
+}
+
+.links .link:hover {
+    color: #eee
+}
+
+h4 {
+    font-size: 17px;
+    line-height: 35px
+}
+
+h4,
+h4 span.emoji {
+    vertical-align: middle
+}
+
+h4 span.emoji {
+    font-size: 30px;
+    margin-right: 10px
+}
+
+@keyframes index-link-active {
+    0% {
+        transform: perspective(1600px) rotateX(0) rotateY(0) translateZ(0)
+    }
+
+    16% {
+        transform: perspective(1600px) rotateX(10deg) rotateY(5deg) translateZ(32px)
+    }
+
+    to {
+        transform: perspective(1600px) rotateX(0) rotateY(0) translateZ(65px)
+    }
+}
+
+@media (max-width:800px) {
+    .container {
+        width: 90%;
+        margin: 0 5%
+    }
+
+    .item {
+        width: 100%;
+        margin: 0 0 20px
+    }
+
+    .item .cover-img {
+        height: 200px;
+        width: 100%;
+        background-size: cover
+    }
+
+    .header h1.title {
+        line-height: 1.5
+    }
+
+    .header h1.title .sub {
+        display: block;
+        padding: 30px 0 0
+    }
+}
+
+@media (min-width:800px) and (max-width:1499px) {
+    .container {
+        width: 1100px
+    }
+}
+
+@media (min-width:1500px) {
+    .container {
+        width: 1450px
+    }
+>>>>>>> f5fa5b68a65b2d2f2a586346d72f0979cacc3b82
 }
