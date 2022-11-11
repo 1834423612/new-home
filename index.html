@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1">
+
+    <title>kjch的主页 - kjchmc.cn</title>
+    <meta name="description" content="kjch的个人网站">
+    <meta name="keywords" content="kjch,kjch况佳城,况佳城,kjch简介,况佳城简介,况佳城个人主页,况佳城的主页,kjch的主页,kjch况佳城的主页,个人网站,博客,Kevin Kuang,Kuang,Jiacheng,Jiacheng Kuang,Kuang Jiacheng">
+    <link rel="apple-touch-icon-precomposed" href="source/img/avatar.jpg">
+    <link rel="stylesheet" type="text/css" href="source/h.css">
+    <link rel="stylesheet" type="text/css" href="source/font/nekotora.css">
+    <!--load all Font Awesome styles (Version6.0 Pro) -->
+    <link href="https://cdn.kjchmc.cn/fontawesome/6.0/css/all.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/88dcbc9ca6.js" crossorigin="anonymous"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+</head>
+
+<body>
+    <div class="background">
+        <canvas id="startrack"></canvas>
+        <div class="cover"></div>
+    </div>
+    <div class="main">
+        <div class="ch intro">
+            <div class="container">
+                <div class="hello">
+                    <!-- <img src="./source/img/avatar.jpg" class="avatar" /> -->
+                    <div id="translate"></div>
+                    <h1 id="slogan">Loading...</h1>
+                </div>
+                <div class="readme">
+                    <p>
+                        最幸福的时候，莫过于还没实现目标时的追梦状态。<br> 人生如逆旅，我亦是行人。<!--<script src="https://international.v1.hitokoto.cn/?c=i"></script>-->
+                    </p>
+                    <p>
+                        <span class="b">你好，我是况佳城<sup>@kjch</sup>，<br> 出生于2007年7月20日，现在15岁。</span><br> 热爱互联网，喜欢探索一些新奇的事物<del>(比如游戏)</del>，对有趣的世界和发现了这里的你感到好奇(｡･∀･)ﾉﾞ
+                        <br> 本人目前在<span style="color:#7bccff;">美国俄亥俄州克利夫兰比奇伍德高中</span>上高一 (九年级)，业余时间会尝试开发一些网站和其他的小工具，偶尔也会自己做些想做的项目，是
+                        <a href="https://count.kjchmc.cn/">Moe-Counter网站计数器</a>的主人。在毕业时为了纪念在<span style="color:#7bccff;">北京市忠德学校</span>生活的初中三年(七年级-九年级)开发了<a href="https://zd.kjchmc.cn/">ZDSchool项目</a>。
+                    </p>
+                    <p>
+                        如果对我感兴趣，可以<a href="javascript:rollOnce()">点击这里</a>Roll一个关于我的标签，<br> 可以在下方的社交媒体关注我，也欢迎发邮件、微信或QQ找我聊聊(。・∀・)ノ
+                    </p>
+                    <div class="roll-tag"></div>
+                    <p>希望能与你在比特之海的繁星之下相见！</p>
+                </div>
+
+                <div class="find-me">
+                    <a class="item">
+                        <i class="fa-brands fa-weixin"></i>
+                        <span>WeChat<p>(kjch666FFF)</p></span>
+                    </a>
+                    <a class="item" href="http://wpa.qq.com/msgrd?v=3&uin=1834423612&site=qq&menu=yes" target="_blank">
+                        <i class="neko-icon icon-qq"></i>
+                        <span>QQ</span>
+                    </a>
+                    <a class="item" href="https://t.me/kjch666" target="_blank">
+                        <i class="neko-icon icon-telegram"></i>
+                        <span>Telegram</span>
+                    </a>
+                    <a class="item" href="mailto:1834423612@qq.com" target="_blank">
+                        <i class="neko-icon icon-email"></i>
+                        <span>E-Mail</span>
+                    </a>
+                    <a class="item" href="https://twitter.com/kevinkuang2007" target="_blank">
+                        <i class="neko-icon icon-twitter"></i>
+                        <span>Twitter</span>
+                    </a>
+                    <a class="item" href="https://space.bilibili.com/267388489" target="_blank">
+                        <i class="fa-brands fa-bilibili"></i>
+                        <span>Bilibili</span>
+                    </a>
+                    <a class="item" href="https://music.163.com/#/user/home?id=586229528" target="_blank">
+                        <i class="neko-icon icon-music"></i>
+                        <span>网易云音乐</span>
+                    </a>
+                    <a class="item" href="https://github.com/1834423612" target="_blank">
+                        <i class="neko-icon icon-github"></i>
+                        <span>Github</span>
+                    </a>
+                    <a class="item" href="https://steamcommunity.com/profiles/76561199375887525/" target="_blank">
+                        <i class="neko-icon icon-steam"></i>
+                        <span>Steam</span>
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="ch clear">
+            <div class="container">
+                <div class="enter-list">
+                    <a class="item" href="https://blog.kjchmc.cn/">
+                        <div class="text">个人博客</div>
+                        <div class="bg">
+                            <div class="square">
+                                <svg width="100" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<rect width="100" height="100" rx="10" fill="url(#paint0_linear)"/>
+									<defs>
+									<linearGradient id="paint0_linear" x1="50" y1="0" x2="50" y2="100" gradientUnits="userSpaceOnUse">
+									<stop stop-color="white"/>
+									<stop offset="1" stop-color="white" stop-opacity="0"/>
+									</linearGradient>
+									</defs>
+									</svg>
+                            </div>
+
+                        </div>
+                    </a>
+                    <a class="item" href="/lab">
+                        <div class="text">网站及作品集</div>
+                        <div class="bg">
+                            <div class="triangle">
+                                <svg width="116" height="103" preserveAspectRatio="xMidYMid meet" viewBox="0 0 116 103" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M49.3397 5.00001C53.1887 -1.66666 62.8113 -1.66667 66.6603 5L114.292 87.5C118.141 94.1667 113.329 102.5 105.631 102.5H10.3686C2.67061 102.5 -2.14065 94.1667 1.70835 87.5L49.3397 5.00001Z" fill="url(#paint0_linear)"/>
+									<defs>
+									<linearGradient id="paint0_linear" x1="58" y1="0.5" x2="58" y2="104" gradientUnits="userSpaceOnUse">
+									<stop stop-color="white"/>
+									<stop offset="1" stop-color="white" stop-opacity="0"/>
+									<stop offset="1" stop-color="white" stop-opacity="0"/>
+									</linearGradient>
+									</defs>
+									</svg>
+                            </div>
+                        </div>
+                    </a>
+                    <a class="item"> <!-- href="javascript:nav('friends')" -->
+                        <!--<div class="text">朋友们</div>-->
+                        <div class="bg">
+                            <div class="rounded">
+                                <!--<svg width="100" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<circle cx="50" cy="50" r="50" fill="url(#paint0_linear)"/>
+									<defs>
+									<linearGradient id="paint0_linear" x1="50" y1="0" x2="50" y2="100" gradientUnits="userSpaceOnUse">
+									<stop stop-color="white"/>
+									<stop offset="1" stop-color="white" stop-opacity="0"/>
+									</linearGradient>
+									</defs>
+									</svg>-->
+                                <img src="http://1.api.kjchmc.cn/ipqianming/" width="100%" height="100%"></img>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="gate ch gate-friends">
+        <div class="container links">
+            <div class="ch-content">
+                <div class="clear">
+
+                    <a href="https://apporz.com/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/micooz.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>Micooz</h5>
+                                <p>可爱的男孩子XD</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="http://shiromi.org/" target="_blank">
+                        <div class="item akarin">
+                            <div class="avatar">
+                                <img src="source/p/lynn.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5><span style="opacity: .3">毫无存在感</span>的凌</h5>
+                                <p>可靠的魔法少年</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="http://mouto.org/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/totoro.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>卜卜口</h5>
+                                <p>无处不在的美味卜卜</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="http://moe.lu/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/an.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>三千院の暗</h5>
+                                <p>人生赢家小暗</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="http://sora.sound.moe/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/sora.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>妹空</h5>
+                                <p>草莓味的妹空酱</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="http://rakume.com/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/rakume.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>Rakume</h5>
+                                <p>消失在人群中的团长</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="http://www.almsev.com/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/almsev.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>Almsev</h5>
+                                <p>消失的霖菓村村长</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://best33.com/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/oott123.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>Oott123</h5>
+                                <p>三三菊苣</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://digua.me/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/digua.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>地瓜</h5>
+                                <p>烤的热乎乎的地瓜</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="http://www.ybusad.com/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/ybusad.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>孙天骁</h5>
+                                <p>孙天骁的个人网站</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://www.qiyichao.cn/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/cenegd.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>亓一超</h5>
+                                <p>cenegd</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://dante.io/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/dante.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>Dante</h5>
+                                <p>cfan菊苣</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://www.starryvoid.com/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/starryvoid.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>Starryvoid</h5>
+                                <p>繁星天</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://blog.sylingd.com/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/sylingd.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>泷涯</h5>
+                                <p>坠吼的膜法师</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://www.jipai.moe/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/jipai.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>鸡排</h5>
+                                <p>好次的鸡排</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://linux.dog/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/shellv.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>电磁泡ShellV</h5>
+                                <p>泡！泡泡泡！</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://www.tcdw.net/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/tcdw.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>吐槽大王</h5>
+                                <p>好耶，是tcdw!</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="http://jack-works.github.io/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/jackworks.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>光棱</h5>
+                                <p>JackWorks 暂时离开了</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://www.aoisnow.net/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/touka.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>洛城东华</h5>
+                                <p>世界另一端的无证网管</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://blog.blingwang.cn/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/blingwang.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>派兹的小站</h5>
+                                <p>银不了，尽梨了</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://kagurazaka.cat/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/kano.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>神楽坂の猫</h5>
+                                <p>是卡諾和鵯凪，蹭蹭</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://www.yunyoujun.cn/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/yunyou.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>云游君</h5>
+                                <p>云游君的小站</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://www.minamion.com/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/minamion.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>神楽坂南音</h5>
+                                <p>*好* 是南音</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://benpigchu.com/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/bpc.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>BenPigChu</h5>
+                                <p>电子幽灵在人间！</p>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://cyris.moe/" target="_blank">
+                        <div class="item">
+                            <div class="avatar">
+                                <img src="source/p/cyris.jpg">
+                            </div>
+                            <div class="inner">
+                                <h5>Cyris</h5>
+                                <p>页面，动起来叻！</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="clear" style="margin-top: 30px;">
+                </div>
+            </div>
+        </div>
+    </div>-->
+    <div class="footer ch">
+        <div class="container">
+            <p><a href="">蘑菇森林的尽头，新世界的起点。(建设中.....)</a></p>
+    
+            <span style="display:inline-block;text-decoration:none;height:20px;line-height:20px;letter-spacing: .1em;">
+                <img src="https://cdn.kjchmc.cn/beian/icp.png" style="float:left;" />
+                <a href="http://beian.miit.gov.cn" target="_blank" style="font-size: small;color: #bebebe;">冀ICP备19023170号</a>
+                
+            </span>
+            <span class="icp" style="display:inline-block;text-decoration:none;height:20px;line-height:20px; letter-spacing: .1em;">
+                <img src="https://cdn.kjchmc.cn/beian/ghs.png" style="float:left;" />
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011202001885"
+                style="font-size: small; color: #bebebe;">京公网安备11011202001885号</a>
+            </span>
+            
+        </div>
+    </div>
+    <script src="source/zepto.min.js"></script>
+    <script src="source/page.js"></script>
+    
+    <!-- 引入一键翻译配置 -->
+    <script src="http://res.zvo.cn/translate/translate.js"></script>
+    <script>
+        translate.includedLanguages = 'zh-CN,zh-TW,en,ja,ar';  //注意要放到 translate.execute(); 上面
+        translate.execute();  //进行翻译
+    </script>
+    
+    <style>
+        .translateSelectLanguage {
+            position: absolute;
+            top: 6%;
+            right: 2%;
+        }
+    </style>
+    
+</body>
+</html>
