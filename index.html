@@ -17,42 +17,7 @@
     <script src="https://kit.fontawesome.com/88dcbc9ca6.js" crossorigin="anonymous"></script>
     <!-- load iconfont -->
     <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/c/font_3444954_vyo5qvsihd.css" />
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-
-    <!-- Install Client Worker -->
-    <script>
-        if (!!navigator.serviceWorker) {
-            if (localStorage.getItem('cw_installed') !== 'true') {window.stop();}
-            navigator.serviceWorker.register('/cw.js?t=' + new Date().getTime()).then(async (registration) => {
-                if (localStorage.getItem('cw_installed') !== 'true') {
-                    const conf = () => {
-                        console.log('[CW] Installing Success,Configuring...');
-                        fetch('/cw-cgi/api?type=config')
-                            .then(res => res.text())
-                            .then(text => {
-                                if (text === 'ok') {
-                                    console.log('[CW] Installing Success,Configuring Success,Starting...');
-                                    localStorage.setItem('cw_installed', 'true');
-                                    window.location.reload();
-                                } else {
-                                    console.warn('[CW] Installing Success,Configuring Failed,Sleeping 200ms...');
-                                    setTimeout(() => {
-                                        conf()
-                                    }, 200);
-                                }
-                            }).catch(err => {
-                                console.log('[CW] Installing Success,Configuring Error,Exiting...');
-                            });
-                    }
-                    setTimeout(() => {
-                        conf()
-                    }, 50);
-                }
-            }).catch(err => {
-                console.error('[CW] Installing Failed,Error: ' + err.message);
-            })
-        } else { console.error('[CW] Installing Failed,Error: Browser not support service worker'); }
-        </script>        
+    <!-- Global site tag (gtag.js) - Google Analytics -->      
 </head>
 
 <body>
