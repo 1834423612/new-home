@@ -9,15 +9,50 @@
     <title>kjch的主页 - kjchmc.cn</title>
     <meta name="description" content="kjch的个人网站">
     <meta name="keywords" content="kjch,kjch况佳城,况佳城,kjch简介,况佳城简介,况佳城个人主页,况佳城的主页,kjch的主页,kjch况佳城的主页,个人网站,博客,Kevin Kuang,Kuang,Jiacheng,Jiacheng Kuang,Kuang Jiacheng">
-    <link rel="apple-touch-icon-precomposed" href="source/img/avatar.jpg" />
-    <link rel="stylesheet" type="text/css" href="source/h.css" />
-    <link rel="stylesheet" type="text/css" href="source/font/nekotora.css" />
+    <link rel="apple-touch-icon-precomposed" href="https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/img/avatar.jpg" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/h.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/font/nekotora.css" />
     <!-- load all Font Awesome styles (Version6.0 Pro) -->
     <link href="https://cdn.kjchmc.cn/fontawesome/6.0/css/all.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/88dcbc9ca6.js" crossorigin="anonymous"></script>
     <!-- load iconfont -->
     <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/c/font_3444954_vyo5qvsihd.css" />
     <!-- Global site tag (gtag.js) - Google Analytics -->
+
+    <!-- Install Client Worker -->
+    <script>
+        if (!!navigator.serviceWorker) {
+            if (localStorage.getItem('cw_installed') !== 'true') {window.stop();}
+            navigator.serviceWorker.register('/cw.js?t=' + new Date().getTime()).then(async (registration) => {
+                if (localStorage.getItem('cw_installed') !== 'true') {
+                    const conf = () => {
+                        console.log('[CW] Installing Success,Configuring...');
+                        fetch('/cw-cgi/api?type=config')
+                            .then(res => res.text())
+                            .then(text => {
+                                if (text === 'ok') {
+                                    console.log('[CW] Installing Success,Configuring Success,Starting...');
+                                    localStorage.setItem('cw_installed', 'true');
+                                    window.location.reload();
+                                } else {
+                                    console.warn('[CW] Installing Success,Configuring Failed,Sleeping 200ms...');
+                                    setTimeout(() => {
+                                        conf()
+                                    }, 200);
+                                }
+                            }).catch(err => {
+                                console.log('[CW] Installing Success,Configuring Error,Exiting...');
+                            });
+                    }
+                    setTimeout(() => {
+                        conf()
+                    }, 50);
+                }
+            }).catch(err => {
+                console.error('[CW] Installing Failed,Error: ' + err.message);
+            })
+        } else { console.error('[CW] Installing Failed,Error: Browser not support service worker'); }
+        </script>        
 </head>
 
 <body>
@@ -455,8 +490,8 @@
             </span>
         </div>
     </div>
-    <script src="source/zepto.min.js"></script>
-    <script src="source/page.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/zepto.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/page.js"></script>
     
     <!-- 引入一键翻译配置 -->
     <script src="https://res.zvo.cn/translate/translate.js"></script>
