@@ -165,7 +165,7 @@ var tags = [
   '熬夜冠军', '躺平爱好者', '一般通过路人', '话痨', 
   // 动画 & 游戏
   '❤Minecraft', 'Steam白嫖爱好者', 
-  'Terria(泰拉瑞亚)', '猫和老鼠', 
+  'Terraria(泰拉瑞亚)', '猫和老鼠', 
   // 技术
   'PHP 小白', '熟练掌握html', 'JavaScript 入门',
   'Adobe 全家桶用户', 'VSCode 用户', 'Notepad 用户', 'Windows 用户',

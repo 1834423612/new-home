@@ -15,71 +15,37 @@
     <script src="//unpkg.com/vue@3"></script>
     <!-- Import component library -->
     <script src="//unpkg.com/element-plus"></script>
+    <!-- 翻译 -->
 </head>
 
 <body>
     <div class="ch header">
         <div class="container">
-            <h1 class="title">Made by kjch™<span class="sub">kjch的 <del style="opacity:.4;font-weight:400;">黑历史</del>作品集</span></h1>
+            <h1 class="title">Made by kjch™<span class="sub">kjch的<del style="opacity:.4;font-weight:400;">黑历史</del>作品集</span></h1>
         </div>
     </div>
     <div class="ch main">
         <div class="container">
             <div id="translate"></div>
-            <h2 class="title">Project <span>项目</span></h2>
+            <h2 class="title">Project<span>项目</span></h2>
 
+            <!--<script src="https://unpkg.com/translater.js/dist/translater.js" type="text/javascript"></script>
             <div>
-                这里是中文
-                <!--{jp}ここは日本語です???-->
+                这里是中文-->
                 <!--{en}Here is English-->
-              </div>
-              <script src="https://unpkg.com/translater.js/dist/translater.js" type="text/javascript"></script>
-              <script type="text/javascript">
-              var tran = new Translater({
-                lang:"jp"
-              });
-              </script>
+                <!--{jp}ここは日本語です???-->
+              <!--</div>
 
+              <script type="text/javascript">
+                var tran = new Translater({
+                    tag: "script", //默认为`comment`参数
+                    lang: "default"
+                });
+            </script>
+              
             <a href="javascript:tran.setLang('default');">中文</a>
             <a href="javascript:tran.setLang('jp');">日本語</a>
-            <a href="javascript:tran.setLang('en');">English</a>
-
-            <input type="text" placeholder="like this?" placeholder-cn="像这样？"  />
-            <input type="button" value="button" value-cn="按钮" value-jp="按钮日本"  />
-
-            <div id="app">
-                <el-button>{{ message }}</el-button>
-              </div>
-              <script>
-                const App = {
-                  data() {
-                    return {
-                      message: "Hello Element Plus",
-                    };
-                  },
-                };
-                const app = Vue.createApp(App);
-                app.use(ElementPlus);
-                app.mount("#app");
-              </script>
-              
-              <script lang="ts" setup>
-              import { ElMessage } from 'element-plus'
-              import { ArrowDown } from '@element-plus/icons-vue'
-              
-              const handleCommand = (command: string | number | object) => {
-                ElMessage(`click on item ${command}`)
-              }
-              </script>
-              <style scoped>
-              .example-showcase .el-dropdown-link {
-                cursor: pointer;
-                color: var(--el-color-primary);
-                display: flex;
-                align-items: center;
-              }
-              </style>              
-
+            <a href="javascript:tran.setLang('en');">English</a>-->
 
             <div class="type clear">
                 <div class="item">
@@ -89,7 +55,7 @@
                     <div class="content">
                         <h4><span>ZDSchool Project</span></h4>
                         <div class="tags"><span class="time">2022.7</span><span class="tag">Website</span><span
-                            class="tag">毕设</span></div>
+                            class="tag">毕业设计</span></div>
                         <p class="slogan">“为Minecraft学校建筑制作的一个网站，用于展示三班同学的建筑成果。”</p>
                         <p>一个简洁的站点，展示了用Minecraft还原出一个忠德学校。</p>
                         <p>本项目目前仍在进行中，将延续给下届同学，也是一个情感的延续。</p>
@@ -121,7 +87,7 @@
                     <div class="content">
                         <h4><span>ZDSchool on Minecraft</span></h4>
                         <div class="tags"><span class="time">2022.6.25 - now</span><span class="tag">Minecraft</span><span
-                                class="tag">毕设</span></div>
+                                class="tag">毕业设计</span></div>
                         <p class="slogan">“2022届的几个毕业生组成的团体，共同在Minecraft中还原了忠德学校。”</p>
                         <p>正在进行中的项目，第一次在MC里建成如此大规模的建筑，也完成了我们用MC还原学校的梦想。</p>
                         <p>地图中部分建筑仍处于建筑当中，目前更新进度极慢。</p>
@@ -138,7 +104,7 @@
                 <div class="item">
                     <div class="content">
                         <h4><span>老况的文件库</span></h4>
-                        <div class="tags"><span class="time">SIENCE 2022</span><span class="tag">Cloud Drive</span><span
+                        <div class="tags"><span class="time">SINCE 2022</span><span class="tag">Cloud Drive</span><span
                                 class="tag">存储库</span></div>
                         <p class="slogan">“一个存储着许多资料的站点”</p>
                         <p>网站基于 Alist。涵盖了丰富资源，包括电子课本，番剧，Bilibili录播，实用电脑软件，壁纸，网站源码</p>
@@ -150,7 +116,7 @@
                 <div class="item">
                     <div class="content">
                         <h4><span>老况的小窝</span></h4>
-                        <div class="tags"><span class="time">SIENCE 2022</span><span class="tag">blog</span></div>
+                        <div class="tags"><span class="time">SINCE 2022</span><span class="tag">blog</span></div>
                         <p class="slogan">“一个属于自己的博客”</p>
                         <p>学习繁忙，有可能经常断更文章。</p>
                     </div>
@@ -173,7 +139,7 @@
                 <div class="item">
                     <div class="content">
                         <h4><span>网站状态监控</span></h4>
-                        <div class="tags"><span class="time">SIENCE 2021</span><span class="tag">status</span><span
+                        <div class="tags"><span class="time">SINCE 2021</span><span class="tag">status</span><span
                                 class="tag">服务器监控</span><span class="tag">前端</span></div>
                         <p class="slogan">“网站服务器在线状态检测站点”</p>
                     </div>
@@ -184,7 +150,7 @@
                 <div class="item">
                     <div class="content">
                         <h4><span>CDN存储仓库</span></h4>
-                        <div class="tags"><span class="time">SIENCE 2021</span><span class="tag">CDN</span><span
+                        <div class="tags"><span class="time">SINCE 2021</span><span class="tag">CDN</span><span
                                 class="tag">仓库</span></div>
                         <p class="slogan">“小众的CDN加速服务”</p>
                         <p>给网站提供文件加速服务，减轻站点服务器压力。</p>
@@ -197,7 +163,7 @@
                 <div class="item">
                     <div class="content">
                         <h4><span>API主站点</span></h4>
-                        <div class="tags"><span class="time">SIENCE 2021</span><span class="tag">API</span><span
+                        <div class="tags"><span class="time">SINCE 2021</span><span class="tag">API</span><span
                                 class="tag">Tools</span></div>
                         <p class="slogan">“为网站提供基础工具功能”</p>
                         <p>API主站点系统涵盖数十种维持网站正常运行的基本工具及资源。</p>
@@ -211,7 +177,7 @@
                 <div class="item">
                     <div class="content">
                         <h4><span>老k的主页</span></h4>
-                        <div class="tags"><span class="time">SIENCE 2019</span><span class="tag">个人网站</span></div>
+                        <div class="tags"><span class="time">SINCE 2019</span><span class="tag">个人网站</span></div>
                         <p class="slogan">“网络世界上自己的小小一角。”</p>
                         <p>有一个属于自己的网站很酷，不是吗？</p>
                         <p>在互联网上有属于自己的小小一角是一件很有意义的事情，我是这么认为的。</p>
@@ -345,7 +311,7 @@
     </div>
 
     <!-- 引入一键翻译配置 -->
-    <script src="https://res.zvo.cn/translate/translate.js"></script>
+    <script src="https://cdn.kjchmc.cn/translate/translate.js"></script>
     <script>
         translate.includedLanguages = 'zh-CN,zh-TW,en,ja,ar';  //注意要放到 translate.execute(); 上面
         translate.execute();  //进行翻译
@@ -354,8 +320,8 @@
     <style>
         .translateSelectLanguage {
             position: absolute;
-            top: 10%;
-            right: 21%;
+            top: 2%;
+            right: 2%;
         }
     </style>
 

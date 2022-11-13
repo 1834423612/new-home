@@ -1,4 +1,3 @@
-
 @charset "UTF-8";
 
 * {
@@ -7,6 +6,37 @@
     transition-timing-function: ease-in-out
 }
 
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #797e8233; /*rgba(73, 177, 245, 0.2)*/
+    border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #5dacff; /*#49b1f5*/
+    /* 滚动条花纹 */
+    /*background-image: -webkit-linear-gradient(45deg,
+            rgba(255, 255, 255, 0.4) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0.4) 75%,
+            transparent 75%,
+            transparent);*/
+    /* 圆角 */
+    border-radius: 2em;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+    
 body {
     width: 100%;
     color: #fff;
@@ -14,7 +44,7 @@ body {
     line-height: 1.5em;
     font-family: Microsoft YaHei;
     background: #212121;
-    overflow-x: hidden;
+    /*overflow-x: hidden;*/
 }
 
 a,
