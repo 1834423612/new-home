@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>老况的实验室</title>
+    <title data-language="老况的实验室"> </title>
     <meta name="description" content="kjch的个人网站，期待与更多人相遇！">
     <meta name="keywords" content="kjch,kjch况佳城,况佳城,kjch简介,况佳城简介,况佳城个人主页,况佳城的主页,kjch的主页,kjch况佳城的主页,个人网站,博客,Kevin Kuang,Kuang,Jiacheng,Jiacheng Kuang,Kuang Jiacheng">
     <link rel="stylesheet" type="text/css" href="./main.css">
@@ -15,21 +15,29 @@
     <script src="//unpkg.com/vue@3"></script>
     <!-- Import component library -->
     <script src="//unpkg.com/element-plus"></script>
-    <!-- KJCH API 访客IP记录器 -->
-    <script src="https://ip.kjchmc.cn/home/lab/index.php"></script> 
+    <!-- 引入JQ库 及本地版网页翻译 -->
+    <script src="https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/js/jquery.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/js/jquery.language.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/language/language.js" type="text/javascript"></script>
 </head>
 
 <body>
     <div class="ch header">
         <div class="container">
-            <h1 class="title">Made by kjch™<span class="sub">kjch的<del style="opacity:.4;font-weight:400;">黑历史</del>作品集</span></h1>
+            <h1 class="title" data-language="Made by kjch™"> <span class="sub" data-language="kjch的"> <del style="opacity:.4;font-weight:400;" data-language="黑历史"> </del> <span data-language="作品集"></span></span></h1>
+            <!--<h1 class="title" data-language="">Made by kjch™<span class="sub">kjch的<del style="opacity:.4;font-weight:400;">黑历史</del>作品集</span></h1>-->
         </div>
     </div>
     <div class="ch main">
         <div class="container">
-            <div id="translate"></div>
-            <h2 class="title">Project<span>项目</span></h2>
+            <!-- 网页翻译菜单 --><!--<div id="translate"></div>-->
+            <select id="list" onchange="select()">
+                <option value="zh_CN">中文(简体)</option>
+                <option value="en">English</option>
+            </select>
 
+            <h2 class="title" data-language="Project"><span data-language="项目"></span></h2>
+            <!--<h2 class="title">Project<span>项目</span></h2>-->
             <!--<script src="https://unpkg.com/translater.js/dist/translater.js" type="text/javascript"></script>
             <div>
                 这里是中文-->
@@ -56,10 +64,15 @@
                     <div class="content">
                         <h4><span>ZDSchool Project</span></h4>
                         <div class="tags"><span class="time">2022.7</span><span class="tag">Website</span><span
-                            class="tag">毕业设计</span></div>
-                        <p class="slogan">“为Minecraft学校建筑制作的一个网站，用于展示三班同学的建筑成果。”</p>
-                        <p>一个简洁的站点，展示了用Minecraft还原出一个忠德学校。</p>
-                        <p>本项目目前仍在进行中，将延续给下届同学，也是一个情感的延续。</p>
+                            class="tag" data-language="毕业设计"></span></div>
+                        <!--<div class="tags"><span class="time">2022.7</span><span class="tag">Website</span><span
+                            class="tag">毕业设计</span></div>-->
+                        <p class="slogan" data-language="“为Minecraft学校建筑制作的一个网站，用于展示三班同学的建筑成果。”"></p>
+                        <!--<p class="slogan">“为Minecraft学校建筑制作的一个网站，用于展示三班同学的建筑成果。”</p>-->
+                        <p data-language="一个简洁的站点，展示了用Minecraft还原出一个忠德学校。"></p>
+                        <!--<p>一个简洁的站点，展示了用Minecraft还原出一个忠德学校。</p>-->
+                        <p data-language="本项目目前仍在进行中，将延续给下届同学，也是一个情感的延续。"></p>
+                        <!--<p>本项目目前仍在进行中，将延续给下届同学，也是一个情感的延续。</p>-->
                     </div>
                     <div class="footer">
                         <div class="action-box"><a class="btn" href="https://zd.kjchmc.cn/">Visited Now!</a></div>
@@ -70,13 +83,28 @@
                         <div class="cover-img" style="background-image:url(https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/img/poster.png)"></div>
                     </div>
                     <div class="content">
-                        <h4><span>2022届初三毕业生毕业回忆视频</span></h4>
+                        <h4><span data-language="2022届初三毕业生毕业回忆视频"></span></h4>
+                        <!--<h4><span>2022届初三毕业生毕业回忆视频</span></h4>-->
                         <div class="tags"><span class="time">2022.7.1-7.8</span><span class="tag">Video</span><span
+<<<<<<< HEAD
                                 class="tag">毕业纪念</span></div>
                         <p class="slogan">“毕业时留给同学们最后的礼物”</p>
                         <p>个人认为本视频制作过于仓促，许多原先计划的内容都没有加入，有些令人遗憾。</p>
                         <p>在短时间内历经多次改版制作、挑选照片，最终呈现给所有初三毕业生</p>
                         <p>2019-2022 一段美好的初中时光......</p>
+=======
+                                class="tag" data-language="毕业纪念"></span></div>
+                        <!--<div class="tags"><span class="time">2022.7.1-7.8</span><span class="tag">Video</span><span
+                                class="tag">毕业纪念</span></div>-->
+                        <p class="slogan" data-language="“毕业时留给同学们最后的礼物”"></p>
+                        <!--<p class="slogan">“毕业时留给同学们最后的礼物”</p>-->
+                        <p data-language="个人认为本视频制作过于仓促，许多原先计划的内容都没有加入，有些令人遗憾。"></p>
+                        <!--<p>个人认为本视频制作过于仓促，许多原先计划的内容都没有加入，有些令人遗憾。</p>-->
+                        <p data-language="在短时间内历经多次改版制作、挑选照片，最终呈现给所有初三毕业生"></p>
+                        <!--<p>在短时间内历经多次改版制作、挑选照片，最终呈现给所有初三毕业生</p>-->
+                        <p data-language="2019-2022 一段美好的初中时光......"></p>
+                        <!--<p>2019-2022 一段美好的初中时光......</p>-->
+>>>>>>> e03aec6 (增加/lab自定义网页翻译)
                     </div>
                     <div class="footer">
                         <div class="action-box"><a class="btn" href="https://zd.kjchmc.cn/video.html">Watch this video!</a></div>
@@ -89,6 +117,7 @@
                     <div class="content">
                         <h4><span>ZDSchool on Minecraft</span></h4>
                         <div class="tags"><span class="time">2022.6.25 - now</span><span class="tag">Minecraft</span><span
+<<<<<<< HEAD
                                 class="tag">毕业设计</span></div>
                         <p class="slogan">“2022届的几个毕业生组成的团体，共同在Minecraft中还原了忠德学校。”</p>
                         <p>正在进行中的项目，第一次在MC里建成如此大规模的建筑，也完成了我们用MC还原学校的梦想。</p>
@@ -96,6 +125,23 @@
                         <p>服务器地址：mc.kjchmc.cn</p>
                         <p>游戏版本：Java 1.16.5</p>
                         <p>需下载特别制定版游戏客户端，客户端下载链接：<a href="https://file.kjchmc.cn/Minecraft/school/ServerClient.zip">下载链接(点击前往)</a></p>
+=======
+                                class="tag" data-language="毕业设计"></span></div>
+                        <!--<div class="tags"><span class="time">2022.6.25 - now</span><span class="tag">Minecraft</span><span
+                                class="tag">毕业设计</span></div>-->
+                        <p class="slogan" data-language="“2022届的几个毕业生组成的团体，共同在Minecraft中还原了忠德学校。”"></p>
+                        <!--<p class="slogan">“2022届的几个毕业生组成的团体，共同在Minecraft中还原了忠德学校。”</p>-->
+                        <p data-language="正在进行中的项目，第一次在MC里建成如此大规模的建筑，也完成了我们用MC还原学校的梦想。"></p>
+                        <!--<p>正在进行中的项目，第一次在MC里建成如此大规模的建筑，也完成了我们用MC还原学校的梦想。</p>-->
+                        <p data-language="地图中部分建筑仍处于建筑当中，目前更新进度极慢。"></p>
+                        <!--<p>地图中部分建筑仍处于建筑当中，目前更新进度极慢。</p>-->
+                        <p data-language="服务器地址：mc.kjchmc.cn"></p>
+                        <!--<p>服务器地址：mc.kjchmc.cn</p>-->
+                        <p data-language="游戏版本：Java 1.16.5"></p>
+                        <!--<p>游戏版本：Java 1.16.5</p>-->
+                        <p data-language="需下载特别制定版游戏客户端，客户端下载链接："><a href="https://file.kjchmc.cn/Minecraft/school/ServerClient.zip" data-language="下载链接(点击前往)"></a></p>
+                        <!--<p>需下载特别制定版游戏客户端，客户端下载链接：<a href="https://file.kjchmc.cn/Minecraft/school/ServerClient.zip">下载链接(点击前往)</a></p>-->
+>>>>>>> e03aec6 (增加/lab自定义网页翻译)
                     </div>
                     <div class="footer">
                         <div class="action-box"><a class="btn" href="https://zd.kjchmc.cn/">Visited Now!</a></div>
@@ -103,91 +149,131 @@
                 </div>
             </div>
 
-            <h2 class="title">Site 站点</h2>
+            <h2 class="title" data-language="Site 站点"></h2>
+            <!--<h2 class="title">Site 站点</h2>-->
             <div class="type clear">
                 <div class="item">
                     <div class="content">
-                        <h4><span>老况的文件库</span></h4>
+                        <h4><span data-language="老况的文件库"></span></h4>
+                        <!--<h4><span>老况的文件库</span></h4>-->
                         <div class="tags"><span class="time">SINCE 2022</span><span class="tag">Cloud Drive</span><span
-                                class="tag">存储库</span></div>
-                        <p class="slogan">“一个存储着许多资料的站点”</p>
-                        <p>网站基于 Alist。涵盖了丰富资源，包括电子课本，番剧，Bilibili录播，实用电脑软件，壁纸，网站源码</p>
+                                class="tag" data-language="存储库"></span></div>
+                        <!--<div class="tags"><span class="time">SINCE 2022</span><span class="tag">Cloud Drive</span><span
+                                class="tag">存储库</span></div>-->
+                        <p class="slogan" data-language="“一个存储着许多资料的站点”"></p>
+                        <!--<p class="slogan">“一个存储着许多资料的站点”</p>-->
+                        <p data-language="网站基于 Alist。涵盖了丰富资源，包括电子课本，番剧，Bilibili录播，实用电脑软件，壁纸，网站源码"></p>
+                        <!--<p>网站基于 Alist。涵盖了丰富资源，包括电子课本，番剧，Bilibili录播，实用电脑软件，壁纸，网站源码</p>-->
                     </div>
                     <div class="footer">
-                        <div class="action-box"><a class="btn" href="https://file.kjchmc.cn/">访问网站</a></div>
+                        <div class="action-box"><a class="btn" href="https://file.kjchmc.cn/" data-language="访问网站"></a></div>
+                        <!--<div class="action-box"><a class="btn" href="https://file.kjchmc.cn/">访问网站</a></div>-->
                     </div>
                 </div>
                 <div class="item">
                     <div class="content">
-                        <h4><span>老况的小窝</span></h4>
+                        <h4><span data-language="老况的小窝"></span></h4>
+                        <!--<h4><span>老况的小窝</span></h4>-->
                         <div class="tags"><span class="time">SINCE 2022</span><span class="tag">blog</span></div>
-                        <p class="slogan">“一个属于自己的博客”</p>
-                        <p>学习繁忙，有可能经常断更文章。</p>
+                        <p class="slogan" data-language="“一个属于自己的博客”"></p>
+                        <!--<p class="slogan">“一个属于自己的博客”</p>-->
+                        <p data-language="学习繁忙，有可能经常断更文章。"></p>
+                        <!--<p>学习繁忙，有可能经常断更文章。</p>-->
                     </div>
                     <div class="footer">
-                        <div class="action-box"><a class="btn" href="https://blog.kjchmc.cn/">访问网站</a></div>
+                        <div class="action-box"><a class="btn" href="https://blog.kjchmc.cn/" data-language="访问网站"></a></div>
+                        <!--<div class="action-box"><a class="btn" href="https://blog.kjchmc.cn/">访问网站</a></div>-->
                     </div>
                 </div>
                 <div class="item">
                     <div class="content">
-                        <h4><span>kjch起始页</span></h4>
-                        <div class="tags"><span class="time">2021</span><span class="tag">起始页</span><span
-                                class="tag">设计</span><span class="tag">前端</span></div>
-                        <p class="slogan">“多功能起始页”</p>
-                        <p>内置多种壁纸以及多种可选的搜索引擎，美化了原先的浏览器内置标签页。</p>
+                        <h4><span data-language="kjch起始页"></span></h4>
+                        <!--<h4><span>kjch起始页</span></h4>-->
+                        <div class="tags"><span class="time">2021</span><span class="tag" data-language="起始页"></span><span
+                                class="tag" data-language="设计"></span><span class="tag" data-language="前端"></span></div>
+                        <!--<div class="tags"><span class="time">2021</span><span class="tag">起始页</span><span
+                                class="tag">设计</span><span class="tag">前端</span></div>-->
+                        <p class="slogan" data-language="“多功能起始页”"></p>
+                        <!--<p class="slogan">“多功能起始页”</p>-->
+                        <p data-language="内置多种壁纸以及多种可选的搜索引擎，美化了原先的浏览器内置标签页。"></p>
+                        <!--<p>内置多种壁纸以及多种可选的搜索引擎，美化了原先的浏览器内置标签页。</p>-->
                     </div>
                     <div class="footer">
-                        <div class="action-box"><a class="btn" href="https://dh.kjchmc.cn/">访问网站</a></div>
+                        <div class="action-box"><a class="btn" href="https://dh.kjchmc.cn/" data-language="访问网站"></a></div>
+                        <!--<div class="action-box"><a class="btn" href="https://dh.kjchmc.cn/">访问网站</a></div>-->
                     </div>
                 </div>
                 <div class="item">
                     <div class="content">
-                        <h4><span>网站状态监控</span></h4>
+                        <h4><span data-language="网站状态监控"></span></h4>
+                        <!--<h4><span>网站状态监控</span></h4>-->
                         <div class="tags"><span class="time">SINCE 2021</span><span class="tag">status</span><span
-                                class="tag">服务器监控</span><span class="tag">前端</span></div>
-                        <p class="slogan">“网站服务器在线状态检测站点”</p>
+                                class="tag" data-language="服务器监控"></span><span class="tag" data-language="前端"></span></div>
+                        <!--<div class="tags"><span class="time">SINCE 2021</span><span class="tag">status</span><span
+                                class="tag">服务器监控</span><span class="tag">前端</span></div>-->
+                        <p class="slogan" data-language="“网站服务器在线状态检测站点”"></p>
+                        <!--<p class="slogan">“网站服务器在线状态检测站点”</p>-->
                     </div>
                     <div class="footer">
-                        <div class="action-box"><a class="btn" href="https://status.kjchmc.cn/">访问网站</a></div>
+                        <div class="action-box"><a class="btn" href="https://status.kjchmc.cn/" data-language="访问网站"></a></div>
+                        <!--<div class="action-box"><a class="btn" href="https://status.kjchmc.cn/">访问网站</a></div>-->
                     </div>
                 </div>
                 <div class="item">
                     <div class="content">
-                        <h4><span>CDN存储仓库</span></h4>
+                        <h4><span data-language="CDN存储仓库"></span></h4>
+                        <!--<h4><span>CDN存储仓库</span></h4>-->
                         <div class="tags"><span class="time">SINCE 2021</span><span class="tag">CDN</span><span
-                                class="tag">仓库</span></div>
-                        <p class="slogan">“小众的CDN加速服务”</p>
-                        <p>给网站提供文件加速服务，减轻站点服务器压力。</p>
-                        <p>无前端显示界面，仅限于网站链接调用获取所需资源文件。</p>
+                                class="tag" data-language="仓库"></span></div>
+                        <!--<div class="tags"><span class="time">SINCE 2021</span><span class="tag">CDN</span><span
+                                class="tag">仓库</span></div>-->
+                        <p class="slogan" data-language="“小众的CDN加速服务”"></p>
+                        <!--<p class="slogan">“小众的CDN加速服务”</p>-->
+                        <p data-language="给网站提供文件加速服务，减轻站点服务器压力。"></p>
+                        <!--<p>给网站提供文件加速服务，减轻站点服务器压力。</p>-->
+                        <p data-language="无前端显示界面，仅限于网站链接调用获取所需资源文件。"></p>
+                        <!--<p>无前端显示界面，仅限于网站链接调用获取所需资源文件。</p>-->
                     </div>
                     <div class="footer">
-                        <div class="action-box"><a class="btn" href="https://cdn.kjchmc.cn/">访问网站</a></div>
+                        <div class="action-box"><a class="btn" href="https://cdn.kjchmc.cn/" data-language="访问网站"></a></div>
+                        <!--<div class="action-box"><a class="btn" href="https://cdn.kjchmc.cn/">访问网站</a></div>-->
                     </div>
                 </div>
                 <div class="item">
                     <div class="content">
-                        <h4><span>API主站点</span></h4>
+                        <h4><span data-language="API主站点"></span></h4>
+                        <!--<h4><span>API主站点</span></h4>-->
                         <div class="tags"><span class="time">SINCE 2021</span><span class="tag">API</span><span
                                 class="tag">Tools</span></div>
-                        <p class="slogan">“为网站提供基础工具功能”</p>
-                        <p>API主站点系统涵盖数十种维持网站正常运行的基本工具及资源。</p>
-                        <p>无前端显示页面，仅限于网站链接调用获取所需资源文件。</p>
+                        <p class="slogan" data-language="“为网站提供基础工具功能”"></p>
+                        <!--<p class="slogan">“为网站提供基础工具功能”</p>-->
+                        <p data-language="API主站点系统涵盖数十种维持网站正常运行的基本工具及资源。"></p>
+                        <!--<p>API主站点系统涵盖数十种维持网站正常运行的基本工具及资源。</p>-->
+                        <p data-language="无前端显示页面，仅限于网站链接调用获取所需资源文件。"></p>
+                        <!--<p>无前端显示页面，仅限于网站链接调用获取所需资源文件。</p>-->
                     </div>
                     <div class="footer">
-                        <div class="action-box"><a class="btn" href="https://api.kjchmc.cn/">访问网站</a>
+                        <div class="action-box"><a class="btn" href="https://api.kjchmc.cn/" data-language="访问网站"></a>
+                        <!--<div class="action-box"><a class="btn" href="https://api.kjchmc.cn/">访问网站</a>-->
                         </div>
                     </div>
                 </div>
                 <div class="item">
                     <div class="content">
-                        <h4><span>老k的主页</span></h4>
-                        <div class="tags"><span class="time">SINCE 2019</span><span class="tag">个人网站</span></div>
-                        <p class="slogan">“网络世界上自己的小小一角。”</p>
-                        <p>有一个属于自己的网站很酷，不是吗？</p>
-                        <p>在互联网上有属于自己的小小一角是一件很有意义的事情，我是这么认为的。</p>
+                        <h4><span data-language="老k的主页"></span></h4>
+                        <!--<h4><span>老k的主页</span></h4>-->
+                        <div class="tags"><span class="time">SINCE 2019</span><span class="tag" data-language="个人网站"></span></div>
+                        <!--<div class="tags"><span class="time">SINCE 2019</span><span class="tag">个人网站</span></div>-->
+                        <p class="slogan" data-language="“网络世界上自己的小小一角。”"></p>
+                        <!--<p class="slogan">“网络世界上自己的小小一角。”</p>-->
+                        <p data-language="有一个属于自己的网站很酷，不是吗？"></p>
+                        <!--<p>有一个属于自己的网站很酷，不是吗？</p>-->
+                        <p data-language="在互联网上有属于自己的小小一角是一件很有意义的事情，我是这么认为的。"></p>
+                        <!--<p>在互联网上有属于自己的小小一角是一件很有意义的事情，我是这么认为的。</p>-->
                     </div>
                     <div class="footer">
-                        <div class="action-box"><a class="btn" href="https://kjchmc.cn/">访问网站</a></div>
+                        <div class="action-box"><a class="btn" href="https://kjchmc.cn/" data-language="访问网站"></a></div>
+                        <!--<div class="action-box"><a class="btn" href="https://kjchmc.cn/">访问网站</a></div>-->
                     </div>
                 </div>
             </div>
@@ -235,30 +321,41 @@
                 </div>
             </div>-->
 
-            <h2 class="title">Gadgets <span>小玩意和开源工具</span>
+            <h2 class="title">Gadgets <span data-language="小玩意和开源工具"></span>
+            <!--<h2 class="title">Gadgets <span>小玩意和开源工具</span>-->
                 <div class="title-links"><a class="btn" href="https://github.com/1834423612/">Github</a></div>
             </h2>
             <div class="type">
                 <div class="item">
                     <div class="content">
                         <h4><span class="emoji">💻</span><span>MAKESOME.COOL</span></h4>
-                        <div class="tags"><span class="time">2022.11.11</span><span class="tag">免费域名</span><span
-                                class="tag">开源</span></div>
-                        <p class="slogan">“为你有趣的开源项目提供免费子域名”</p>
-                        <p>有一个酷酷的域名难道不是一个很有趣的事情吗?</p>
-                        <p>正如域名表达的内容一样，快来加入一起 “Make Some Cool” 吧！</p>                        
+                        <div class="tags"><span class="time">2022.11.11</span><span class="tag" data-language="免费域名"></span><span
+                                class="tag" data-language="开源"></span></div>
+                        <!--<div class="tags"><span class="time">2022.11.11</span><span class="tag">免费域名</span><span
+                                class="tag">开源</span></div>-->
+                        <p class="slogan" data-language="“为你有趣的开源项目提供免费子域名”"></p>
+                        <!--<p class="slogan">“为你有趣的开源项目提供免费子域名”</p>-->
+                        <p data-language="有一个酷酷的域名难道不是一个很有趣的事情吗?"></p>
+                        <!--<p>有一个酷酷的域名难道不是一个很有趣的事情吗?</p>-->
+                        <p data-language="正如域名表达的内容一样，快来加入一起 “Make Some Cool” 吧！"></p>
+                        <!--<p>正如域名表达的内容一样，快来加入一起 “Make Some Cool” 吧！</p>-->                        
                     </div>
                     <div class="footer">
                         <div class="action-box"><a class="btn"
-                                href="https://github.com/1834423612/makesome.cool">前往Github仓库</a></div>
+                                href="https://github.com/1834423612/makesome.cool" data-language="前往Github仓库"></a></div>
+                        <!--<div class="action-box"><a class="btn"
+                                href="https://github.com/1834423612/makesome.cool">前往Github仓库</a></div>-->
                     </div>
                 </div>
                 <div class="item">
                     <div class="content">
                         <h4><span class="emoji">🛠</span><span>Moe-Counter PHP+Mysql</span></h4>
-                        <div class="tags"><span class="time">2022</span><span class="tag">访客计数器</span></div>
-                        <p class="slogan">“记录网站访客数并实时显示”</p>
-                        <p>根据JS版修改并再创作而来。</p>
+                        <div class="tags"><span class="time">2022</span><span class="tag" data-language="访客计数器"></span></div>
+                        <!--<div class="tags"><span class="time">2022</span><span class="tag">访客计数器</span></div>-->
+                        <p class="slogan" data-language="“记录网站访客数并实时显示”"></p>
+                        <!--<p class="slogan">“记录网站访客数并实时显示”</p>-->
+                        <p data-language="根据JS版修改并再创作而来。"></p>
+                        <!--<p>根据JS版修改并再创作而来。</p>-->
                     </div>
                     <div class="footer">
                         <div class="action-box"><a class="btn" href="https://github.com/1834423612/Moe-Counter-PHP">Github</a>
@@ -267,21 +364,28 @@
                 </div>
                 <div class="item">
                     <div class="content">
-                        <h4><span class="emoji">💡</span><span>随机二次元图片</span></h4>
+                        <h4><span class="emoji">💡</span><span data-language="随机二次元图片"></span></h4>
+                        <!--<h4><span class="emoji">💡</span><span>随机二次元图片</span></h4>-->
                         <div class="tags"><span class="time">2022</span><span class="tag">API</span><span
-                                class="tag">壁纸</span></div>
-                        <p class="slogan">“随机展示一张二次元壁纸，可用作网站壁纸。”</p>
+                                class="tag" data-language="壁纸"></span></div>
+                        <!--<div class="tags"><span class="time">2022</span><span class="tag">API</span><span
+                                class="tag">壁纸</span></div>-->
+                        <p class="slogan" data-language="“随机展示一张二次元壁纸，可用作网站壁纸。”"></p>
+                        <!--<p class="slogan">“随机展示一张二次元壁纸，可用作网站壁纸。”</p>-->
                         <p> </p>
                     </div>
                     <div class="footer">
-                        <div class="action-box"><a class="btn" href="https://api.kjchmc.cn/2ciyuan">访问</a></div>
+                        <div class="action-box"><a class="btn" href="https://api.kjchmc.cn/2ciyuan" data-language="访问"></a></div>
+                        <!--<div class="action-box"><a class="btn" href="https://api.kjchmc.cn/2ciyuan">访问</a></div>-->
                     </div>
                 </div>
                 <div class="item">
                     <div class="content">
-                        <h4><span class="emoji">💡</span><span>IP签名墙</span></h4>
+                        <h4><span class="emoji">💡</span><span data-language="IP签名墙"></span></h4>
+                        <!--<h4><span class="emoji">💡</span><span>IP签名墙</span></h4>-->
                         <div class="tags"><span class="time">2022</span><span class="tag">API</span></div>
-                        <p class="slogan">“快速生成一张带有浏览器、时间、访问IP信息的一张小图片”</p>
+                        <p class="slogan" data-language="“快速生成一张带有浏览器、时间、访问IP信息的一张小图片”"></p>
+                        <!--<p class="slogan">“快速生成一张带有浏览器、时间、访问IP信息的一张小图片”</p>-->
                     </div>
                     <div class="footer">
                         <div class="action-box"><a class="btn" href="https://api.kjchmc.cn/ipqianming">Github</a>
@@ -316,11 +420,11 @@
     </div>
 
     <!-- 引入一键翻译配置 -->
-    <script src="https://cdn.kjchmc.cn/translate/translate.js"></script>
+    <!--<script src="https://cdn.kjchmc.cn/translate/translate.js"></script>
     <script>
         translate.includedLanguages = 'zh-CN,zh-TW,en,ja,ar';  //注意要放到 translate.execute(); 上面
         translate.execute();  //进行翻译
-    </script>
+    </script>-->
     
     <style>
         .translateSelectLanguage {
@@ -328,7 +432,23 @@
             top: 2%;
             right: 2%;
         }
+        select {
+            position: absolute;
+            top: 2%;
+            right: 2%;
+        }
     </style>
+
+    <script type="text/javascript" charset="utf-8">
+        var lang;
+        $(function () {
+            lang = $("[data-language]").localize('testLanguage', 'zh_CN');
+
+        });
+        function select() {
+            lang = $("[data-language]").localize('testLanguage', list.value)
+        }
+    </script>
 
 </body>
 </html>
