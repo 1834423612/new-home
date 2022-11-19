@@ -16,18 +16,6 @@ body {
     overflow-x: hidden;
 }
 
-.kjch {
-    position: relative;
-    top: -1rem;
-    right: 1%;
-    font-size: xx-small;
-}
-
-.First-red {
-    color: red;
-    font-weight: bold;
-}
-
 ::selection {
     background: rgba(255, 255, 255, .08);
 }
