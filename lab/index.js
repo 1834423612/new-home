@@ -1,4 +1,4 @@
-var testLanguage = {
+var Language = {
   "en": {
     "老况的实验室": "Jiacheng's Laboratory",
     "Made by kjch™": "Made by kjch",
@@ -75,7 +75,7 @@ var testLanguage = {
     "IP签名墙": "IP Signature Images",
     "“快速生成一张带有浏览器、时间、访问IP信息的一张小图片”": "“Quickly generate a small picture with your browser, time and access IP information”"
   },
-  "zh_CN": {
+  "zhCN": {
     "老况的实验室": "老况的实验室",
     "Made by kjch™": "Made by kjch™",
     "kjch的": "kjch的",
