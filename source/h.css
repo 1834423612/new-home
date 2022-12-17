@@ -1656,3 +1656,29 @@ ul.skill li .progress div {
         }
     }
 }
+
+
+
+.tea-icon-status {
+    background-image: url(https://cloudcache.tencentcs.cn/qcloud/ui/dnspod/build/console/tea-style/dist/css/images/sprite.tea-202211011533.svg);
+    background-position: 81.66666666666667% 75.9493670886076%;
+    background-size: 2100% auto
+}
+
+.tea-icon-status--err {
+    background-image: url(https://cloudcache.tencentcs.cn/qcloud/ui/dnspod/build/console/tea-style/dist/css/images/sprite.tea-202211011533.svg);
+    background-position: 0% 82.27848101265823%;
+    background-size: 2100% auto
+}
+
+.tea-icon-status--stop {
+    background-image: url(https://cloudcache.tencentcs.cn/qcloud/ui/dnspod/build/console/tea-style/dist/css/images/sprite.tea-202211011533.svg);
+    background-position: 10% 82.27848101265823%;
+    background-size: 2100% auto
+}
+
+.tea-icon-status--prohibit {
+    background-image: url(https://cloudcache.tencentcs.cn/qcloud/ui/dnspod/build/console/tea-style/dist/css/images/sprite.tea-202211011533.svg);
+    background-position: 5% 82.27848101265823%;
+    background-size: 2100% auto
+}
