@@ -4,6 +4,38 @@
     transition-timing-function: cubic-bezier(.19, 1, .22, 1);
 }
 
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #797e8233; /*rgba(73, 177, 245, 0.2)*/
+    border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #5dacff; /*#49b1f5*/
+    /* 滚动条花纹 */
+    /*background-image: -webkit-linear-gradient(45deg,
+            rgba(255, 255, 255, 0.4) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0.4) 75%,
+            transparent 75%,
+            transparent);*/
+    /* 圆角 */
+    border-radius: 2em;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+
 body {
     font-family: Helvetica, Tahoma, Arial, "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
     ;
