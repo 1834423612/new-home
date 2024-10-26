@@ -11,6 +11,11 @@
         "interest": "如果对我感兴趣，可以点击这里Roll一个关于我的标签，可以在下方的社交媒体关注我，也欢迎发邮件、微信或QQ找我聊聊(。・∀・)ノ",
         "hope": "希望能与你在比特之海的繁星之下相见！"
     },
+    "rollTags": {
+        "title": "点击我有惊喜！✨",
+        "button": "滚动标签",
+        "defaultTag": "点击滚动！"
+    },
     "skills": {
         "title": "我的技能"
     },
@@ -22,31 +27,51 @@
             "title": "ZDSchool Project",
             "description": "为Minecraft学校建筑制作的一个网站，用于展示三班同学的建筑成果。",
             "details": "一个简洁的站点，展示了用Minecraft还原出一个忠德学校。本项目目前仍在进行中，将延续给下届同学，也是一个情感的延续。",
-            "tags": ["Website", "毕业设计"]
+            "tags": [
+                "Website",
+                "毕业设计"
+            ]
         },
         "graduationVideo": {
             "title": "2022届初三毕业生毕业回忆视频",
             "description": "毕业时留给同学们最后的礼物",
             "details": "个人认为本视频制作过于仓促，许多原先计划的内容都没有加入，有些令人遗憾。在短时间内历经多次改版制作、挑选照片，最终呈现给所有初三毕业生。2019-2022 一段美好的初中时光......",
-            "tags": ["Video", "毕业纪念"]
+            "tags": [
+                "Video",
+                "毕业纪念"
+            ]
         },
         "zdSchoolMinecraft": {
             "title": "ZDSchool on Minecraft",
             "description": "2022届的几个毕业生组成的团体，共同在Minecraft中还原了忠德学校。",
             "details": "正在进行中的项目，第一次在MC里建成如此大规模的建筑，也完成了我们用MC还原学校的梦想。地图中部分建筑仍处于建筑当中，目前更新进度极慢。(暂无更新计划了...)",
-            "tags": ["Minecraft", "毕业设计"]
+            "tags": [
+                "Minecraft",
+                "毕业设计"
+            ]
         },
         "frcStrategyCharts": {
             "title": "FRC Robotics Strategy Charts",
             "description": "为机器人团队设计制作的策略查询图表",
             "details": "便于团队迅速决策。任意选择队伍即可横向比较详情。注重应用领域，忘记美化页面了 (尴尬)。点击预览网页版 (页面有点丑)",
-            "tags": ["FRC", "Robotics", "Team 695", "Beachwood High School"]
+            "tags": [
+                "FRC",
+                "Robotics",
+                "Team 695",
+                "Beachwood High School"
+            ]
         },
         "frcWebsite": {
             "title": "FRC Team 695 Bison Robotics · Official Website",
             "description": "为学校机器人校队设计制作的官方网站",
             "details": "学校机器人队终于有官网了。几乎是一个人撑起了整个团队网站的前后端设计和开发。改了4-5版方案了，页面依旧还是看起来有点丑 (不是)。本项目在Github开源。",
-            "tags": ["FRC", "Official Website", "Robotics", "Team 695", "Beachwood High School"]
+            "tags": [
+                "FRC",
+                "Official Website",
+                "Robotics",
+                "Team 695",
+                "Beachwood High School"
+            ]
         }
     },
     "footer": {

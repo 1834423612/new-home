@@ -1,54 +1,72 @@
 [
     {
-        "id": "project1",
-        "title": "Neko Cafe ☕",
-        "description": "A cute online ordering system for a cat-themed cafe",
-        "image": "https://placehold.co/600x400/FFB6C1/FFF?text=Neko+Cafe",
+        "id": "zdSchool",
+        "title": "ZDSchool Project",
+        "description": "A website for showcasing the architectural achievements of Class 3 students in Minecraft.",
+        "details": "A simple site showcasing the recreation of Zhongde School in Minecraft. This project is still ongoing and will be continued by the next batch of students, serving as an emotional continuation.",
+        "image": "https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/img/website.png",
         "tags": [
-            "Vue.js",
-            "Node.js",
-            "MongoDB"
+            "Website",
+            "Graduation Project"
         ],
-        "link": "https://neko-cafe.example.com",
-        "date": "2024-03-15"
+        "link": "https://zd.kjchmc.cn",
+        "date": "2022-07"
     },
     {
-        "id": "project2",
-        "title": "Pixel Pals 👾",
-        "description": "A virtual pet game with adorable pixel art characters",
-        "image": "https://placehold.co/600x400/98FB98/000?text=Pixel+Pals",
+        "id": "graduationVideo",
+        "title": "2022 Junior High Graduation Video",
+        "description": "A final gift for classmates at graduation",
+        "details": "I personally think this video was made too hastily, and many planned contents were not included, which is a bit regrettable. After multiple revisions and photo selections in a short period, it was finally presented to all junior high graduates. 2019-2022, a wonderful junior high school time...",
+        "image": "https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/img/poster.png",
         "tags": [
-            "React",
-            "Canvas API",
-            "Firebase"
+            "Video",
+            "Graduation Memorial"
         ],
-        "link": "https://pixel-pals.example.com",
-        "date": "2024-02-28"
+        "link": "https://zd.kjchmc.cn/video.html",
+        "date": "2022-07-01"
     },
     {
-        "id": "project3",
-        "title": "Kawaii Kanban 📋",
-        "description": "A task management app with a sweet and colorful interface",
-        "image": "https://placehold.co/600x400/FFA07A/000?text=Kawaii+Kanban",
+        "id": "zdSchoolMinecraft",
+        "title": "ZDSchool on Minecraft",
+        "description": "A group of 2022 graduates recreated Zhongde School in Minecraft.",
+        "details": "An ongoing project, the first time building such a large-scale structure in Minecraft, fulfilling our dream of recreating the school in Minecraft. Some buildings in the map are still under construction, and the update progress is very slow. (No update plans for now...)",
+        "image": "https://cdn.jsdelivr.net/gh/1834423612/new-home@master/source/img/mc.png",
         "tags": [
-            "Vue.js",
-            "Vuex",
-            "Express.js"
+            "Minecraft",
+            "Graduation Project"
         ],
-        "link": "https://kawaii-kanban.example.com",
-        "date": "2024-01-10"
+        "link": "http://mc.kjchmc.cn:8123",
+        "date": "2022-06-25"
     },
     {
-        "id": "project4",
-        "title": "Anime Watchlist 📺",
-        "description": "Keep track of your favorite anime series and episodes",
-        "image": "https://placehold.co/600x400/87CEFA/000?text=Anime+Watchlist",
+        "id": "frcStrategyCharts",
+        "title": "FRC Robotics Strategy Charts",
+        "description": "Strategy query charts designed for the robotics team",
+        "details": "Facilitates quick decision-making for the team. Allows horizontal comparison of details by selecting any team. Focused on application, forgot to beautify the page (awkward). Click to preview the web version (the page is a bit ugly)",
+        "image": "/source/img/Robotics-Strategy-Charts.png",
         "tags": [
-            "React",
-            "GraphQL",
-            "Node.js"
+            "FRC",
+            "Robotics",
+            "Team 695",
+            "Beachwood High School"
         ],
-        "link": "https://anime-watchlist.example.com",
-        "date": "2023-12-05"
+        "link": "https://scoutify-test.vercel.app",
+        "date": "2023-12"
+    },
+    {
+        "id": "frcWebsite",
+        "title": "FRC Team 695 Bison Robotics · Official Website",
+        "description": "Official website designed for the school's robotics team",
+        "details": "The school robotics team finally has an official website. Almost single-handedly supported the entire team's website front-end and back-end design and development. Revised 4-5 versions of the plan, the page still looks a bit ugly (not really). This project is open source on Github.",
+        "image": "/source/img/Team-695-Official-Website.png",
+        "tags": [
+            "FRC",
+            "Official Website",
+            "Robotics",
+            "Team 695",
+            "Beachwood High School"
+        ],
+        "link": "https://www.frc695.com/?from=www.kjchmc.cn/lab",
+        "date": "2024-07"
     }
 ]

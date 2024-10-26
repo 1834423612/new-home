@@ -11,6 +11,11 @@
         "interest": "If you're interested in me, you can click here to roll a tag about me. You can also follow me on social media below, or feel free to contact me via email, WeChat, or QQ (。・∀・)ノ",
         "hope": "I hope to meet you under the stars of the bit sea!"
     },
+    "rollTags": {
+        "title": "Click me for a surprise! ✨",
+        "button": "Roll Tags",
+        "defaultTag": "Click to roll!"
+    },
     "skills": {
         "title": "My Skills"
     },
@@ -22,31 +27,51 @@
             "title": "ZDSchool Project",
             "description": "A website for showcasing the architectural achievements of Class 3 students in Minecraft.",
             "details": "A simple site showcasing the recreation of Zhongde School in Minecraft. This project is still ongoing and will be continued by the next batch of students, serving as an emotional continuation.",
-            "tags": ["Website", "Graduation Project"]
+            "tags": [
+                "Website",
+                "Graduation Project"
+            ]
         },
         "graduationVideo": {
             "title": "2022 Junior High Graduation Video",
             "description": "A final gift for classmates at graduation",
             "details": "I personally think this video was made too hastily, and many planned contents were not included, which is a bit regrettable. After multiple revisions and photo selections in a short period, it was finally presented to all junior high graduates. 2019-2022, a wonderful junior high school time...",
-            "tags": ["Video", "Graduation Memorial"]
+            "tags": [
+                "Video",
+                "Graduation Memorial"
+            ]
         },
         "zdSchoolMinecraft": {
             "title": "ZDSchool on Minecraft",
             "description": "A group of 2022 graduates recreated Zhongde School in Minecraft.",
             "details": "An ongoing project, the first time building such a large-scale structure in Minecraft, fulfilling our dream of recreating the school in Minecraft. Some buildings in the map are still under construction, and the update progress is very slow. (No update plans for now...)",
-            "tags": ["Minecraft", "Graduation Project"]
+            "tags": [
+                "Minecraft",
+                "Graduation Project"
+            ]
         },
         "frcStrategyCharts": {
             "title": "FRC Robotics Strategy Charts",
             "description": "Strategy query charts designed for the robotics team",
             "details": "Facilitates quick decision-making for the team. Allows horizontal comparison of details by selecting any team. Focused on application, forgot to beautify the page (awkward). Click to preview the web version (the page is a bit ugly)",
-            "tags": ["FRC", "Robotics", "Team 695", "Beachwood High School"]
+            "tags": [
+                "FRC",
+                "Robotics",
+                "Team 695",
+                "Beachwood High School"
+            ]
         },
         "frcWebsite": {
             "title": "FRC Team 695 Bison Robotics · Official Website",
             "description": "Official website designed for the school's robotics team",
             "details": "The school robotics team finally has an official website. Almost single-handedly supported the entire team's website front-end and back-end design and development. Revised 4-5 versions of the plan, the page still looks a bit ugly (not really). This project is open source on Github.",
-            "tags": ["FRC", "Official Website", "Robotics", "Team 695", "Beachwood High School"]
+            "tags": [
+                "FRC",
+                "Official Website",
+                "Robotics",
+                "Team 695",
+                "Beachwood High School"
+            ]
         }
     },
     "footer": {
