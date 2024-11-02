@@ -13,8 +13,8 @@
     },
     "rollTags": {
         "title": "Click me for a surprise! ✨",
-        "button": "Roll Tags",
-        "defaultTag": "Click to roll!"
+        "button": "Click here to roll tags",
+        "defaultTag": "Click above to start!"
     },
     "skills": {
         "title": "My Skills"
@@ -26,7 +26,7 @@
         "zdSchool": {
             "title": "ZDSchool Project",
             "description": "A website for showcasing the architectural achievements of Class 3 students in Minecraft.",
-            "details": "A simple site showcasing the recreation of Zhongde School in Minecraft. This project is still ongoing and will be continued by the next batch of students, serving as an emotional continuation.",
+            "details": "A simple site showcasing the recreation of ZhongDe School in Minecraft. This project is still ongoing and will be continued by the next batch of students, serving as an emotional continuation.",
             "tags": [
                 "Website",
                 "Graduation Project"
@@ -43,7 +43,7 @@
         },
         "zdSchoolMinecraft": {
             "title": "ZDSchool on Minecraft",
-            "description": "A group of 2022 graduates recreated Zhongde School in Minecraft.",
+            "description": "A group of 2022 graduates recreated ZhongDe School in Minecraft.",
             "details": "An ongoing project, the first time building such a large-scale structure in Minecraft, fulfilling our dream of recreating the school in Minecraft. Some buildings in the map are still under construction, and the update progress is very slow. (No update plans for now...)",
             "tags": [
                 "Minecraft",
@@ -83,6 +83,15 @@
     },
     "socialLinks": {
         "wechatTooltip": "WeChat: kjch666FFF",
-        "qqTooltip": "QQ: 1834423612"
+        "qqTooltip": "QQ: 1834423612",
+        "emailTooltip": "Email: KevinKuang2007@gmail.com",
+        "githubTooltip": "GitHub",
+        "telegramTooltip": "Telegram",
+        "twitterTooltip": "Twitter(X)",
+        "bilibiliTooltip": "Bilibili",
+        "neteaseTooltip": "NetEase Music",
+        "steamTooltip": "Steam",
+        "instagramTooltip": "Instagram",
+        "threadsTooltip": "Threads"
     }
 }

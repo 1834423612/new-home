@@ -13,8 +13,8 @@
     },
     "rollTags": {
         "title": "点击我有惊喜！✨",
-        "button": "滚动标签",
-        "defaultTag": "点击滚动！"
+        "button": "点击此处滚动标签",
+        "defaultTag": "快点击上方开始吧！"
     },
     "skills": {
         "title": "我的技能"
@@ -83,6 +83,15 @@
     },
     "socialLinks": {
         "wechatTooltip": "微信：kjch666FFF",
-        "qqTooltip": "QQ：1834423612"
+        "qqTooltip": "QQ：1834423612",
+        "emailTooltip": "邮箱：KevinKuang2007@gmail.com",
+        "githubTooltip": "Github",
+        "telegramTooltip": "Telegram",
+        "twitterTooltip": "Twitter(X)",
+        "bilibiliTooltip": "哔哩哔哩",
+        "neteaseTooltip": "网易云音乐",
+        "steamTooltip": "Steam",
+        "instagramTooltip": "Instagram",
+        "threadsTooltip": "Threads"
     }
 }

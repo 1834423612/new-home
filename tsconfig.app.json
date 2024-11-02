@@ -27,7 +27,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["vite/client", "vue", "vue-i18n"]
+    "types": ["vite/client", "vue", "vue-i18n", "node"]
   },
   "include": [
     "src/**/*.ts", 

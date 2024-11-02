@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-kawaii-blue-100 text-kawaii-blue-900 font-kawaii flex flex-col justify-between">
+  <div class="min-h-screen bg-kawaii-blue-100 text-kawaii-blue-900 font-cjkFonts_allseto flex flex-col justify-between">
     <header class="py-4 mb-6 px-4">
       <nav class="flex flex-col sm:flex-row justify-between items-center max-w-4xl mx-auto w-full gap-4">
         <img src="https://placehold.co/60x60/12a5ff/FFFFFF?text=Hello" alt="Kawaii Avatar" class="w-12 h-12 rounded-full border-4 border-kawaii-pink-300" />
@@ -43,12 +43,14 @@ const currentRoute = computed(() => route.path)
 
 <style>
 @font-face {
-  font-family: 'Kawaii';
-  src: url('/fonts/kawaii-font.woff2') format('woff2');
+  font-family: 'XiaolaiSC-Regular';
+  src: url('src/assets/fonts/XiaolaiSC-Regular.woff2') format('woff2');
+  /* cjkFonts_allseto_v1.11.woff2 */
 }
 
-.font-kawaii {
-  font-family: 'Kawaii', sans-serif;
+.font-XiaolaiSC-Regular {
+  font-family: 'XiaolaiSC-Regular', sans-serif;
+  /* cjkFonts_allseto */
 }
 
 .fade-enter-active,

@@ -2,7 +2,7 @@
     <div class="bg-white bg-opacity-50 p-4 sm:p-6 rounded-3xl shadow-lg mb-8">
         <h3 class="text-xl font-bold mb-4 text-kawaii-purple-600 sm:text-lg">{{ $t('rollTags.title') }}</h3>
         <button @click="rollTags"
-            class="w-auto px-6 py-3 bg-kawaii-pink-400 text-white rounded-full hover:bg-kawaii-pink-500 transition-all duration-300 mb-6 shadow-md hover:shadow-lg transform hover:scale-105 sm:px-4 sm:py-2 sm:text-sm focus:outline-none focus:ring-2 focus:ring-kawaii-pink-300 focus:ring-opacity-50">
+            class="w-auto px-6 py-3 bg-kawaii-pink-400 text-white rounded-full hover:bg-kawaii-pink-500 transition-all duration-300 mb-4 shadow-md hover:shadow-lg transform hover:scale-105 sm:px-4 sm:py-2 sm:text-sm focus:outline-none focus:ring-2 focus:ring-kawaii-pink-300 focus:ring-opacity-50">
             {{ $t('rollTags.button') }}
         </button>
         <div class="relative h-12 overflow-hidden rounded-full sm:h-10">
