@@ -1,0 +1,51 @@
+# v0 runtime files (should only exist in preview, not in git)
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
+instrumentation-client.js
+instrumentation-client.ts
+
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+dist/
+.vercel/
+.turbo/
+
+# Env files
+.env
+.env.*
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Tests and coverage
+coverage/
+.nyc_output/
+
+# Cache
+.cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Editor/system
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Package manager lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+lerna-lock.yaml
