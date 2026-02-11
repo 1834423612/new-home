@@ -38,15 +38,15 @@ function applyTheme(mode: ThemeMode, color: ThemeColor) {
 }
 
 export function ThemeContextProvider({ children }: { children: ReactNode }) {
-  const [mode, setModeState] = useState<ThemeMode>("dark")
-  const [color, setColorState] = useState<ThemeColor>("gold")
+  const [mode, setModeState] = useState<ThemeMode>("light")
+  const [color, setColorState] = useState<ThemeColor>("blue")
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     const savedMode = localStorage.getItem("kjch-mode") as ThemeMode | null
     const savedColor = localStorage.getItem("kjch-color") as ThemeColor | null
-    const m = savedMode && VALID_MODES.includes(savedMode) ? savedMode : "dark"
-    const c = savedColor && VALID_COLORS.includes(savedColor) ? savedColor : "gold"
+    const m = savedMode && VALID_MODES.includes(savedMode) ? savedMode : "light"
+    const c = savedColor && VALID_COLORS.includes(savedColor) ? savedColor : "blue"
     setModeState(m)
     setColorState(c)
     applyTheme(m, c)

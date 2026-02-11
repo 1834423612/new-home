@@ -43,7 +43,7 @@ export default function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var m=localStorage.getItem('kjch-mode')||'dark';var c=localStorage.getItem('kjch-color')||'gold';document.documentElement.setAttribute('data-mode',m);document.documentElement.setAttribute('data-color',c);}catch(e){}})();`,
+            __html: `(function(){try{var m=localStorage.getItem('kjch-mode')||'light';var c=localStorage.getItem('kjch-color')||'blue';document.documentElement.setAttribute('data-mode',m);document.documentElement.setAttribute('data-color',c);}catch(e){}})();`,
           }}
         />
       </head>
