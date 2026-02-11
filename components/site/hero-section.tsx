@@ -16,12 +16,28 @@ export function HeroSection() {
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 })
   const [hitokoto, setHitokoto] = useState<HitokotoData | null>(null)
   const [hitokotoFading, setHitokotoFading] = useState(false)
+  const [refreshLocked, setRefreshLocked] = useState(false)
   const containerRef = useRef<HTMLElement>(null)
+  const refreshLockRef = useRef(false)
+  const refreshUnlockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const fetchHitokoto = useCallback(async () => {
+    if (refreshLockRef.current) return
+    refreshLockRef.current = true
+    setRefreshLocked(true)
+    if (refreshUnlockTimerRef.current) clearTimeout(refreshUnlockTimerRef.current)
+    refreshUnlockTimerRef.current = setTimeout(() => {
+      refreshLockRef.current = false
+      setRefreshLocked(false)
+    }, 2000)
+
     try {
       setHitokotoFading(true)
-      const res = await fetch("https://international.v1.hitokoto.cn/?c=a&c=b&c=c&c=d&c=k")
+      // Global: https://v1.hitokoto.cn, QPS: 2/s
+      // International: https://international.v1.hitokoto.cn, QPS: 20/s (有2s缓存)
+      // Categories: a=动画, b=漫画, c=游戏, d=文学, e=原创, f=来自网络, g=其他, h=影视, i=诗词, j=网易云, k=哲学, l=抖机灵
+
+      const res = await fetch("https://v1.hitokoto.cn/?c=a&c=c&c=d&c=j&c=k")
       if (res.ok) {
         const data = await res.json()
         setTimeout(() => {
@@ -38,6 +54,12 @@ export function HeroSection() {
     setMounted(true)
     fetchHitokoto()
   }, [fetchHitokoto])
+
+  useEffect(() => {
+    return () => {
+      if (refreshUnlockTimerRef.current) clearTimeout(refreshUnlockTimerRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -121,7 +143,22 @@ export function HeroSection() {
               <span>{dict.hero.tagline}</span>
             )}
           </button>
-          <Icon icon="mdi:refresh" className="mx-auto mt-2 h-3.5 w-3.5 text-muted-foreground/30 transition-colors hover:text-primary cursor-pointer" onClick={fetchHitokoto} />
+          <div className="mt-3 flex justify-center">
+            <button
+              type="button"
+              onClick={fetchHitokoto}
+              disabled={refreshLocked}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
+              title={dict.hero.refreshHitokoto}
+              aria-label={dict.hero.refreshHitokoto}
+            >
+              <Icon
+                icon={refreshLocked ? "mdi:loading" : "mdi:refresh"}
+                className={`h-4 w-4 ${refreshLocked ? "animate-spin" : ""}`}
+              />
+              <span className="whitespace-nowrap">{dict.hero.refreshHitokoto}</span>
+            </button>
+          </div>
         </div>
 
         {/* Subtitle */}
