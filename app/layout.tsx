@@ -35,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="zh" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         <link
           rel="stylesheet"
@@ -43,7 +43,7 @@ export default function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var m=localStorage.getItem('kjch-mode')||'light';var c=localStorage.getItem('kjch-color')||'blue';document.documentElement.setAttribute('data-mode',m);document.documentElement.setAttribute('data-color',c);}catch(e){}})();`,
+            __html: `(function(){try{var l=localStorage.getItem('kjch-locale');var nav=(navigator.language||'').toLowerCase();var loc=(l==='zh'||l==='en')?l:(nav.startsWith('zh')?'zh':'en');document.documentElement.setAttribute('lang',loc);var m=localStorage.getItem('kjch-mode')||'light';var c=localStorage.getItem('kjch-color')||'blue';document.documentElement.setAttribute('data-mode',m);document.documentElement.setAttribute('data-color',c);}catch(e){}})();`,
           }}
         />
       </head>

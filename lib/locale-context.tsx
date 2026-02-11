@@ -13,14 +13,23 @@ interface LocaleContextType {
 const LocaleContext = createContext<LocaleContextType | null>(null)
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("zh")
+  const [locale, setLocaleState] = useState<Locale>("en")
 
   useEffect(() => {
     const saved = localStorage.getItem("kjch-locale") as Locale | null
     if (saved && (saved === "zh" || saved === "en")) {
       setLocaleState(saved)
+      return
     }
+
+    const nav = (navigator.language || navigator.languages?.[0] || "").toLowerCase()
+    const detected: Locale = nav.startsWith("zh") ? "zh" : "en"
+    setLocaleState(detected)
   }, [])
+
+  useEffect(() => {
+    document.documentElement.setAttribute("lang", locale)
+  }, [locale])
 
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l)
