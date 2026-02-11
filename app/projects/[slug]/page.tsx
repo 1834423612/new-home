@@ -28,6 +28,9 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
     )
   }
 
+  const projectDetail = project.detail?.[locale] || ""
+  const projectLinks = (project.links || []) as Array<{ title: { zh: string; en: string }; url: string; icon?: string }>
+
   return (
     <main className="min-h-screen bg-background">
       <GlobalToolbar />
@@ -39,9 +42,17 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
 
         {/* Hero area */}
         <div className="mb-8 overflow-hidden rounded-2xl border border-border bg-secondary">
-          <div className="flex h-64 items-center justify-center">
-            <Icon icon="mdi:folder-open-outline" className="h-20 w-20 text-muted-foreground/15" />
-          </div>
+          {project.image ? (
+            <img
+              src={project.image}
+              alt={project.title[locale]}
+              className="w-full h-64 object-cover"
+            />
+          ) : (
+            <div className="flex h-64 items-center justify-center">
+              <Icon icon="mdi:folder-open-outline" className="h-20 w-20 text-muted-foreground/15" />
+            </div>
+          )}
         </div>
 
         {/* Meta */}
@@ -55,39 +66,66 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
         </div>
 
         <h1 className="mb-2 text-3xl font-bold text-foreground md:text-4xl">{project.title[locale]}</h1>
-        <p className="mb-6 font-mono text-sm text-muted-foreground/60">{project.date}</p>
+        <p className="mb-8 font-mono text-sm text-muted-foreground/60">{project.date}</p>
 
         {/* Description */}
         <div className="mb-8 text-base leading-relaxed text-foreground/80">
-          <p>{project.description[locale]}</p>
-          {project.detail && (
-            <p className="mt-4">{project.detail[locale]}</p>
+          <p className="mb-4">{project.description[locale]}</p>
+          {projectDetail && (
+            <div 
+              className="prose prose-sm dark:prose-invert max-w-none text-foreground/80"
+              dangerouslySetInnerHTML={{ __html: projectDetail }}
+            />
           )}
         </div>
 
-        {/* Action links */}
-        <div className="flex flex-wrap items-center gap-4">
-          {project.link && (
-            <a
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]"
-            >
-              <Icon icon="mdi:open-in-new" className="h-4 w-4" />
-              {dict.projects.viewProject}
-            </a>
-          )}
-          {project.source && (
-            <a
-              href={project.source}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-medium text-foreground transition-all hover:border-primary hover:text-primary"
-            >
-              <Icon icon="mdi:github" className="h-4 w-4" />
-              {dict.projects.viewSource}
-            </a>
+        {/* Action links - Primary & Additional links */}
+        <div className="space-y-6">
+          <div className="flex flex-wrap items-center gap-4">
+            {project.link && (
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]"
+              >
+                <Icon icon="mdi:open-in-new" className="h-4 w-4" />
+                {dict.projects.viewProject}
+              </a>
+            )}
+            {project.source && (
+              <a
+                href={project.source}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-medium text-foreground transition-all hover:border-primary hover:text-primary"
+              >
+                <Icon icon="mdi:github" className="h-4 w-4" />
+                {dict.projects.viewSource}
+              </a>
+            )}
+          </div>
+
+          {/* Additional links */}
+          {projectLinks.length > 0 && (
+            <div className="border-t border-border pt-6">
+              <h2 className="mb-4 text-sm font-bold text-foreground">{dict.projects.relatedLinks}</h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {projectLinks.map((link, idx) => (
+                  <a
+                    key={idx}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-border px-4 py-3 transition-all hover:border-primary hover:bg-primary/5"
+                  >
+                    {link.icon && <Icon icon={link.icon} className="h-4 w-4 flex-shrink-0" />}
+                    <span className="text-sm text-foreground">{link.title[locale]}</span>
+                    <Icon icon="mdi:arrow-top-right" className="ml-auto h-3 w-3 text-muted-foreground" />
+                  </a>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       </div>

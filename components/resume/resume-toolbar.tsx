@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Icon } from "@iconify/react"
+import { useLocale } from "@/lib/locale-context"
 import { LAYOUTS, PALETTES, type LayoutId, type PaletteId } from "@/lib/resume-templates"
 import { cn } from "@/lib/utils"
 
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export function ResumeToolbar({ layout, palette, showIcons, locale, onLayoutChange, onPaletteChange, onToggleIcons, onToggleLocale, onPrint, backHref = "/" }: Props) {
+  const { dict } = useLocale()
   const [showPanel, setShowPanel] = useState(false)
   const currentLayout = LAYOUTS.find((l) => l.id === layout) || LAYOUTS[0]
 
@@ -28,7 +30,7 @@ export function ResumeToolbar({ layout, palette, showIcons, locale, onLayoutChan
       <div className="no-print sticky top-0 z-40 flex items-center justify-between border-b border-border bg-card/90 px-4 py-2 backdrop-blur-md sm:px-6">
         <a href={backHref} className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
           <Icon icon="mdi:arrow-left" className="h-4 w-4" />
-          <span className="font-mono text-xs">{locale === "zh" ? "返回" : "Back"}</span>
+          <span className="font-mono text-xs">{dict.resume.back}</span>
         </a>
         <div className="flex items-center gap-1.5">
           <button onClick={() => setShowPanel(!showPanel)} className={cn("flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-mono transition-colors", showPanel ? "border-primary text-primary" : "border-border text-muted-foreground hover:border-primary hover:text-primary")}>
@@ -36,7 +38,7 @@ export function ResumeToolbar({ layout, palette, showIcons, locale, onLayoutChan
             <span className="hidden sm:inline">{currentLayout.label[locale]}</span>
           </button>
           <button onClick={onToggleLocale} className="rounded-full border border-border px-2.5 py-1.5 text-xs font-mono text-muted-foreground hover:border-primary hover:text-primary transition-colors">
-            {locale === "zh" ? "EN" : "ZH"}
+            {dict.common.langSwitch}
           </button>
           <button onClick={onPrint} className="flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-all hover:opacity-90">
             <Icon icon="mdi:file-pdf-box" className="h-3.5 w-3.5" />
@@ -51,7 +53,7 @@ export function ResumeToolbar({ layout, palette, showIcons, locale, onLayoutChan
           <div className="mx-auto max-w-[800px] space-y-4">
             {/* Layout selector */}
             <div>
-              <p className="mb-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">{locale === "zh" ? "布局模板" : "Layout Template"}</p>
+              <p className="mb-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">{dict.resume.layoutTemplate}</p>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                 {LAYOUTS.map((l) => (
                   <button key={l.id} onClick={() => onLayoutChange(l.id)} className={cn("rounded-lg border p-2.5 text-left transition-all", layout === l.id ? "border-primary ring-1 ring-primary bg-primary/5" : "border-border hover:border-muted-foreground/40")}>
@@ -73,7 +75,7 @@ export function ResumeToolbar({ layout, palette, showIcons, locale, onLayoutChan
             {/* Palette + icon toggle row */}
             <div className="flex flex-wrap items-end gap-6">
               <div>
-                <p className="mb-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">{locale === "zh" ? "配色方案" : "Color Palette"}</p>
+                <p className="mb-2 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">{dict.resume.colorPalette}</p>
                 <div className="flex gap-2">
                   {PALETTES.map((p) => (
                     <button key={p.id} onClick={() => onPaletteChange(p.id)} className={cn("group flex flex-col items-center gap-1 transition-transform", palette === p.id && "scale-110")} title={p.label}>
@@ -85,7 +87,7 @@ export function ResumeToolbar({ layout, palette, showIcons, locale, onLayoutChan
               </div>
               <button onClick={onToggleIcons} className={cn("flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs transition-colors", showIcons ? "border-primary text-primary" : "border-border text-muted-foreground")}>
                 <Icon icon={showIcons ? "mdi:eye-outline" : "mdi:eye-off-outline"} className="h-3.5 w-3.5" />
-                {locale === "zh" ? (showIcons ? "图标: 开" : "图标: 关") : (showIcons ? "Icons: On" : "Icons: Off")}
+                {showIcons ? dict.resume.iconsOn : dict.resume.iconsOff}
               </button>
             </div>
           </div>

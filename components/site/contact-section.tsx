@@ -27,11 +27,11 @@ export function ContactSection() {
 
         {/* Email */}
         <a
-          href="mailto:admin@kjchmc.cn"
+          href={`mailto:${dict.contact.emailAddress}`}
           className="group mb-10 inline-flex items-center gap-3 rounded-xl border border-border bg-card px-6 py-4 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_0_20px_hsl(var(--primary)/0.08)]"
         >
           <Icon icon="mdi:email-outline" className="h-5 w-5 text-primary" />
-          <span className="font-mono text-sm text-foreground">admin@kjchmc.cn</span>
+          <span className="font-mono text-sm text-foreground">{dict.contact.emailAddress}</span>
           <Icon
             icon="mdi:arrow-top-right"
             className="h-4 w-4 text-muted-foreground transition-all group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

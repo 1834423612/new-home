@@ -76,28 +76,28 @@ export function SideNav() {
       ))}
 
       {/* Lang toggle */}
-      <button onClick={toggleLocale} className="mt-4 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300 text-[10px] font-mono font-bold" aria-label="Toggle language">
-        {locale === "zh" ? "EN" : "ZH"}
+      <button onClick={toggleLocale} className="mt-4 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300 text-[10px] font-mono font-bold" aria-label={dict.common.toggleLanguage}>
+        {dict.common.langSwitch}
       </button>
 
       {/* Theme picker */}
       <div className="relative" ref={pickerRef}>
-        <button onClick={() => setThemePicker(!themePicker)} className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300" aria-label="Theme settings">
+        <button onClick={() => setThemePicker(!themePicker)} className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300" aria-label={dict.theme.settings}>
           <Icon icon="mdi:palette-outline" className="h-4 w-4" />
         </button>
         {themePicker && (
           <div className="absolute right-10 top-1/2 -translate-y-1/2 flex flex-col gap-2 rounded-xl border border-border bg-card p-3 shadow-xl min-w-[140px]">
             {/* Mode toggle */}
             <div className="flex items-center justify-between gap-2 pb-2 border-b border-border">
-              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Mode</span>
+              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">{dict.theme.modeLabel}</span>
               <button onClick={toggleMode} className="flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs transition-colors hover:border-primary">
                 <Icon icon={mode === "dark" ? "mdi:weather-night" : "mdi:weather-sunny"} className="h-3.5 w-3.5 text-primary" />
-                <span className="font-mono text-[10px] text-foreground">{mode === "dark" ? "Dark" : "Light"}</span>
+                <span className="font-mono text-[10px] text-foreground">{mode === "dark" ? dict.theme.dark : dict.theme.light}</span>
               </button>
             </div>
             {/* Color swatches */}
             <div>
-              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider mb-1.5 block">Color</span>
+              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider mb-1.5 block">{dict.theme.colorLabel}</span>
               <div className="flex items-center gap-1.5">
                 {colorOptions.map((opt) => (
                   <button
@@ -108,8 +108,8 @@ export function SideNav() {
                       color === opt.id ? "border-foreground scale-110" : "border-transparent"
                     )}
                     style={{ backgroundColor: opt.swatch }}
-                    title={opt.label}
-                    aria-label={opt.label}
+                    title={dict.theme.colors[opt.id as keyof typeof dict.theme.colors] || opt.label}
+                    aria-label={dict.theme.colors[opt.id as keyof typeof dict.theme.colors] || opt.label}
                   >
                     {color === opt.id && <Icon icon="mdi:check" className="h-3.5 w-3.5 text-white" />}
                   </button>

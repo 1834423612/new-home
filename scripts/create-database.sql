@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
   `description_en` TEXT,
   `detail_zh` TEXT,
   `detail_en` TEXT,
+  `links_json` JSON,
   `category` VARCHAR(50) NOT NULL DEFAULT 'website',
   `tags` JSON,
   `image` VARCHAR(1000),
@@ -28,7 +29,9 @@ CREATE TABLE IF NOT EXISTS `projects` (
   `sort_order` INT DEFAULT 0,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_projects_slug` (`slug`),
+  KEY `idx_projects_featured` (`featured`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `experiences` (

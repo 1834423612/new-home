@@ -31,29 +31,29 @@ export function AboutSection() {
             <div className="rounded-xl border border-border bg-card p-6">
               <div className="mb-4 flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                  <span className="font-mono text-lg font-bold">K</span>
+                  <span className="font-mono text-lg font-bold">{dict.hero.alias.charAt(0).toUpperCase()}</span>
                 </div>
                 <div>
-                  <p className="font-bold text-foreground">{locale === "zh" ? "况佳城" : "Kuang Jiacheng"}</p>
-                  <p className="font-mono text-xs text-muted-foreground">@kjch</p>
+                  <p className="font-bold text-foreground">{dict.hero.name}</p>
+                  <p className="font-mono text-xs text-muted-foreground">@{dict.hero.alias}</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2.5 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Icon icon="mdi:map-marker-outline" className="h-4 w-4 text-primary" />
-                  <span>Ohio, USA</span>
+                  <span>{dict.about.profile.location}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon icon="mdi:school-outline" className="h-4 w-4 text-primary" />
-                  <span>Beachwood High School</span>
+                  <span>{dict.about.profile.school}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon icon="mdi:email-outline" className="h-4 w-4 text-primary" />
-                  <span className="font-mono text-xs">admin@kjchmc.cn</span>
+                  <span className="font-mono text-xs">{dict.about.profile.email}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon icon="mdi:web" className="h-4 w-4 text-primary" />
-                  <span className="font-mono text-xs">www.kjchmc.cn</span>
+                  <span className="font-mono text-xs">{dict.about.profile.website}</span>
                 </div>
               </div>
 
@@ -106,7 +106,7 @@ export function AboutSection() {
               className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5 text-xs font-mono text-secondary-foreground transition-colors hover:border-primary"
             >
               <Icon icon="mdi:link-variant" className="h-3.5 w-3.5" />
-              makesome.cool
+              {dict.about.profile.badge}
             </a>
           </div>
         </div>

@@ -1,11 +1,18 @@
 // Static data for the site - will be replaced by DB data when admin is set up
 
+export interface ProjectLink {
+  title: { zh: string; en: string }
+  url: string
+  icon?: string
+}
+
 export interface Project {
   id: string
   slug: string
   title: { zh: string; en: string }
   description: { zh: string; en: string }
   detail?: { zh: string; en: string }
+  links?: ProjectLink[]
   category: string
   tags: string[]
   image?: string

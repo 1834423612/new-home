@@ -19,23 +19,23 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const {
       id, slug, title_zh, title_en, description_zh, description_en,
-      detail_zh, detail_en,
+      detail_zh, detail_en, links_json,
       category, tags, image, link, source, date, featured, sort_order,
     } = body
 
     await query(
-      `INSERT INTO projects (id, slug, title_zh, title_en, description_zh, description_en, detail_zh, detail_en, category, tags, image, link, source, date, featured, sort_order)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `INSERT INTO projects (id, slug, title_zh, title_en, description_zh, description_en, detail_zh, detail_en, links_json, category, tags, image, link, source, date, featured, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE
        slug=VALUES(slug), title_zh=VALUES(title_zh), title_en=VALUES(title_en),
        description_zh=VALUES(description_zh), description_en=VALUES(description_en),
-       detail_zh=VALUES(detail_zh), detail_en=VALUES(detail_en),
+       detail_zh=VALUES(detail_zh), detail_en=VALUES(detail_en), links_json=VALUES(links_json),
        category=VALUES(category), tags=VALUES(tags), image=VALUES(image),
        link=VALUES(link), source=VALUES(source), date=VALUES(date),
        featured=VALUES(featured), sort_order=VALUES(sort_order)`,
       [
         id, slug || id, title_zh, title_en, description_zh || "", description_en || "",
-        detail_zh || "", detail_en || "",
+        detail_zh || "", detail_en || "", links_json || "[]",
         category || "website", JSON.stringify(tags || []), image || null,
         link || null, source || null, date || "", featured ? 1 : 0, sort_order || 0,
       ]
@@ -60,3 +60,4 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Failed to delete project" }, { status: 500 })
   }
 }
+

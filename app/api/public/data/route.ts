@@ -24,10 +24,17 @@ export async function GET() {
       return []
     }
 
-    const parseLinks = (t: unknown): { title: string; url: string }[] => {
+    const parseLinks = (t: unknown): { title: { zh: string; en: string }; url: string; icon?: string }[] => {
       if (!t) return []
       if (Array.isArray(t)) return t
-      if (typeof t === "string") { try { return JSON.parse(t) } catch { return [] } }
+      if (typeof t === "string") { 
+        try { 
+          const parsed = JSON.parse(t)
+          return Array.isArray(parsed) ? parsed : []
+        } catch { 
+          return [] 
+        } 
+      }
       return []
     }
 
@@ -36,6 +43,7 @@ export async function GET() {
       title: { zh: r.title_zh, en: r.title_en },
       description: { zh: r.description_zh || "", en: r.description_en || "" },
       detail: { zh: r.detail_zh || "", en: r.detail_en || "" },
+      links: parseLinks(r.links_json),
       category: r.category || "website", tags: parseTags(r.tags),
       image: r.image || undefined, link: r.link || undefined,
       source: r.source || undefined, date: r.date || "",

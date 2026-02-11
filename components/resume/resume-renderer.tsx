@@ -13,6 +13,30 @@ interface Props {
   showIcons: boolean
 }
 
+// Localized labels for resume sections
+const labels = {
+  zh: {
+    personalSummary: "个人简介",
+    education: "教育经历",
+    experience: "工作经验",
+    projects: "项目经历",
+    skills: "技能",
+    present: "至今",
+    timelineTitle: "经历时间线",
+    now: "现在",
+  },
+  en: {
+    personalSummary: "Summary",
+    education: "Education",
+    experience: "Experience",
+    projects: "Projects",
+    skills: "Skills",
+    present: "Present",
+    timelineTitle: "Experience Timeline",
+    now: "Now",
+  },
+}
+
 function SectionTitle({ children, palette, icon, showIcons }: { children: React.ReactNode; palette: PaletteOption; icon?: string; showIcons: boolean }) {
   return (
     <h2 className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest" style={{ color: palette.accent }}>
@@ -66,7 +90,7 @@ function ClassicLayout({ data, palette, locale, showIcons }: Omit<Props, "layout
       {/* Summary */}
       <section className="mb-5">
         <SectionTitle palette={palette} icon="mdi:account-outline" showIcons={showIcons}>
-          {l === "zh" ? "个人简介" : "Summary"}
+          {labels[l].personalSummary}
         </SectionTitle>
         <p className="text-xs leading-relaxed" style={{ color: palette.muted }}>{data.summary[l]}</p>
       </section>
@@ -74,7 +98,7 @@ function ClassicLayout({ data, palette, locale, showIcons }: Omit<Props, "layout
       {/* Education */}
       <section className="mb-5">
         <SectionTitle palette={palette} icon="mdi:school-outline" showIcons={showIcons}>
-          {l === "zh" ? "教育经历" : "Education"}
+          {labels[l].education}
         </SectionTitle>
         <div className="flex flex-col gap-2">
           {data.education.map((e, i) => (
@@ -89,7 +113,7 @@ function ClassicLayout({ data, palette, locale, showIcons }: Omit<Props, "layout
       {/* Experience */}
       <section className="mb-5" style={{ pageBreakInside: "avoid" }}>
         <SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>
-          {l === "zh" ? "工作经验" : "Experience"}
+          {labels[l].experience}
         </SectionTitle>
         <div className="flex flex-col gap-3">
           {data.experiences.map((exp, i) => (
@@ -99,7 +123,7 @@ function ClassicLayout({ data, palette, locale, showIcons }: Omit<Props, "layout
                   <p className="text-xs font-bold">{exp.title[l]}</p>
                   <p className="text-[11px]" style={{ color: palette.accent, opacity: 0.8 }}>{exp.org[l]}</p>
                 </div>
-                <span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || (l === "zh" ? "至今" : "Present")}</span>
+                <span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span>
               </div>
               <p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p>
             </div>
@@ -110,7 +134,7 @@ function ClassicLayout({ data, palette, locale, showIcons }: Omit<Props, "layout
       {/* Projects */}
       <section className="mb-5" style={{ pageBreakInside: "avoid" }}>
         <SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>
-          {l === "zh" ? "项目经历" : "Projects"}
+          {labels[l].projects}
         </SectionTitle>
         <div className="grid gap-2.5 sm:grid-cols-2">
           {data.projects.map((p, i) => (
@@ -127,7 +151,7 @@ function ClassicLayout({ data, palette, locale, showIcons }: Omit<Props, "layout
       {/* Skills */}
       <section style={{ pageBreakInside: "avoid" }}>
         <SectionTitle palette={palette} icon="mdi:code-tags" showIcons={showIcons}>
-          {l === "zh" ? "技能" : "Skills"}
+          {labels[l].skills}
         </SectionTitle>
         <div className="grid gap-3 sm:grid-cols-2">
           {data.skillGroups.map((g, i) => (
@@ -157,16 +181,16 @@ function ModernLayout({ data, palette, locale, showIcons }: Omit<Props, "layout"
       </header>
 
       <div className="p-8 sm:p-10">
-        <section className="mb-5"><SectionTitle palette={palette} icon="mdi:account-outline" showIcons={showIcons}>{l === "zh" ? "个人简介" : "Summary"}</SectionTitle><p className="text-xs leading-relaxed" style={{ color: palette.muted }}>{data.summary[l]}</p></section>
+        <section className="mb-5"><SectionTitle palette={palette} icon="mdi:account-outline" showIcons={showIcons}>{labels[l].personalSummary}</SectionTitle><p className="text-xs leading-relaxed" style={{ color: palette.muted }}>{data.summary[l]}</p></section>
 
         <div className="mb-5 grid gap-5 sm:grid-cols-2">
-          <section><SectionTitle palette={palette} icon="mdi:school-outline" showIcons={showIcons}>{l === "zh" ? "教育经历" : "Education"}</SectionTitle><div className="flex flex-col gap-2">{data.education.map((e, i) => <div key={i}><p className="text-xs font-bold">{e.school}</p><p className="text-[11px]" style={{ color: palette.muted }}>{e.detail[l]} &middot; {e.period}</p></div>)}</div></section>
-          <section style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:code-tags" showIcons={showIcons}>{l === "zh" ? "技能" : "Skills"}</SectionTitle><div className="flex flex-col gap-2">{data.skillGroups.map((g, i) => <div key={i}><p className="mb-1 text-[11px] font-bold">{g.label[l]}</p><div className="flex flex-wrap gap-1">{g.items.map((s) => <SkillTag key={s.name} name={s.name} icon={s.icon} palette={palette} showIcons={showIcons} />)}</div></div>)}</div></section>
+          <section><SectionTitle palette={palette} icon="mdi:school-outline" showIcons={showIcons}>{labels[l].education}</SectionTitle><div className="flex flex-col gap-2">{data.education.map((e, i) => <div key={i}><p className="text-xs font-bold">{e.school}</p><p className="text-[11px]" style={{ color: palette.muted }}>{e.detail[l]} &middot; {e.period}</p></div>)}</div></section>
+          <section style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:code-tags" showIcons={showIcons}>{labels[l].skills}</SectionTitle><div className="flex flex-col gap-2">{data.skillGroups.map((g, i) => <div key={i}><p className="mb-1 text-[11px] font-bold">{g.label[l]}</p><div className="flex flex-wrap gap-1">{g.items.map((s) => <SkillTag key={s.name} name={s.name} icon={s.icon} palette={palette} showIcons={showIcons} />)}</div></div>)}</div></section>
         </div>
 
-        <section className="mb-5" style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>{l === "zh" ? "工作经验" : "Experience"}</SectionTitle><div className="flex flex-col gap-3">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><div><p className="text-xs font-bold">{exp.title[l]}</p><p className="text-[11px]" style={{ color: palette.accent, opacity: 0.8 }}>{exp.org[l]}</p></div><span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || (l === "zh" ? "至今" : "Present")}</span></div><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p></div>)}</div></section>
+        <section className="mb-5" style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>{labels[l].experience}</SectionTitle><div className="flex flex-col gap-3">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><div><p className="text-xs font-bold">{exp.title[l]}</p><p className="text-[11px]" style={{ color: palette.accent, opacity: 0.8 }}>{exp.org[l]}</p></div><span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span></div><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p></div>)}</div></section>
 
-        <section style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{l === "zh" ? "项目经历" : "Projects"}</SectionTitle><div className="grid gap-2.5 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p><div className="mt-1.5 flex flex-wrap gap-1">{p.tags.map((t) => <span key={t} className="rounded-full border px-1.5 py-px text-[9px] font-mono" style={{ borderColor: palette.border, color: palette.muted }}>{t}</span>)}</div></div>)}</div></section>
+        <section style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{labels[l].projects}</SectionTitle><div className="grid gap-2.5 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p><div className="mt-1.5 flex flex-wrap gap-1">{p.tags.map((t) => <span key={t} className="rounded-full border px-1.5 py-px text-[9px] font-mono" style={{ borderColor: palette.border, color: palette.muted }}>{t}</span>)}</div></div>)}</div></section>
       </div>
     </div>
   )
@@ -186,17 +210,17 @@ function SidebarLayout({ data, palette, locale, showIcons }: Omit<Props, "layout
           <span>{data.location}</span><span>{data.email}</span><span>{data.website}</span><span>{data.github}</span>
         </div>
         <hr className="my-4 opacity-20" />
-        <p className="mb-1 text-[10px] font-bold uppercase tracking-wider opacity-70">{l === "zh" ? "教育" : "Education"}</p>
+        <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider opacity-70">{labels[l].education}</p>
         {data.education.map((e, i) => <div key={i} className="mb-2"><p className="text-[10px] font-bold leading-tight">{e.school}</p><p className="text-[9px] opacity-70">{e.period}</p></div>)}
         <hr className="my-4 opacity-20" />
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-wider opacity-70">{l === "zh" ? "技能" : "Skills"}</p>
+        <p className="mb-2 text-[10px] font-bold uppercase tracking-wider opacity-70">{labels[l].skills}</p>
         {data.skillGroups.map((g, i) => <div key={i} className="mb-2"><p className="mb-1 text-[9px] font-bold opacity-80">{g.label[l]}</p><div className="flex flex-wrap gap-1">{g.items.map((s) => <span key={s.name} className="rounded px-1.5 py-0.5 text-[8px]" style={{ background: "rgba(255,255,255,0.15)" }}>{s.name}</span>)}</div></div>)}
       </aside>
       {/* Main */}
       <main className="flex-1 p-6 sm:p-8">
-        <section className="mb-5"><SectionTitle palette={palette} icon="mdi:account-outline" showIcons={showIcons}>{l === "zh" ? "个人简介" : "Summary"}</SectionTitle><p className="text-xs leading-relaxed" style={{ color: palette.muted }}>{data.summary[l]}</p></section>
-        <section className="mb-5" style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>{l === "zh" ? "工作经验" : "Experience"}</SectionTitle><div className="flex flex-col gap-3">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><div><p className="text-xs font-bold">{exp.title[l]}</p><p className="text-[11px]" style={{ color: palette.accent, opacity: 0.8 }}>{exp.org[l]}</p></div><span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || (l === "zh" ? "至今" : "Present")}</span></div><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p></div>)}</div></section>
-        <section style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{l === "zh" ? "项目经历" : "Projects"}</SectionTitle><div className="flex flex-col gap-2.5">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p></div><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p></div>)}</div></section>
+        <section className="mb-5"><SectionTitle palette={palette} icon="mdi:account-outline" showIcons={showIcons}>{labels[l].personalSummary}</SectionTitle><p className="text-xs leading-relaxed" style={{ color: palette.muted }}>{data.summary[l]}</p></section>
+        <section className="mb-5" style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>{labels[l].experience}</SectionTitle><div className="flex flex-col gap-3">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><div><p className="text-xs font-bold">{exp.title[l]}</p><p className="text-[11px]" style={{ color: palette.accent, opacity: 0.8 }}>{exp.org[l]}</p></div><span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span></div><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p></div>)}</div></section>
+        <section style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{labels[l].projects}</SectionTitle><div className="flex flex-col gap-2.5">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p></div><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p></div>)}</div></section>
       </main>
     </div>
   )
@@ -217,16 +241,16 @@ function CompactLayout({ data, palette, locale, showIcons }: Omit<Props, "layout
       <hr className="mb-4" style={{ borderColor: palette.border }} />
 
       <div className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
-        <section><SectionTitle palette={palette} icon="mdi:account-outline" showIcons={showIcons}>{l === "zh" ? "简介" : "Summary"}</SectionTitle><p className="text-[11px] leading-relaxed" style={{ color: palette.muted }}>{data.summary[l]}</p></section>
-        <section><SectionTitle palette={palette} icon="mdi:school-outline" showIcons={showIcons}>{l === "zh" ? "教育" : "Education"}</SectionTitle>{data.education.map((e, i) => <div key={i} className="mb-1"><p className="text-[11px] font-bold">{e.school}</p><p className="text-[10px]" style={{ color: palette.muted }}>{e.detail[l]} &middot; {e.period}</p></div>)}</section>
+        <section><SectionTitle palette={palette} icon="mdi:account-outline" showIcons={showIcons}>{labels[l].personalSummary}</SectionTitle><p className="text-[11px] leading-relaxed" style={{ color: palette.muted }}>{data.summary[l]}</p></section>
+        <section><SectionTitle palette={palette} icon="mdi:school-outline" showIcons={showIcons}>{labels[l].education}</SectionTitle>{data.education.map((e, i) => <div key={i} className="mb-1"><p className="text-[11px] font-bold">{e.school}</p><p className="text-[10px]" style={{ color: palette.muted }}>{e.detail[l]} &middot; {e.period}</p></div>)}</section>
       </div>
       <hr className="my-4" style={{ borderColor: palette.border }} />
 
-      <section className="mb-4" style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>{l === "zh" ? "经验" : "Experience"}</SectionTitle><div className="flex flex-col gap-2">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between gap-2"><div><p className="text-[11px] font-bold">{exp.title[l]}<span className="font-normal" style={{ color: palette.accent }}> @ {exp.org[l]}</span></p></div><span className="whitespace-nowrap text-[10px] font-mono" style={{ color: palette.muted }}>{exp.startDate}-{exp.endDate || (l === "zh" ? "至今" : "Now")}</span></div><p className="text-[10px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p></div>)}</div></section>
+      <section className="mb-4" style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>{labels[l].experience}</SectionTitle><div className="flex flex-col gap-2">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between gap-2"><div><p className="text-[11px] font-bold">{exp.title[l]}<span className="font-normal" style={{ color: palette.accent }}> @ {exp.org[l]}</span></p></div><span className="whitespace-nowrap text-[10px] font-mono" style={{ color: palette.muted }}>{exp.startDate}-{exp.endDate || labels[l].now}</span></div><p className="text-[10px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p></div>)}</div></section>
 
-      <section className="mb-4" style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{l === "zh" ? "项目" : "Projects"}</SectionTitle><div className="grid gap-2 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded border p-2" style={{ borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-[11px] font-bold">{p.title[l]} <span className="font-mono font-normal text-[9px]" style={{ color: palette.muted }}>{p.date}</span></p><p className="text-[10px]" style={{ color: palette.muted }}>{p.description[l]}</p></div>)}</div></section>
+      <section className="mb-4" style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{labels[l].projects}</SectionTitle><div className="grid gap-2 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded border p-2" style={{ borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-[11px] font-bold">{p.title[l]} <span className="font-mono font-normal text-[9px]" style={{ color: palette.muted }}>{p.date}</span></p><p className="text-[10px]" style={{ color: palette.muted }}>{p.description[l]}</p></div>)}</div></section>
 
-      <section style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:code-tags" showIcons={showIcons}>{l === "zh" ? "技能" : "Skills"}</SectionTitle><div className="grid gap-2 sm:grid-cols-2">{data.skillGroups.map((g, i) => <div key={i}><p className="mb-0.5 text-[10px] font-bold">{g.label[l]}</p><div className="flex flex-wrap gap-1">{g.items.map((s) => <SkillTag key={s.name} name={s.name} icon={s.icon} palette={palette} showIcons={showIcons} />)}</div></div>)}</div></section>
+      <section style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:code-tags" showIcons={showIcons}>{labels[l].skills}</SectionTitle><div className="grid gap-2 sm:grid-cols-2">{data.skillGroups.map((g, i) => <div key={i}><p className="mb-0.5 text-[10px] font-bold">{g.label[l]}</p><div className="flex flex-wrap gap-1">{g.items.map((s) => <SkillTag key={s.name} name={s.name} icon={s.icon} palette={palette} showIcons={showIcons} />)}</div></div>)}</div></section>
     </div>
   )
 }
@@ -242,11 +266,11 @@ function TimelineLayout({ data, palette, locale, showIcons }: Omit<Props, "layou
         <div className="mt-2 flex flex-wrap gap-x-4 text-[11px]" style={{ color: palette.muted }}><span>{data.location}</span><span>{data.email}</span><span>{data.website}</span><span>{data.github}</span></div>
       </header>
 
-      <section className="mb-5"><SectionTitle palette={palette} icon="mdi:account-outline" showIcons={showIcons}>{l === "zh" ? "个人简介" : "Summary"}</SectionTitle><p className="text-xs leading-relaxed" style={{ color: palette.muted }}>{data.summary[l]}</p></section>
+      <section className="mb-5"><SectionTitle palette={palette} icon="mdi:account-outline" showIcons={showIcons}>{labels[l].personalSummary}</SectionTitle><p className="text-xs leading-relaxed" style={{ color: palette.muted }}>{data.summary[l]}</p></section>
 
       {/* Timeline experiences */}
       <section className="mb-5" style={{ pageBreakInside: "avoid" }}>
-        <SectionTitle palette={palette} icon="mdi:timeline" showIcons={showIcons}>{l === "zh" ? "经历时间线" : "Experience Timeline"}</SectionTitle>
+        <SectionTitle palette={palette} icon="mdi:timeline" showIcons={showIcons}>{labels[l].timelineTitle}</SectionTitle>
         <div className="relative ml-3 border-l-2 pl-6" style={{ borderColor: palette.accent }}>
           {[...data.education.map((e) => ({ type: "edu" as const, ...e })), ...data.experiences.map((e) => ({ type: "exp" as const, ...e }))].map((item, i) => (
             <div key={i} className="relative mb-4" style={{ pageBreakInside: "avoid" }}>
@@ -254,16 +278,16 @@ function TimelineLayout({ data, palette, locale, showIcons }: Omit<Props, "layou
               {item.type === "edu" ? (
                 <><p className="text-xs font-bold">{item.school}</p><p className="text-[10px]" style={{ color: palette.muted }}>{item.detail[l]} &middot; {item.period}</p></>
               ) : (
-                <><div className="flex items-start justify-between gap-2"><div><p className="text-xs font-bold">{item.title[l]}</p><p className="text-[10px]" style={{ color: palette.accent, opacity: 0.8 }}>{item.org[l]}</p></div><span className="whitespace-nowrap text-[10px] font-mono" style={{ color: palette.muted }}>{item.startDate} - {item.endDate || (l === "zh" ? "至今" : "Present")}</span></div><p className="mt-0.5 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{item.description[l]}</p></>
+                <><div className="flex items-start justify-between gap-2"><div><p className="text-xs font-bold">{item.title[l]}</p><p className="text-[10px]" style={{ color: palette.accent, opacity: 0.8 }}>{item.org[l]}</p></div><span className="whitespace-nowrap text-[10px] font-mono" style={{ color: palette.muted }}>{item.startDate} - {item.endDate || labels[l].present}</span></div><p className="mt-0.5 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{item.description[l]}</p></>
               )}
             </div>
           ))}
         </div>
       </section>
 
-      <section className="mb-5" style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{l === "zh" ? "项目经历" : "Projects"}</SectionTitle><div className="grid gap-2.5 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p></div>)}</div></section>
+      <section className="mb-5" style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{labels[l].projects}</SectionTitle><div className="grid gap-2.5 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p></div>)}</div></section>
 
-      <section style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:code-tags" showIcons={showIcons}>{l === "zh" ? "技能" : "Skills"}</SectionTitle><div className="grid gap-3 sm:grid-cols-2">{data.skillGroups.map((g, i) => <div key={i}><p className="mb-1 text-[11px] font-bold">{g.label[l]}</p><div className="flex flex-wrap gap-1">{g.items.map((s) => <SkillTag key={s.name} name={s.name} icon={s.icon} palette={palette} showIcons={showIcons} />)}</div></div>)}</div></section>
+      <section style={{ pageBreakInside: "avoid" }}><SectionTitle palette={palette} icon="mdi:code-tags" showIcons={showIcons}>{labels[l].skills}</SectionTitle><div className="grid gap-3 sm:grid-cols-2">{data.skillGroups.map((g, i) => <div key={i}><p className="mb-1 text-[11px] font-bold">{g.label[l]}</p><div className="flex flex-wrap gap-1">{g.items.map((s) => <SkillTag key={s.name} name={s.name} icon={s.icon} palette={palette} showIcons={showIcons} />)}</div></div>)}</div></section>
     </div>
   )
 }
