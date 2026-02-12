@@ -6,6 +6,7 @@ import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
 import { useSiteData } from "@/hooks/use-site-data"
 import { GlobalToolbar } from "@/components/site/global-toolbar"
+import { RichTextRenderer } from "@/components/site/rich-text-renderer"
 
 export default function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
@@ -72,10 +73,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
         <div className="mb-8 text-base leading-relaxed text-foreground/80">
           <p className="mb-4">{project.description[locale]}</p>
           {projectDetail && (
-            <div 
-              className="prose prose-sm dark:prose-invert max-w-none text-foreground/80"
-              dangerouslySetInnerHTML={{ __html: projectDetail }}
-            />
+            <RichTextRenderer content={projectDetail} className="text-foreground/80" />
           )}
         </div>
 

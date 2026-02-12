@@ -6,6 +6,7 @@ import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
 import { useSiteData } from "@/hooks/use-site-data"
 import { GlobalToolbar } from "@/components/site/global-toolbar"
+import { RichTextRenderer } from "@/components/site/rich-text-renderer"
 
 export default function AwardDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
@@ -50,7 +51,11 @@ export default function AwardDetailPage({ params }: { params: Promise<{ slug: st
 
         <div className="mb-8 text-base leading-relaxed text-foreground/80">
           <p>{award.description[locale]}</p>
-          {award.detail && <p className="mt-4">{award.detail[locale]}</p>}
+          {award.detail?.[locale] && (
+            <div className="mt-6">
+              <RichTextRenderer content={award.detail[locale]} className="text-foreground/80" />
+            </div>
+          )}
         </div>
 
         {/* Official Links */}

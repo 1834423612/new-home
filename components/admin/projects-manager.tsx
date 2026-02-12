@@ -2,18 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { Icon } from "@iconify/react"
-import { InputField, TextAreaField, AdminButton } from "./form-fields"
-import { RichTextEditor } from "./rich-text-editor"
-import { LinksManager } from "./links-manager"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
-interface ProjectLink {
-  id?: string
-  title_zh: string
-  title_en: string
-  url: string
-  icon?: string
-}
+import { AdminButton } from "./form-fields"
+import { cn } from "@/lib/utils"
 
 interface ProjectRow {
   id: string; title_zh: string; title_en: string; description_zh: string; description_en: string
@@ -22,191 +12,160 @@ interface ProjectRow {
   source: string | null; date: string; featured: boolean | number; sort_order: number
 }
 
+const categoryColors: Record<string, string> = {
+  website: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+  tool: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+  game: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
+  design: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
+  contribution: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+}
+
 export function ProjectsManager() {
   const [items, setItems] = useState<ProjectRow[]>([])
   const [loading, setLoading] = useState(true)
-  const [editing, setEditing] = useState<ProjectRow | null>(null)
-  const [showForm, setShowForm] = useState(false)
 
   const fetchItems = useCallback(async () => {
     setLoading(true)
-    try { const res = await fetch("/api/admin/projects"); if (res.ok) setItems(await res.json()) }
-    finally { setLoading(false) }
+    try {
+      const res = await fetch("/api/admin/projects")
+      if (res.ok) setItems(await res.json())
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   useEffect(() => { fetchItems() }, [fetchItems])
 
-  const handleSave = async (data: Record<string, unknown>) => {
-    const res = await fetch("/api/admin/projects", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
-    if (res.ok) { setShowForm(false); setEditing(null); fetchItems() }
-  }
-
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this project?")) return
-    await fetch("/api/admin/projects", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
+    await fetch("/api/admin/projects", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    })
     fetchItems()
   }
 
-  if (loading) return <div className="flex items-center gap-2 text-sm text-muted-foreground"><Icon icon="mdi:loading" className="h-4 w-4 animate-spin" /> Loading...</div>
+  const parseTags = (t: string | string[]): string[] => {
+    if (Array.isArray(t)) return t
+    try { return JSON.parse(t) } catch { return [] }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" /> Loading projects...
+      </div>
+    )
+  }
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-foreground">Projects ({items.length})</h2>
-        <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}><Icon icon="mdi:plus" className="h-4 w-4" /> Add Project</AdminButton>
+        <div>
+          <h2 className="text-lg font-bold text-foreground">Projects</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">{items.length} projects total</p>
+        </div>
+        <a href="/admin/projects/new">
+          <AdminButton>
+            <Icon icon="mdi:plus" className="h-4 w-4" /> New Project
+          </AdminButton>
+        </a>
       </div>
-      {showForm && <ProjectForm initial={editing} onSave={handleSave} onCancel={() => { setShowForm(false); setEditing(null) }} />}
-      <div className="flex flex-col gap-3">
-        {items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/30">
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-foreground">{item.title_zh}</h3>
-                {(item.featured === 1 || item.featured === true) && <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-mono text-primary">featured</span>}
+
+      <div className="grid gap-3">
+        {items.map((item) => {
+          const tags = parseTags(item.tags)
+          const isFeatured = item.featured === 1 || item.featured === true
+          return (
+            <div
+              key={item.id}
+              className="group relative flex items-start gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-sm"
+            >
+              {/* Image thumbnail */}
+              {item.image && (
+                <div className="hidden h-16 w-24 shrink-0 overflow-hidden rounded-lg border border-border sm:block">
+                  <img src={item.image} alt="" className="h-full w-full object-cover" />
+                </div>
+              )}
+
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-sm font-bold text-foreground truncate">{item.title_zh}</h3>
+                  {isFeatured && (
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-mono text-primary border border-primary/20">
+                      featured
+                    </span>
+                  )}
+                  <span className={cn(
+                    "rounded-full border px-2 py-0.5 text-[10px] font-mono",
+                    categoryColors[item.category] || "bg-secondary text-muted-foreground border-border"
+                  )}>
+                    {item.category}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground truncate">{item.title_en}</p>
+                <div className="mt-2 flex items-center gap-3 text-[10px] font-mono text-muted-foreground/60">
+                  <span className="flex items-center gap-1">
+                    <Icon icon="mdi:calendar-outline" className="h-3 w-3" /> {item.date}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Icon icon="mdi:identifier" className="h-3 w-3" /> {item.slug || item.id}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Icon icon="mdi:sort" className="h-3 w-3" /> #{item.sort_order}
+                  </span>
+                </div>
+                {tags.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {tags.slice(0, 5).map((tag, i) => (
+                      <span key={i} className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">
+                        {tag}
+                      </span>
+                    ))}
+                    {tags.length > 5 && (
+                      <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-muted-foreground">
+                        +{tags.length - 5}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
-              <p className="font-mono text-[10px] text-muted-foreground">{item.category} / {item.date} / slug: {item.slug || item.id}</p>
+
+              {/* Actions */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <a
+                  href={`/admin/projects/${item.id}`}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                  title="Edit"
+                >
+                  <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                </a>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-destructive hover:text-destructive transition-colors"
+                  title="Delete"
+                >
+                  <Icon icon="mdi:delete-outline" className="h-4 w-4" />
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button onClick={() => { setEditing(item); setShowForm(true) }} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"><Icon icon="mdi:pencil-outline" className="h-4 w-4" /></button>
-              <button onClick={() => handleDelete(item.id)} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-destructive hover:text-destructive transition-colors"><Icon icon="mdi:delete-outline" className="h-4 w-4" /></button>
-            </div>
+          )
+        })}
+
+        {items.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <Icon icon="mdi:folder-open-outline" className="h-12 w-12 text-muted-foreground/20" />
+            <p className="mt-3 text-sm text-muted-foreground">No projects yet</p>
+            <a href="/admin/projects/new" className="mt-4">
+              <AdminButton>
+                <Icon icon="mdi:plus" className="h-4 w-4" /> Create your first project
+              </AdminButton>
+            </a>
           </div>
-        ))}
+        )}
       </div>
     </div>
-  )
-}
-
-function ProjectForm({ initial, onSave, onCancel }: { initial: ProjectRow | null; onSave: (d: Record<string, unknown>) => void; onCancel: () => void }) {
-  const parseTags = (t: string | string[] | undefined | null): string => {
-    if (!t) return ""; if (Array.isArray(t)) return t.join(", ")
-    try { return JSON.parse(t).join(", ") } catch { return String(t) }
-  }
-
-  const parseLinks = (t: string | undefined | null): ProjectLink[] => {
-    if (!t) return []
-    try {
-      const parsed = JSON.parse(t)
-      return Array.isArray(parsed) ? parsed : []
-    } catch {
-      return []
-    }
-  }
-
-  interface ProjectFormData {
-    id: string
-    slug: string
-    title_zh: string
-    title_en: string
-    description_zh: string
-    description_en: string
-    detail_zh: string
-    detail_en: string
-    category: string
-    tags: string
-    image: string
-    link: string
-    source: string
-    date: string
-    featured: boolean
-    sort_order: number
-    links: ProjectLink[]
-  }
-
-  const [form, setForm] = useState<ProjectFormData>({
-    id: initial?.id || "",
-    slug: initial?.slug || initial?.id || "",
-    title_zh: initial?.title_zh || "",
-    title_en: initial?.title_en || "",
-    description_zh: initial?.description_zh || "",
-    description_en: initial?.description_en || "",
-    detail_zh: initial?.detail_zh || "",
-    detail_en: initial?.detail_en || "",
-    category: initial?.category || "website",
-    tags: parseTags(initial?.tags),
-    image: initial?.image || "",
-    link: initial?.link || "",
-    source: initial?.source || "",
-    date: initial?.date || "",
-    featured: initial?.featured ? true : false,
-    sort_order: initial?.sort_order || 0,
-    links: parseLinks(initial?.links_json),
-  })
-  const set = (k: string, v: unknown) => setForm((f) => ({ ...f, [k]: v }))
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSave({
-      ...form,
-      tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
-      links_json: JSON.stringify(form.links),
-    })
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="mb-6 rounded-xl border border-primary/30 bg-card p-6 space-y-4">
-      <h3 className="text-sm font-bold text-foreground">{initial ? "Edit Project" : "New Project"}</h3>
-
-      <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="basic">Basic Info</TabsTrigger>
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="links">Links</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="basic" className="space-y-4 mt-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <InputField label="ID (unique)" value={form.id} onChange={(v) => set("id", v)} required disabled={!!initial} />
-            <InputField label="URL Slug" value={form.slug} onChange={(v) => set("slug", v)} required />
-            <InputField label="Category" value={form.category} onChange={(v) => set("category", v)} />
-            <InputField label="Date" value={form.date} onChange={(v) => set("date", v)} />
-            <InputField label="Title (zh)" value={form.title_zh} onChange={(v) => set("title_zh", v)} required />
-            <InputField label="Title (en)" value={form.title_en} onChange={(v) => set("title_en", v)} required />
-            <InputField label="Image URL" value={form.image} onChange={(v) => set("image", v)} />
-            <InputField label="Sort Order" value={String(form.sort_order)} onChange={(v) => set("sort_order", parseInt(v) || 0)} type="number" />
-          </div>
-          <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2 text-xs text-muted-foreground">
-              <input type="checkbox" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} className="accent-primary" />
-              Featured
-            </label>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="content" className="space-y-4 mt-4">
-          <div className="grid gap-4">
-            <TextAreaField label="Description (zh)" value={form.description_zh} onChange={(v) => set("description_zh", v)} />
-            <TextAreaField label="Description (en)" value={form.description_en} onChange={(v) => set("description_en", v)} />
-          </div>
-
-          <div className="mt-6 border-t border-border pt-6">
-            <h4 className="mb-4 text-xs font-bold text-foreground">Detailed Content (Rich Text)</h4>
-            <div className="grid gap-4">
-              <RichTextEditor label="Detail (zh)" value={form.detail_zh} onChange={(v) => set("detail_zh", v)} />
-              <RichTextEditor label="Detail (en)" value={form.detail_en} onChange={(v) => set("detail_en", v)} />
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="links" className="space-y-4 mt-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <InputField label="Project Link URL" value={form.link} onChange={(v) => set("link", v)} />
-            <InputField label="Source Code URL" value={form.source} onChange={(v) => set("source", v)} />
-          </div>
-          <div>
-            <InputField label="Tags (comma separated)" value={form.tags} onChange={(v) => set("tags", v)} />
-          </div>
-
-          <div className="mt-6 border-t border-border pt-6">
-            <LinksManager value={form.links} onChange={(links) => set("links", links)} />
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      <div className="mt-6 flex items-center gap-3 border-t border-border pt-4">
-        <AdminButton type="submit">Save</AdminButton>
-        <AdminButton variant="secondary" onClick={onCancel}>Cancel</AdminButton>
-      </div>
-    </form>
   )
 }

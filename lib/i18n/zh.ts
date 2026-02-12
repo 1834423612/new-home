@@ -14,7 +14,6 @@ const zh = {
     alias: "kjch",
     tagline: "当你在凝视着网页的时候，网页也正在凝视着你。",
     subtitle: "热爱互联网，喜欢探索一些新奇的事物",
-    location: "美国俄亥俄州",
     scrollHint: "向下滚动探索",
     refreshHitokoto: "点击刷新一言",
   },
@@ -23,7 +22,7 @@ const zh = {
     bio: [
       "热爱互联网，喜欢探索一些新奇的事物(比如游戏)，对有趣的世界和发现了这里的你感到好奇(. >∀< )/",
       "本人目前在美国俄亥俄州上高中，业余时间会尝试开发一些网站和其他的小工具，偶尔也会自己做些想做的项目。",
-      "是 Moe-Counter 网站计数器的主人。在毕业时为了纪念在北京市忠德学校生活的初中三年(七年级-九年级)开发了 ZDSchool 项目。",
+      "同时参与 Beachwood FRC #695 Bison Robotics 机器人团队的开发工作。",
     ],
     motto: "最幸福的时候，莫过于还没实现目标时的追梦状态。",
     motto2: "人生如逆旅，我亦是行人。",
@@ -170,6 +169,10 @@ const zh = {
     loading: "加载中...",
     langSwitch: "EN",
     toggleLanguage: "切换语言",
+  },
+  meta: {
+    title: "kjch的小站点",
+    description: "况佳城 (kjch) 的个人网站。热爱互联网，喜欢探索新奇的事物。",
   },
 } as const
 

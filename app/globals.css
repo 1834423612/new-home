@@ -344,6 +344,210 @@ html {
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
 
+/* ─── Rich Text Editor: Node Views ──────────────────────────────────── */
+
+.video-node-view,
+.audio-node-view {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  margin: 0.5rem 0;
+  border-radius: 0.75rem;
+  border: 1px dashed hsl(var(--border));
+  background: hsl(var(--secondary) / 0.5);
+  user-select: none;
+  cursor: default;
+}
+
+.video-node-icon,
+.audio-node-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: hsl(var(--primary) / 0.15);
+  color: hsl(var(--primary));
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+/* Info container (label + URL stacked) */
+.video-node-info,
+.audio-node-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.video-node-label,
+.audio-node-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  line-height: 1.2;
+}
+
+.video-node-url,
+.audio-node-url {
+  font-size: 0.5625rem;
+  font-family: monospace;
+  color: hsl(var(--muted-foreground));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Thumbnail preview for video nodes with poster */
+.video-node-thumb {
+  position: relative;
+  width: 5rem;
+  height: 3rem;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: hsl(var(--secondary));
+}
+
+.video-node-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.video-node-thumb-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: white;
+  background: hsl(0 0% 0% / 0.35);
+  transition: background 0.15s;
+}
+
+.video-node-view:hover .video-node-thumb-play {
+  background: hsl(0 0% 0% / 0.5);
+}
+
+/* ─── Plyr Theme Overrides ─────────────────────────────────────────── */
+
+.plyr-container .plyr {
+  --plyr-color-main: hsl(var(--primary));
+  --plyr-video-background: hsl(var(--secondary));
+  --plyr-menu-background: hsl(var(--card));
+  --plyr-menu-color: hsl(var(--card-foreground));
+  --plyr-tooltip-background: hsl(var(--card));
+  --plyr-tooltip-color: hsl(var(--card-foreground));
+  --plyr-font-family: inherit;
+  --plyr-badge-background: hsl(var(--primary));
+  --plyr-badge-text-color: hsl(var(--primary-foreground));
+  --plyr-control-radius: 0.5rem;
+  --plyr-range-thumb-height: 14px;
+  border-radius: 0.75rem;
+}
+
+.plyr-container .plyr--video {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.plyr-container .plyr--audio {
+  border-radius: 0.75rem;
+}
+
+.plyr-container .plyr__control:hover {
+  background: hsl(var(--primary) / 0.2);
+}
+
+.plyr-container .plyr__menu__container {
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 8px 24px hsl(var(--background) / 0.5);
+}
+
+.plyr-container .plyr__progress__buffer {
+  color: hsl(var(--muted-foreground) / 0.3);
+}
+
+/* ─── Rich Text Renderer: Frontend Styles ──────────────────────────── */
+
+.rich-text-content {
+  line-height: 1.75;
+}
+
+.rich-text-content img.rich-text-image {
+  border-radius: 0.75rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rich-text-content img.rich-text-image:hover {
+  transform: scale(1.01);
+  box-shadow: 0 8px 30px hsl(var(--primary) / 0.08);
+}
+
+.rich-text-video-wrapper {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin: 1.5rem 0;
+  background: hsl(var(--secondary));
+  box-shadow: 0 4px 20px hsl(var(--background) / 0.3);
+}
+
+/* Only force 16:9 for ReactPlayer fallback (non-Plyr) */
+.rich-text-video-wrapper:not(.plyr-container) {
+  aspect-ratio: 16 / 9;
+}
+
+.rich-text-video-wrapper iframe,
+.rich-text-video-wrapper video {
+  border-radius: 0.75rem;
+}
+
+.rich-text-audio-wrapper {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--secondary) / 0.4);
+}
+
+.rich-text-audio-wrapper audio {
+  width: 100%;
+}
+
+/* Prose overrides for article-like content */
+.rich-text-content h1 { margin-top: 2rem; }
+.rich-text-content h2 { margin-top: 1.75rem; }
+.rich-text-content h3 { margin-top: 1.5rem; }
+.rich-text-content p { margin-bottom: 1rem; }
+.rich-text-content blockquote {
+  border-left: 3px solid hsl(var(--primary));
+  padding-left: 1rem;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+.rich-text-content pre {
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+}
+.rich-text-content a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.rich-text-content a:hover {
+  opacity: 0.8;
+}
+
 @media print {
   .no-print { display: none !important; }
   .resume-paper { max-width: none !important; border-radius: 0 !important; box-shadow: none !important; }

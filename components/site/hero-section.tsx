@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react"
 import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
+import { useSiteConfig } from "@/hooks/use-site-config"
 
 interface HitokotoData {
   hitokoto: string
@@ -11,7 +12,9 @@ interface HitokotoData {
 }
 
 export function HeroSection() {
-  const { dict } = useLocale()
+  const { dict, locale } = useLocale()
+  const { config } = useSiteConfig()
+  const c = (key: string, fallback: string) => config[`${key}_${locale}`] || config[key] || fallback
   const [mounted, setMounted] = useState(false)
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 })
   const [hitokoto, setHitokoto] = useState<HitokotoData | null>(null)
@@ -20,6 +23,24 @@ export function HeroSection() {
   const containerRef = useRef<HTMLElement>(null)
   const refreshLockRef = useRef(false)
   const refreshUnlockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const doFetch = useCallback(async () => {
+    try {
+      setHitokotoFading(true)
+      const res = await fetch("https://v1.hitokoto.cn/?c=a&c=c&c=d&c=j&c=k")
+      if (res.ok) {
+        const data = await res.json()
+        setTimeout(() => {
+          setHitokoto(data)
+          setHitokotoFading(false)
+        }, 300)
+      } else {
+        setHitokotoFading(false)
+      }
+    } catch {
+      setHitokotoFading(false)
+    }
+  }, [])
 
   const fetchHitokoto = useCallback(async () => {
     if (refreshLockRef.current) return
@@ -30,30 +51,14 @@ export function HeroSection() {
       refreshLockRef.current = false
       setRefreshLocked(false)
     }, 2000)
+    await doFetch()
+  }, [doFetch])
 
-    try {
-      setHitokotoFading(true)
-      // Global: https://v1.hitokoto.cn, QPS: 2/s
-      // International: https://international.v1.hitokoto.cn, QPS: 20/s (有2s缓存)
-      // Categories: a=动画, b=漫画, c=游戏, d=文学, e=原创, f=来自网络, g=其他, h=影视, i=诗词, j=网易云, k=哲学, l=抖机灵
-
-      const res = await fetch("https://v1.hitokoto.cn/?c=a&c=c&c=d&c=j&c=k")
-      if (res.ok) {
-        const data = await res.json()
-        setTimeout(() => {
-          setHitokoto(data)
-          setHitokotoFading(false)
-        }, 300)
-      }
-    } catch {
-      setHitokotoFading(false)
-    }
-  }, [])
-
+  // Initial fetch on mount - does NOT engage the cooldown lock
   useEffect(() => {
     setMounted(true)
-    fetchHitokoto()
-  }, [fetchHitokoto])
+    doFetch()
+  }, [doFetch])
 
   useEffect(() => {
     return () => {
@@ -108,18 +113,19 @@ export function HeroSection() {
         <div className="mb-8 flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5">
           <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse-glow text-emerald-400" />
           <span className="text-xs font-mono text-muted-foreground">
-            {dict.hero.location}
+            {/* {c("hero_location", dict.hero.location)} */}
+            Online
           </span>
         </div>
 
         {/* Name */}
         <h1 className="mb-4 text-5xl font-bold tracking-tight md:text-7xl">
           <span className="text-muted-foreground text-2xl font-normal block mb-2 md:text-3xl">
-            {dict.hero.greeting}
+            {c("hero_greeting", dict.hero.greeting)}
           </span>
-          <span className="text-foreground">{dict.hero.name}</span>
+          <span className="text-foreground">{c("hero_name", dict.hero.name)}</span>
           <span className="text-primary font-mono text-xl md:text-2xl ml-3 align-middle">
-            @{dict.hero.alias}
+            @{config.hero_alias || dict.hero.alias}
           </span>
         </h1>
 
@@ -163,7 +169,7 @@ export function HeroSection() {
 
         {/* Subtitle */}
         <p className="mb-10 font-mono text-sm text-muted-foreground/60">
-          {'// '}{dict.hero.subtitle}
+          {'// '}{c("hero_subtitle", dict.hero.subtitle)}
         </p>
 
         {/* CTA row */}
@@ -189,8 +195,8 @@ export function HeroSection() {
       <div
         className={`absolute bottom-8 flex flex-col items-center gap-2 transition-all duration-1000 delay-700 ${mounted ? "opacity-100" : "opacity-0"}`}
       >
-        <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40">
-          {dict.hero.scrollHint}
+        <span className="text-[14px] font-mono uppercase tracking-widest text-muted-foreground/60">
+          {dict.hero.scrollHint} 👇
         </span>
         <div className="h-8 w-px bg-gradient-to-b from-muted-foreground/40 to-transparent animate-bounce" />
       </div>

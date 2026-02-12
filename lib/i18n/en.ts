@@ -14,7 +14,6 @@ const en = {
     alias: "kjch",
     tagline: "When you gaze at the webpage, the webpage also gazes at you.",
     subtitle: "Passionate about the internet, love exploring new things",
-    location: "Ohio, USA",
     scrollHint: "Scroll down to explore",
     refreshHitokoto: "Click to refresh quote",
   },
@@ -23,7 +22,7 @@ const en = {
     bio: [
       "Passionate about the internet, love exploring new things (like games), curious about this interesting world and happy you found your way here (. >v< )/",
       "Currently a high school student in Ohio, USA. In my spare time, I develop websites and small tools, and occasionally work on personal projects.",
-      "Owner of the Moe-Counter website counter. Developed the ZDSchool project to commemorate three years of middle school life at Beijing Zhongde School.",
+      "Also a core developer for the Beachwood FRC #695 Bison Robotics team.",
     ],
     motto: "The happiest time is the state of chasing dreams before reaching the goal.",
     motto2: "Life is a journey against the current, and I am just a traveler.",
@@ -170,6 +169,10 @@ const en = {
     loading: "Loading...",
     langSwitch: "中文",
     toggleLanguage: "Toggle language",
+  },
+  meta: {
+    title: "kjch's Site",
+    description: "Personal website of Kuang Jiacheng (kjch). Passionate about the internet, love exploring new things.",
   },
 } as const
 

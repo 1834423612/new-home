@@ -5,11 +5,17 @@ import { useLocale } from "@/lib/locale-context"
 import { useInView } from "@/hooks/use-in-view"
 import { useSiteData } from "@/hooks/use-site-data"
 import { cn } from "@/lib/utils"
+import { useSiteConfig } from "@/hooks/use-site-config"
 
 export function AboutSection() {
   const { dict, locale } = useLocale()
   const { ref, isInView } = useInView()
   const { socialLinks } = useSiteData()
+  const { config } = useSiteConfig()
+  const c = (key: string, fallback: string) => config[`${key}_${locale}`] || config[key] || fallback
+  const bioParagraphs = config[`about_bio_${locale}`]
+    ? config[`about_bio_${locale}`].split("\n").filter(Boolean)
+    : dict.about.bio
 
   return (
     <section id="about" className="relative px-6 py-32 md:px-12" ref={ref}>
@@ -30,30 +36,33 @@ export function AboutSection() {
           <div className="md:col-span-2">
             <div className="rounded-xl border border-border bg-card p-6">
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                {/* Option 1 - Using profile picture */}
+                <img src="https://r2.fastbirdcdn.online/kjch-site/avatars/1770917734977-hdImg_e82ea227498f88935cbc74e33dc40a861530868435913.jpg" alt="Profile" className="h-12 w-12 rounded-full object-cover" />
+                {/* Option 2 - Using initials with colored background */}
+                {/* <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
                   <span className="font-mono text-lg font-bold">{dict.hero.alias.charAt(0).toUpperCase()}</span>
-                </div>
+                </div> */}
                 <div>
-                  <p className="font-bold text-foreground">{dict.hero.name}</p>
-                  <p className="font-mono text-xs text-muted-foreground">@{dict.hero.alias}</p>
+                  <p className="font-bold text-foreground">{c("hero_name", dict.hero.name)}</p>
+                  <p className="font-mono text-xs text-muted-foreground">@{config.hero_alias || dict.hero.alias}</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2.5 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Icon icon="mdi:map-marker-outline" className="h-4 w-4 text-primary" />
-                  <span>{dict.about.profile.location}</span>
+                  <span>{c("about_location", dict.about.profile.location)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon icon="mdi:school-outline" className="h-4 w-4 text-primary" />
-                  <span>{dict.about.profile.school}</span>
+                  <span>{c("about_school", dict.about.profile.school)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon icon="mdi:email-outline" className="h-4 w-4 text-primary" />
-                  <span className="font-mono text-xs">{dict.about.profile.email}</span>
+                  <span className="font-mono text-xs">{config.about_email || dict.about.profile.email}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon icon="mdi:web" className="h-4 w-4 text-primary" />
-                  <span className="font-mono text-xs">{dict.about.profile.website}</span>
+                  <span className="font-mono text-xs">{config.about_website || dict.about.profile.website}</span>
                 </div>
               </div>
 
@@ -87,27 +96,27 @@ export function AboutSection() {
           <div className="md:col-span-3 flex flex-col gap-6">
             {/* Motto */}
             <blockquote className="border-l-2 border-primary pl-4 text-sm italic text-muted-foreground">
-              <p>{dict.about.motto}</p>
-              <p className="mt-1">{dict.about.motto2}</p>
+              <p>{c("about_motto", dict.about.motto)}</p>
+              <p className="mt-1">{c("about_motto2", dict.about.motto2)}</p>
             </blockquote>
 
             {/* Bio paragraphs */}
             <div className="flex flex-col gap-4 leading-relaxed text-foreground/80">
-              {dict.about.bio.map((paragraph, i) => (
+              {bioParagraphs.map((paragraph: string, i: number) => (
                 <p key={i}>{paragraph}</p>
               ))}
             </div>
 
             {/* Makesome.cool badge */}
-            <a
+            {/* <a
               href="https://makesome.cool"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5 text-xs font-mono text-secondary-foreground transition-colors hover:border-primary"
             >
               <Icon icon="mdi:link-variant" className="h-3.5 w-3.5" />
-              {dict.about.profile.badge}
-            </a>
+              {config.about_badge || dict.about.profile.badge}
+            </a> */}
           </div>
         </div>
       </div>

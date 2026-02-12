@@ -1,8 +1,10 @@
 import React from "react"
-import type { Metadata, Viewport } from "next"
+import type { Viewport } from "next"
+import { headers } from "next/headers"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import { LocaleProvider } from "@/lib/locale-context"
 import { ThemeContextProvider } from "@/lib/theme-context"
+import { getDictionary, type Locale } from "@/lib/i18n"
 
 import "./globals.css"
 
@@ -16,11 +18,18 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
 })
 
-export const metadata: Metadata = {
-  title: "kjch - 况佳城 | Personal Website",
-  description:
-    "况佳城 (kjch) 的个人网站。热爱互联网，喜欢探索新奇的事物。Personal website of Kuang Jiacheng.",
-  keywords: ["kjch", "况佳城", "developer", "portfolio", "personal website"],
+export async function generateMetadata() {
+  const hdrs = await headers()
+  const host = hdrs.get("host") || "kjch.net"
+  const acceptLang = hdrs.get("accept-language") || ""
+  const locale: Locale = acceptLang.toLowerCase().startsWith("zh") ? "zh" : "en"
+  const dict = getDictionary(locale)
+
+  return {
+    title: `${dict.meta.title} | ${host}`,
+    description: dict.meta.description,
+    keywords: ["kjch", "况佳城", "developer", "portfolio", "personal website"],
+  }
 }
 
 export const viewport: Viewport = {

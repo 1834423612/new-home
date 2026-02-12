@@ -5,11 +5,15 @@ import { useLocale } from "@/lib/locale-context"
 import { useInView } from "@/hooks/use-in-view"
 import { useSiteData } from "@/hooks/use-site-data"
 import { cn } from "@/lib/utils"
+import { useSiteConfig } from "@/hooks/use-site-config"
 
 export function ContactSection() {
-  const { dict } = useLocale()
+  const { dict, locale } = useLocale()
   const { ref, isInView } = useInView()
   const { socialLinks } = useSiteData()
+  const { config } = useSiteConfig()
+  const c = (key: string, fallback: string) => config[`${key}_${locale}`] || config[key] || fallback
+  const contactEmail = config.contact_email || dict.contact.emailAddress
 
   return (
     <section id="contact" className="relative px-6 py-32 md:px-12" ref={ref}>
@@ -22,16 +26,16 @@ export function ContactSection() {
         </div>
 
         <p className="mb-10 font-mono text-sm text-muted-foreground">
-          {dict.contact.subtitle}
+          {c("contact_subtitle", dict.contact.subtitle)}
         </p>
 
         {/* Email */}
         <a
-          href={`mailto:${dict.contact.emailAddress}`}
+          href={`mailto:${contactEmail}`}
           className="group mb-10 inline-flex items-center gap-3 rounded-xl border border-border bg-card px-6 py-4 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_0_20px_hsl(var(--primary)/0.08)]"
         >
           <Icon icon="mdi:email-outline" className="h-5 w-5 text-primary" />
-          <span className="font-mono text-sm text-foreground">{dict.contact.emailAddress}</span>
+          <span className="font-mono text-sm text-foreground">{contactEmail}</span>
           <Icon
             icon="mdi:arrow-top-right"
             className="h-4 w-4 text-muted-foreground transition-all group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

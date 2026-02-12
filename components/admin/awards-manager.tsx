@@ -5,6 +5,7 @@ import React from "react"
 import { useEffect, useState, useCallback } from "react"
 import { Icon } from "@iconify/react"
 import { InputField, TextAreaField, AdminButton } from "./form-fields"
+import { RichTextEditor } from "./rich-text-editor"
 
 interface AwardRow {
   id: string; slug: string; title_zh: string; title_en: string
@@ -105,12 +106,38 @@ function AwardForm({ initial, onSave, onCancel }: { initial: AwardRow | null; on
         <InputField label="Org (en)" value={form.org_en} onChange={(v) => set("org_en", v)} />
         <TextAreaField label="Description (zh)" value={form.description_zh} onChange={(v) => set("description_zh", v)} />
         <TextAreaField label="Description (en)" value={form.description_en} onChange={(v) => set("description_en", v)} />
-        <TextAreaField label="Detail (zh)" value={form.detail_zh} onChange={(v) => set("detail_zh", v)} rows={4} />
-        <TextAreaField label="Detail (en)" value={form.detail_en} onChange={(v) => set("detail_en", v)} rows={4} />
+      </div>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <InputField label="Date" value={form.date} onChange={(v) => set("date", v)} />
         <InputField label="Level" value={form.level} onChange={(v) => set("level", v)} placeholder="e.g. Regional, National" />
         <InputField label="Image URL" value={form.image} onChange={(v) => set("image", v)} />
         <InputField label="Sort Order" value={String(form.sort_order)} onChange={(v) => set("sort_order", parseInt(v) || 0)} type="number" />
+      </div>
+      <div className="mt-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h4 className="flex items-center gap-2 text-xs font-bold text-foreground">
+            <Icon icon="mdi:file-document-edit-outline" className="h-3.5 w-3.5 text-primary" />
+            Detail (Rich Text)
+          </h4>
+          {form.detail_zh && (
+            <button
+              type="button"
+              onClick={() => {
+                if (confirm("Copy Chinese detail to English? This overwrites the current English content.\n\nMedia embeds will be kept -- you only need to translate text.")) {
+                  set("detail_en", form.detail_zh)
+                }
+              }}
+              className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-[10px] font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+            >
+              <Icon icon="mdi:content-copy" className="h-3 w-3" />
+              Copy zh to en
+            </button>
+          )}
+        </div>
+        <div className="grid gap-4">
+          <RichTextEditor label="Detail (zh)" value={form.detail_zh} onChange={(v) => set("detail_zh", v)} />
+          <RichTextEditor label="Detail (en)" value={form.detail_en} onChange={(v) => set("detail_en", v)} />
+        </div>
       </div>
       <div className="mt-4">
         <TextAreaField
