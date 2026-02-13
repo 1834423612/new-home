@@ -77,7 +77,7 @@ export function SitesToolsManager() {
 
 function SiteRow({ item, parseTags, onEdit, onDelete }: { item: SiteToolRow; parseTags: (t: string | string[] | null | undefined) => string; onEdit: () => void; onDelete: () => void }) {
   return (
-    <div className="flex items-center justify-between rounded-xl border border-border bg-card p-4 hover:border-primary/30 transition-colors">
+    <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors sm:flex-row sm:items-center sm:justify-between sm:p-4">
       <div className="flex items-center gap-3 flex-1 min-w-0">
         {item.icon && <Icon icon={item.icon} className="h-5 w-5 shrink-0 text-muted-foreground" />}
         <div className="min-w-0">
@@ -85,7 +85,7 @@ function SiteRow({ item, parseTags, onEdit, onDelete }: { item: SiteToolRow; par
           <p className="font-mono text-[10px] text-muted-foreground truncate">{item.url} / tags: {parseTags(item.tags)}</p>
         </div>
       </div>
-      <div className="flex items-center gap-2 shrink-0 ml-2">
+      <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
         <span className="rounded-full bg-secondary px-2 py-0.5 text-[9px] font-mono text-secondary-foreground">{item.table}</span>
         <button onClick={onEdit} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"><Icon icon="mdi:pencil-outline" className="h-4 w-4" /></button>
         <button onClick={onDelete} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-destructive hover:text-destructive transition-colors"><Icon icon="mdi:delete-outline" className="h-4 w-4" /></button>
@@ -110,7 +110,7 @@ function SiteToolForm({ initial, onSave, onCancel }: { initial: SiteToolRow | nu
   const set = (k: string, v: unknown) => setForm((f) => ({ ...f, [k]: v }))
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSave({ ...form, tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean) }) }} className="mb-6 rounded-xl border border-primary/30 bg-card p-6">
+    <form onSubmit={(e) => { e.preventDefault(); onSave({ ...form, tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean) }) }} className="mb-6 rounded-xl border border-primary/30 bg-card p-4 sm:p-6">
       <h3 className="mb-4 text-sm font-bold text-foreground">{initial ? "Edit" : "New"} Site/Tool</h3>
       <div className="grid gap-4 sm:grid-cols-2">
         <InputField label="ID" value={form.id} onChange={(v) => set("id", v)} required disabled={!!initial} />

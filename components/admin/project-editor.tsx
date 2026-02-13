@@ -7,6 +7,7 @@ import { InputField, TextAreaField, AdminButton, SelectField } from "./form-fiel
 import { RichTextEditor } from "./rich-text-editor"
 import { LinksManager } from "./links-manager"
 import { TagInput } from "./tag-input"
+import Link from "next/link"
 
 interface ProjectLink {
   id?: string
@@ -153,14 +154,14 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
   return (
     <div>
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <a
+          <Link
             href="/admin/projects"
             className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
           >
             <Icon icon="mdi:arrow-left" className="h-4 w-4" />
-          </a>
+          </Link>
           <div>
             <h2 className="text-lg font-bold text-foreground">
               {isNew ? "New Project" : "Edit Project"}
@@ -176,7 +177,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
           </AdminButton>
           <AdminButton onClick={handleSave} disabled={saving}>
             <Icon icon={saving ? "mdi:loading" : "mdi:content-save-outline"} className={`h-4 w-4 ${saving ? "animate-spin" : ""}`} />
-            {saving ? "Saving..." : "Save Project"}
+            {saving ? "Saving..." : "Save"}
           </AdminButton>
         </div>
       </div>
@@ -202,7 +203,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
 
       {/* Basic Info */}
       {activeSection === "basic" && (
-        <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+        <div className="rounded-xl border border-border bg-card p-4 sm:p-6 space-y-5">
           <h3 className="flex items-center gap-2 text-sm font-bold text-foreground">
             <Icon icon="mdi:information-outline" className="h-4 w-4 text-primary" />
             Basic Information
@@ -247,7 +248,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
 
       {/* Content */}
       {activeSection === "content" && (
-        <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+        <div className="rounded-xl border border-border bg-card p-4 sm:p-6 space-y-5">
           <h3 className="flex items-center gap-2 text-sm font-bold text-foreground">
             <Icon icon="mdi:text-box-outline" className="h-4 w-4 text-primary" />
             Description
@@ -260,8 +261,8 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
       {/* Detail Rich Text */}
       {activeSection === "detail" && (
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-card p-6">
-            <div className="mb-4 flex items-center justify-between">
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
+            <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="flex items-center gap-2 text-sm font-bold text-foreground">
                   <Icon icon="mdi:file-document-edit-outline" className="h-4 w-4 text-primary" />
@@ -297,7 +298,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
       {/* Links & Tags */}
       {activeSection === "links" && (
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6 space-y-5">
             <h3 className="flex items-center gap-2 text-sm font-bold text-foreground">
               <Icon icon="mdi:link-variant" className="h-4 w-4 text-primary" />
               Project URLs
@@ -308,7 +309,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
             </div>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-6">
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
             <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-foreground">
               <Icon icon="mdi:tag-multiple-outline" className="h-4 w-4 text-primary" />
               Tags
@@ -320,7 +321,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
             />
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-6">
+          <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
             <LinksManager value={form.links} onChange={(links) => set("links", links)} />
           </div>
         </div>

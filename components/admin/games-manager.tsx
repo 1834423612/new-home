@@ -91,7 +91,7 @@ export function GamesManager() {
                 {items.map((item) => (
                     <div
                         key={item.id}
-                        className="flex items-center justify-between rounded-xl border border-border bg-card p-4 hover:border-primary/30 transition-colors"
+                        className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors sm:flex-row sm:items-center sm:justify-between sm:p-4"
                     >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                             {item.icon && (
@@ -111,7 +111,7 @@ export function GamesManager() {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0 ml-2">
+                        <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto sm:ml-2">
                             <button
                                 onClick={() => { setEditing(item); setShowForm(true) }}
                                 className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
@@ -167,7 +167,7 @@ function GameForm({
                 e.preventDefault()
                 onSave(form)
             }}
-            className="mb-6 rounded-xl border border-primary/30 bg-card p-6"
+            className="mb-6 rounded-xl border border-primary/30 bg-card p-4 sm:p-6"
         >
             <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-foreground">
                 <Icon icon="mdi:gamepad-variant" className="h-4 w-4 text-primary" />

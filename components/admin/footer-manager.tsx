@@ -214,7 +214,7 @@ export function FooterManager() {
                         {sponsors.map((s) => (
                             <div
                                 key={s.id}
-                                className="flex items-center justify-between rounded-xl border border-border bg-card p-4 hover:border-primary/30 transition-colors"
+                                className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors sm:flex-row sm:items-center sm:justify-between sm:p-4"
                             >
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
                                     {s.logo && (
@@ -230,7 +230,7 @@ export function FooterManager() {
                                         <p className="font-mono text-[10px] text-muted-foreground truncate">{s.url || "no link"}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 shrink-0 ml-2">
+                                <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
                                     <span className="rounded-full bg-secondary px-2 py-0.5 text-[9px] font-mono text-secondary-foreground">
                                         #{s.sort_order}
                                     </span>
@@ -349,7 +349,7 @@ function SponsorForm({
         setForm((prev) => ({ ...prev, [key]: value }))
 
     return (
-        <div className="mb-6 rounded-xl border border-primary/20 bg-card p-5 space-y-4">
+        <div className="mb-6 rounded-xl border border-primary/20 bg-card p-4 sm:p-5 space-y-4">
             <h3 className="text-sm font-bold text-foreground">
                 {initial?.id ? "Edit Sponsor" : "New Sponsor"}
             </h3>

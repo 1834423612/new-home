@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { Icon } from "@iconify/react"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 interface AdminUser {
   userId: number
@@ -42,8 +43,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [user, setUser] = useState<AdminUser | null>(null)
   const [loading, setLoading] = useState(true)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  // Skip auth for login page
   const isLoginPage = pathname === "/admin/login"
 
   useEffect(() => {
@@ -60,6 +61,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       .catch(() => router.push("/admin/login"))
       .finally(() => setLoading(false))
   }, [router, isLoginPage])
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [pathname])
 
   if (isLoginPage) return <>{children}</>
 
@@ -86,34 +92,41 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-card/80 px-4 py-2.5 backdrop-blur-xl md:px-6">
-        <div className="flex items-center gap-3">
-          <a
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-card/80 px-3 py-2.5 backdrop-blur-xl sm:px-4 md:px-6">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Mobile menu toggle */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary md:hidden"
+          >
+            <Icon icon={mobileMenuOpen ? "mdi:close" : "mdi:menu"} className="h-4 w-4" />
+          </button>
+          <Link
             href="/"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+            className="hidden h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary sm:flex"
             title="Back to site"
           >
             <Icon icon="mdi:arrow-left" className="h-4 w-4" />
-          </a>
-          <div className="h-5 w-px bg-border" />
+          </Link>
+          <div className="hidden h-5 w-px bg-border sm:block" />
           <div className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
               <Icon icon="mdi:shield-crown-outline" className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <h1 className="text-sm font-bold text-foreground leading-none">Admin Panel</h1>
-              <p className="text-[10px] text-muted-foreground font-mono leading-none mt-0.5">Dashboard</p>
+              <h1 className="text-sm font-bold text-foreground leading-none">Admin</h1>
+              <p className="text-[10px] text-muted-foreground font-mono leading-none mt-0.5 hidden sm:block">Dashboard</p>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 rounded-lg bg-secondary/50 px-3 py-1.5">
+          <div className="flex items-center gap-2 rounded-lg bg-secondary/50 px-2 py-1.5 sm:px-3">
             <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="font-mono text-xs text-foreground">{user.username}</span>
+            <span className="font-mono text-xs text-foreground hidden sm:inline">{user.username}</span>
           </div>
           <button
             onClick={handleLogout}
-            className="flex h-8 items-center gap-1.5 rounded-lg border border-border px-3 text-xs text-muted-foreground transition-all hover:border-destructive/50 hover:bg-destructive/5 hover:text-destructive"
+            className="flex h-8 items-center gap-1.5 rounded-lg border border-border px-2 text-xs text-muted-foreground transition-all hover:border-destructive/50 hover:bg-destructive/5 hover:text-destructive sm:px-3"
           >
             <Icon icon="mdi:logout" className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Logout</span>
@@ -121,18 +134,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </header>
 
-      <div className="flex">
-        {/* Desktop Sidebar */}
+      <div className="flex relative">
+        {/* Mobile sidebar overlay */}
+        {mobileMenuOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+
+        {/* Sidebar - Desktop always visible, Mobile as overlay drawer */}
         <aside
           className={cn(
-            "sticky top-[49px] h-[calc(100vh-49px)] border-r border-border bg-card/30 transition-all duration-300 max-md:hidden",
-            sidebarCollapsed ? "w-14" : "w-56"
+            "max-md:fixed max-md:left-0 max-md:top-[49px] max-md:z-50 max-md:h-[calc(100vh-49px)] max-md:shadow-xl",
+            "sticky top-[49px] h-[calc(100vh-49px)] border-r border-border bg-card/95 max-md:bg-card transition-all duration-300",
+            mobileMenuOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
+            sidebarCollapsed ? "md:w-14" : "md:w-56",
+            "max-md:w-64"
           )}
         >
-          <div className="flex h-full flex-col justify-between p-2">
+          <div className="flex h-full flex-col justify-between p-2 overflow-y-auto">
             <div className="flex flex-col gap-0.5">
+              {/* Back to site - mobile only */}
+              <Link
+                href="/"
+                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary/80 hover:text-foreground transition-all duration-200 md:hidden"
+              >
+                <Icon icon="mdi:arrow-left" className="h-4 w-4 shrink-0" />
+                <span>Back to site</span>
+              </Link>
+              <div className="my-1 h-px bg-border/50 md:hidden" />
+
               {/* Content group */}
-              {!sidebarCollapsed && (
+              {(!sidebarCollapsed || mobileMenuOpen) && (
                 <span className="mb-1 mt-2 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground/50">
                   Content
                 </span>
@@ -140,27 +174,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {contentItems.map((item) => {
                 const isActive = pathname.startsWith(item.href)
                 return (
-                  <a
+                  <Link
                     key={item.id}
                     href={item.href}
                     title={sidebarCollapsed ? item.label : undefined}
                     className={cn(
                       "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-all duration-200",
-                      sidebarCollapsed && "justify-center px-0",
+                      sidebarCollapsed && !mobileMenuOpen && "md:justify-center md:px-0",
                       isActive
                         ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                         : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
                     )}
                   >
                     <Icon icon={item.icon} className="h-4 w-4 shrink-0" />
-                    {!sidebarCollapsed && <span>{item.label}</span>}
-                  </a>
+                    {(!sidebarCollapsed || mobileMenuOpen) && <span>{item.label}</span>}
+                  </Link>
                 )
               })}
 
               {/* System group */}
               <div className="my-2 h-px bg-border/50" />
-              {!sidebarCollapsed && (
+              {(!sidebarCollapsed || mobileMenuOpen) && (
                 <span className="mb-1 px-3 text-[10px] font-mono uppercase tracking-widest text-muted-foreground/50">
                   System
                 </span>
@@ -168,29 +202,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {systemItems.map((item) => {
                 const isActive = pathname.startsWith(item.href)
                 return (
-                  <a
+                  <Link
                     key={item.id}
                     href={item.href}
                     title={sidebarCollapsed ? item.label : undefined}
                     className={cn(
                       "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-all duration-200",
-                      sidebarCollapsed && "justify-center px-0",
+                      sidebarCollapsed && !mobileMenuOpen && "md:justify-center md:px-0",
                       isActive
                         ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                         : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
                     )}
                   >
                     <Icon icon={item.icon} className="h-4 w-4 shrink-0" />
-                    {!sidebarCollapsed && <span>{item.label}</span>}
-                  </a>
+                    {(!sidebarCollapsed || mobileMenuOpen) && <span>{item.label}</span>}
+                  </Link>
                 )
               })}
             </div>
 
-            {/* Collapse toggle */}
+            {/* Collapse toggle - desktop only */}
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="flex items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              className="hidden md:flex items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               <Icon
@@ -201,34 +235,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </aside>
 
-        {/* Mobile tabs */}
-        <div className="sticky top-[49px] z-40 w-full overflow-x-auto border-b border-border bg-card/80 backdrop-blur-xl md:hidden">
-          <div className="flex">
-            {navItems.map((item) => {
-              const isActive = pathname.startsWith(item.href)
-              return (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  className={cn(
-                    "flex shrink-0 flex-col items-center gap-1 px-4 py-2.5 text-[10px] transition-colors",
-                    isActive
-                      ? "border-b-2 border-primary text-primary"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  <Icon icon={item.icon} className="h-4 w-4" />
-                  {item.label}
-                </a>
-              )
-            })}
-          </div>
-        </div>
-
         {/* Content Area */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 w-full">
           {/* Breadcrumb bar */}
-          <div className="border-b border-border/50 bg-secondary/20 px-6 py-3 md:px-8">
+          <div className="border-b border-border/50 bg-secondary/20 px-4 py-2.5 sm:px-6 md:px-8 md:py-3">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Icon icon="mdi:home-outline" className="h-3.5 w-3.5" />
               <span>/</span>
@@ -238,7 +248,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
 
-          <div className="p-6 md:p-8">
+          <div className="p-3 sm:p-4 md:p-6 lg:p-8">
             {children}
           </div>
         </main>

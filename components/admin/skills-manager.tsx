@@ -47,11 +47,11 @@ export function SkillsManager() {
       {Object.entries(grouped).map(([cat, skills]) => (
         <div key={cat} className="mb-6">
           <h3 className="mb-3 font-mono text-xs font-bold uppercase tracking-widest text-primary">{cat}</h3>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {skills.map((s) => (
               <div key={s.id} className="group flex items-center justify-between rounded-lg border border-border bg-card p-3 hover:border-primary/30 transition-colors">
-                <div className="flex items-center gap-2"><Icon icon={s.icon} className="h-5 w-5" /><span className="text-xs text-foreground">{s.name}</span></div>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-2 min-w-0"><Icon icon={s.icon} className="h-5 w-5 shrink-0" /><span className="text-xs text-foreground truncate">{s.name}</span></div>
+                <div className="flex items-center gap-1 shrink-0 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <button onClick={() => { setEditing(s); setShowForm(true) }} className="text-muted-foreground hover:text-primary"><Icon icon="mdi:pencil-outline" className="h-3.5 w-3.5" /></button>
                   <button onClick={() => handleDelete(s.id)} className="text-muted-foreground hover:text-destructive"><Icon icon="mdi:delete-outline" className="h-3.5 w-3.5" /></button>
                 </div>
@@ -73,7 +73,7 @@ function SkillForm({ initial, onSave, onCancel }: { initial: SkillRow | null; on
   const cats = ["frontend", "backend", "devops", "design", "os", "ops"].map((c) => ({ value: c, label: c }))
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSave(form) }} className="mb-6 rounded-xl border border-primary/30 bg-card p-6">
+    <form onSubmit={(e) => { e.preventDefault(); onSave(form) }} className="mb-6 rounded-xl border border-primary/30 bg-card p-4 sm:p-6">
       <h3 className="mb-4 text-sm font-bold text-foreground">{initial ? "Edit" : "New"} Skill</h3>
       <div className="grid gap-4 sm:grid-cols-2">
         <InputField label="Name" value={form.name} onChange={(v) => set("name", v)} required />

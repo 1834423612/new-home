@@ -48,16 +48,16 @@ export function AwardsManager() {
       {showForm && <AwardForm initial={editing} onSave={handleSave} onCancel={() => { setShowForm(false); setEditing(null) }} />}
       <div className="flex flex-col gap-3">
         {items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between rounded-xl border border-border bg-card p-4 hover:border-primary/30 transition-colors">
-            <div>
-              <div className="flex items-center gap-2">
-                <Icon icon="mdi:trophy-outline" className="h-4 w-4 text-primary" />
-                <h3 className="text-sm font-bold text-foreground">{item.title_zh}</h3>
+          <div key={item.id} className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors sm:flex-row sm:items-center sm:justify-between sm:p-4">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Icon icon="mdi:trophy-outline" className="h-4 w-4 text-primary shrink-0" />
+                <h3 className="text-sm font-bold text-foreground truncate">{item.title_zh}</h3>
                 {item.level && <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-mono text-secondary-foreground">{item.level}</span>}
               </div>
-              <p className="font-mono text-[10px] text-muted-foreground">{item.org_zh} / {item.date} / slug: {item.slug}</p>
+              <p className="font-mono text-[10px] text-muted-foreground mt-1 truncate">{item.org_zh} / {item.date} / slug: {item.slug}</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
               <button onClick={() => { setEditing(item); setShowForm(true) }} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"><Icon icon="mdi:pencil-outline" className="h-4 w-4" /></button>
               <button onClick={() => handleDelete(item.id)} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-destructive hover:text-destructive transition-colors"><Icon icon="mdi:delete-outline" className="h-4 w-4" /></button>
             </div>
@@ -69,7 +69,7 @@ export function AwardsManager() {
 }
 
 function AwardForm({ initial, onSave, onCancel }: { initial: AwardRow | null; onSave: (d: Record<string, unknown>) => void; onCancel: () => void }) {
-  const parseLinks = (s: string | null): string => {
+  const parseLinks = (s: string | null | undefined): string => {
     if (!s) return ""
     try { return JSON.parse(s).map((l: { title: string; url: string }) => `${l.title}|${l.url}`).join("\n") } catch { return "" }
   }
@@ -95,7 +95,7 @@ function AwardForm({ initial, onSave, onCancel }: { initial: AwardRow | null; on
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6 rounded-xl border border-primary/30 bg-card p-6">
+    <form onSubmit={handleSubmit} className="mb-6 rounded-xl border border-primary/30 bg-card p-4 sm:p-6">
       <h3 className="mb-4 text-sm font-bold text-foreground">{initial ? "Edit" : "New"} Award</h3>
       <div className="grid gap-4 sm:grid-cols-2">
         <InputField label="ID" value={form.id} onChange={(v) => set("id", v)} required disabled={!!initial} />

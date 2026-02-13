@@ -44,12 +44,12 @@ export function ExperiencesManager() {
       {showForm && <ExperienceForm initial={editing} onSave={handleSave} onCancel={() => { setShowForm(false); setEditing(null) }} />}
       <div className="flex flex-col gap-3">
         {items.map((item) => (
-          <div key={item.id} className="flex items-center justify-between rounded-xl border border-border bg-card p-4 hover:border-primary/30 transition-colors">
-            <div>
-              <h3 className="text-sm font-bold text-foreground">{item.title_zh}</h3>
-              <p className="font-mono text-[10px] text-muted-foreground">{item.org_zh} / {item.start_date} - {item.end_date || "Present"}</p>
+          <div key={item.id} className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors sm:flex-row sm:items-center sm:justify-between sm:p-4">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm font-bold text-foreground truncate">{item.title_zh}</h3>
+              <p className="font-mono text-[10px] text-muted-foreground truncate">{item.org_zh} / {item.start_date} - {item.end_date || "Present"}</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
               <button onClick={() => { setEditing(item); setShowForm(true) }} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"><Icon icon="mdi:pencil-outline" className="h-4 w-4" /></button>
               <button onClick={() => handleDelete(item.id)} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-destructive hover:text-destructive transition-colors"><Icon icon="mdi:delete-outline" className="h-4 w-4" /></button>
             </div>
@@ -71,7 +71,7 @@ function ExperienceForm({ initial, onSave, onCancel }: { initial: ExperienceRow 
   const set = (k: string, v: unknown) => setForm((f) => ({ ...f, [k]: v }))
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSave(form) }} className="mb-6 rounded-xl border border-primary/30 bg-card p-6">
+    <form onSubmit={(e) => { e.preventDefault(); onSave(form) }} className="mb-6 rounded-xl border border-primary/30 bg-card p-4 sm:p-6">
       <h3 className="mb-4 text-sm font-bold text-foreground">{initial ? "Edit" : "New"} Experience</h3>
       <div className="grid gap-4 sm:grid-cols-2">
         <InputField label="ID" value={form.id} onChange={(v) => set("id", v)} required disabled={!!initial} />

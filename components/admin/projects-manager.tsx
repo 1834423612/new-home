@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react"
 import { Icon } from "@iconify/react"
 import { AdminButton } from "./form-fields"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 interface ProjectRow {
   id: string; title_zh: string; title_en: string; description_zh: string; description_en: string
@@ -66,11 +67,11 @@ export function ProjectsManager() {
           <h2 className="text-lg font-bold text-foreground">Projects</h2>
           <p className="text-xs text-muted-foreground mt-0.5">{items.length} projects total</p>
         </div>
-        <a href="/admin/projects/new">
+        <Link href="/admin/projects/new">
           <AdminButton>
             <Icon icon="mdi:plus" className="h-4 w-4" /> New Project
           </AdminButton>
-        </a>
+        </Link>
       </div>
 
       <div className="grid gap-3">
@@ -80,7 +81,7 @@ export function ProjectsManager() {
           return (
             <div
               key={item.id}
-              className="group relative flex items-start gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-sm"
+              className="group relative flex flex-col gap-3 rounded-xl border border-border bg-card p-3 transition-all hover:border-primary/30 hover:shadow-sm sm:flex-row sm:items-start sm:gap-4 sm:p-4"
             >
               {/* Image thumbnail */}
               {item.image && (
@@ -106,7 +107,7 @@ export function ProjectsManager() {
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground truncate">{item.title_en}</p>
-                <div className="mt-2 flex items-center gap-3 text-[10px] font-mono text-muted-foreground/60">
+                <div className="mt-2 flex items-center gap-2 flex-wrap text-[10px] font-mono text-muted-foreground/60">
                   <span className="flex items-center gap-1">
                     <Icon icon="mdi:calendar-outline" className="h-3 w-3" /> {item.date}
                   </span>
@@ -134,14 +135,14 @@ export function ProjectsManager() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-1.5 shrink-0">
-                <a
+              <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-start">
+                <Link
                   href={`/admin/projects/${item.id}`}
                   className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                   title="Edit"
                 >
                   <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
-                </a>
+                </Link>
                 <button
                   onClick={() => handleDelete(item.id)}
                   className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-destructive hover:text-destructive transition-colors"
@@ -158,11 +159,11 @@ export function ProjectsManager() {
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Icon icon="mdi:folder-open-outline" className="h-12 w-12 text-muted-foreground/20" />
             <p className="mt-3 text-sm text-muted-foreground">No projects yet</p>
-            <a href="/admin/projects/new" className="mt-4">
+            <Link href="/admin/projects/new" className="mt-4">
               <AdminButton>
                 <Icon icon="mdi:plus" className="h-4 w-4" /> Create your first project
               </AdminButton>
-            </a>
+            </Link>
           </div>
         )}
       </div>

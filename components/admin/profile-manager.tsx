@@ -109,7 +109,7 @@ export function ProfileManager() {
       )}
 
       {/* Account Info */}
-      <div className="rounded-xl border border-border bg-card p-6">
+      <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
         <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-foreground">
           <Icon icon="mdi:account-outline" className="h-4 w-4 text-primary" />
           Account Information
@@ -133,7 +133,7 @@ export function ProfileManager() {
       </div>
 
       {/* Password */}
-      <div className="rounded-xl border border-border bg-card p-6">
+      <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
         <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-foreground">
           <Icon icon="mdi:lock-outline" className="h-4 w-4 text-primary" />
           Change Password

@@ -162,22 +162,20 @@ function ContactCard({
 
     return (
         <div
-            className={`group flex items-center justify-between rounded-lg border bg-card p-4 transition-colors ${isVisible ? "border-border hover:border-primary/30" : "border-border/50 opacity-60 hover:opacity-80"
+            className={`group flex flex-col gap-3 rounded-lg border bg-card p-3 transition-colors sm:flex-row sm:items-center sm:justify-between sm:p-4 ${isVisible ? "border-border hover:border-primary/30" : "border-border/50 opacity-60 hover:opacity-80"
                 }`}
         >
-            <div className="flex items-center gap-4">
-                {/* Color dot + icon */}
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
                 <div
-                    className="flex h-10 w-10 items-center justify-center rounded-lg"
+                    className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg shrink-0"
                     style={{ backgroundColor: `${item.color}15` }}
                 >
-                    <Icon icon={item.icon} className="h-5 w-5" style={{ color: item.color }} />
+                    <Icon icon={item.icon} className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: item.color }} />
                 </div>
 
-                <div>
-                    <div className="flex items-center gap-2">
+                <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-sm font-medium text-foreground">{item.name}</span>
-                        {/* Type badge */}
                         <span
                             className={`rounded-full px-2 py-0.5 text-[10px] font-mono ${isTextType
                                     ? "bg-amber-500/10 text-amber-500"
@@ -192,14 +190,13 @@ function ContactCard({
                             </span>
                         )}
                     </div>
-                    <p className="mt-0.5 text-xs text-muted-foreground font-mono">
+                    <p className="mt-0.5 text-xs text-muted-foreground font-mono truncate">
                         {isTextType ? (item.text_content || "—") : (item.url || "#")}
                     </p>
                 </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="flex items-center gap-1 shrink-0 self-end sm:self-auto">
                 <button
                     onClick={onToggleVisible}
                     className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
@@ -258,7 +255,7 @@ function ContactForm({
     return (
         <form
             onSubmit={(e) => { e.preventDefault(); onSave(form) }}
-            className="mb-6 rounded-xl border border-primary/30 bg-card p-6"
+            className="mb-6 rounded-xl border border-primary/30 bg-card p-4 sm:p-6"
         >
             <h3 className="mb-4 text-sm font-bold text-foreground">
                 {initial ? "Edit" : "New"} Contact Method

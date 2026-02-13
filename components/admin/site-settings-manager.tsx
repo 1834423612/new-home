@@ -197,7 +197,7 @@ export function SiteSettingsManager() {
               <button
                 type="button"
                 onClick={() => setExpandedGroup(isOpen ? "" : group.id)}
-                className="flex w-full items-center justify-between px-5 py-4 text-left"
+                className="flex w-full items-center justify-between px-3 py-3 sm:px-5 sm:py-4 text-left"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
@@ -222,7 +222,7 @@ export function SiteSettingsManager() {
               </button>
 
               {isOpen && (
-                <div className="border-t border-border px-5 py-5 space-y-4">
+                <div className="border-t border-border px-3 py-4 sm:px-5 sm:py-5 space-y-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     {group.fields.map((field) =>
                       field.type === "textarea" ? (
