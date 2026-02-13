@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { Icon } from "@iconify/react"
 import { InputField, SelectField, AdminButton, IconPreview } from "./form-fields"
+import { cn } from "@/lib/utils"
 
 interface SocialLinkRow {
     id: number
@@ -21,6 +22,11 @@ export function ContactManager() {
     const [loading, setLoading] = useState(true)
     const [editing, setEditing] = useState<SocialLinkRow | null>(null)
     const [showForm, setShowForm] = useState(false)
+    const [sortMode, setSortMode] = useState(false)
+    const [sortItems, setSortItems] = useState<SocialLinkRow[]>([])
+    const [sortSaving, setSortSaving] = useState(false)
+    const dragItem = useRef<number | null>(null)
+    const dragOverItem = useRef<number | null>(null)
 
     const fetchItems = useCallback(async () => {
         setLoading(true)
@@ -54,12 +60,79 @@ export function ContactManager() {
     }
 
     const handleToggleVisible = async (item: SocialLinkRow) => {
+        const newVisible = !item.visible
+        // When hiding: set sort_order to 999; when showing: append to end of visible list
+        const newSortOrder = newVisible
+            ? items.filter(i => !!i.visible).length
+            : 999
         await fetch("/api/admin/social-links", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...item, visible: !item.visible }),
+            body: JSON.stringify({ ...item, visible: newVisible, sort_order: newSortOrder }),
         })
+        // Re-normalize visible items' sort_order to be contiguous 0,1,2,...
+        const updated = items
+            .map(i => i.id === item.id ? { ...i, visible: newVisible, sort_order: newSortOrder } : i)
+            .filter(i => !!i.visible)
+            .sort((a, b) => a.sort_order - b.sort_order)
+        for (let idx = 0; idx < updated.length; idx++) {
+            if (updated[idx].sort_order !== idx) {
+                await fetch("/api/admin/social-links", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ...updated[idx], sort_order: idx }),
+                })
+            }
+        }
         fetchItems()
+    }
+
+    // Sort mode — only visible items participate
+    const enterSortMode = () => {
+        const visible = items.filter(i => !!i.visible)
+        setSortItems(visible.map((item, i) => ({ ...item, sort_order: item.sort_order ?? i })))
+        setSortMode(true)
+    }
+    const cancelSortMode = () => { setSortMode(false); setSortItems([]) }
+
+    const handleDragStart = (index: number) => { dragItem.current = index }
+    const handleDragEnter = (index: number) => { dragOverItem.current = index }
+    const handleDragEnd = () => {
+        if (dragItem.current === null || dragOverItem.current === null) return
+        const list = [...sortItems]
+        const draggedItem = list[dragItem.current]
+        list.splice(dragItem.current, 1)
+        list.splice(dragOverItem.current, 0, draggedItem)
+        const reordered = list.map((item, i) => ({ ...item, sort_order: i }))
+        setSortItems(reordered)
+        dragItem.current = null
+        dragOverItem.current = null
+    }
+
+    const moveItem = (index: number, direction: -1 | 1) => {
+        const newIndex = index + direction
+        if (newIndex < 0 || newIndex >= sortItems.length) return
+        const list = [...sortItems]
+        ;[list[index], list[newIndex]] = [list[newIndex], list[index]]
+        setSortItems(list.map((item, i) => ({ ...item, sort_order: i })))
+    }
+
+    const handleSaveSortOrder = async () => {
+        setSortSaving(true)
+        try {
+            for (const item of sortItems) {
+                await fetch("/api/admin/social-links", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ...item, sort_order: item.sort_order }),
+                })
+            }
+            await fetchItems()
+            setSortMode(false)
+            setSortItems([])
+        } finally {
+            setSortSaving(false)
+        }
     }
 
     if (loading) {
@@ -82,12 +155,29 @@ export function ContactManager() {
                         Manage social links and contact methods displayed in the Contact section
                     </p>
                 </div>
-                <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}>
-                    <Icon icon="mdi:plus" className="h-4 w-4" /> Add
-                </AdminButton>
+                <div className="flex items-center gap-2">
+                    {!sortMode ? (
+                        <AdminButton variant="secondary" onClick={enterSortMode}>
+                            <Icon icon="mdi:sort" className="h-4 w-4" /> Reorder
+                        </AdminButton>
+                    ) : (
+                        <>
+                            <AdminButton onClick={handleSaveSortOrder} disabled={sortSaving}>
+                                <Icon icon={sortSaving ? "mdi:loading" : "mdi:content-save-outline"} className={cn("h-4 w-4", sortSaving && "animate-spin")} />
+                                {sortSaving ? "Saving..." : "Save Order"}
+                            </AdminButton>
+                            <AdminButton variant="secondary" onClick={cancelSortMode} disabled={sortSaving}>Cancel</AdminButton>
+                        </>
+                    )}
+                    {!sortMode && (
+                        <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}>
+                            <Icon icon="mdi:plus" className="h-4 w-4" /> Add
+                        </AdminButton>
+                    )}
+                </div>
             </div>
 
-            {showForm && (
+            {!sortMode && showForm && (
                 <ContactForm
                     initial={editing}
                     onSave={handleSave}
@@ -95,51 +185,104 @@ export function ContactManager() {
                 />
             )}
 
-            {/* Visible items */}
-            {visibleItems.length > 0 && (
-                <div className="mb-6">
-                    <h3 className="mb-3 font-mono text-xs font-bold uppercase tracking-widest text-primary">
-                        Visible ({visibleItems.length})
-                    </h3>
-                    <div className="space-y-2">
-                        {visibleItems.map((item) => (
-                            <ContactCard
-                                key={item.id}
-                                item={item}
-                                onEdit={() => { setEditing(item); setShowForm(true) }}
-                                onDelete={() => handleDelete(item.id)}
-                                onToggleVisible={() => handleToggleVisible(item)}
-                            />
-                        ))}
-                    </div>
+            {/* Sort mode */}
+            {sortMode ? (
+                <div className="space-y-2">
+                    <p className="mb-3 text-xs text-muted-foreground flex items-center gap-1">
+                        <Icon icon="mdi:information-outline" className="h-3.5 w-3.5" />
+                        Drag items or use arrows to reorder, then click &quot;Save Order&quot;
+                    </p>
+                    {sortItems.map((item, index) => (
+                        <div
+                            key={item.id}
+                            draggable
+                            onDragStart={() => handleDragStart(index)}
+                            onDragEnter={() => handleDragEnter(index)}
+                            onDragEnd={handleDragEnd}
+                            onDragOver={(e) => e.preventDefault()}
+                            className="flex items-center gap-2 rounded-lg border border-border bg-card p-3 cursor-grab active:cursor-grabbing hover:border-primary/30 transition-colors"
+                        >
+                            <Icon icon="mdi:drag" className="h-5 w-5 text-muted-foreground/50 shrink-0" />
+                            <span className="flex h-6 min-w-[1.75rem] items-center justify-center rounded bg-primary/10 px-1.5 text-[10px] font-mono font-bold text-primary shrink-0">
+                                #{item.sort_order}
+                            </span>
+                            <div
+                                className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+                                style={{ backgroundColor: `${item.color}15` }}
+                            >
+                                <Icon icon={item.icon} className="h-4 w-4" style={{ color: item.color }} />
+                            </div>
+                            <span className="text-sm font-medium text-foreground truncate flex-1 min-w-0">{item.name}</span>
+                            <div className="flex items-center gap-1 shrink-0">
+                                <button
+                                    onClick={() => moveItem(index, -1)}
+                                    disabled={index === 0}
+                                    className="rounded-md p-1 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors disabled:opacity-30"
+                                    title="Move up"
+                                >
+                                    <Icon icon="mdi:arrow-up" className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => moveItem(index, 1)}
+                                    disabled={index === sortItems.length - 1}
+                                    className="rounded-md p-1 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors disabled:opacity-30"
+                                    title="Move down"
+                                >
+                                    <Icon icon="mdi:arrow-down" className="h-4 w-4" />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
-            )}
+            ) : (
+                <>
+                    {/* Visible items */}
+                    {visibleItems.length > 0 && (
+                        <div className="mb-6">
+                            <h3 className="mb-3 font-mono text-xs font-bold uppercase tracking-widest text-primary">
+                                Visible ({visibleItems.length})
+                            </h3>
+                            <div className="space-y-2">
+                                {visibleItems.map((item) => (
+                                    <ContactCard
+                                        key={item.id}
+                                        item={item}
+                                        onEdit={() => { setEditing(item); setShowForm(true) }}
+                                        onDelete={() => handleDelete(item.id)}
+                                        onToggleVisible={() => handleToggleVisible(item)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-            {/* Hidden items */}
-            {hiddenItems.length > 0 && (
-                <div className="mb-6">
-                    <h3 className="mb-3 font-mono text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                        Hidden ({hiddenItems.length})
-                    </h3>
-                    <div className="space-y-2">
-                        {hiddenItems.map((item) => (
-                            <ContactCard
-                                key={item.id}
-                                item={item}
-                                onEdit={() => { setEditing(item); setShowForm(true) }}
-                                onDelete={() => handleDelete(item.id)}
-                                onToggleVisible={() => handleToggleVisible(item)}
-                            />
-                        ))}
-                    </div>
-                </div>
-            )}
+                    {/* Hidden items */}
+                    {hiddenItems.length > 0 && (
+                        <div className="mb-6">
+                            <h3 className="mb-3 font-mono text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                                Hidden ({hiddenItems.length})
+                            </h3>
+                            <div className="space-y-2">
+                                {hiddenItems.map((item) => (
+                                    <ContactCard
+                                        key={item.id}
+                                        item={item}
+                                        onEdit={() => { setEditing(item); setShowForm(true) }}
+                                        onDelete={() => handleDelete(item.id)}
+                                        onToggleVisible={() => handleToggleVisible(item)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-            {items.length === 0 && (
-                <div className="flex flex-col items-center gap-3 py-12 text-muted-foreground">
-                    <Icon icon="mdi:contacts-outline" className="h-12 w-12 opacity-30" />
-                    <p className="text-sm">No contact methods yet. Click &quot;Add&quot; to create one.</p>
-                </div>
+                    {items.length === 0 && (
+                        <div className="flex flex-col items-center gap-3 py-12 text-muted-foreground">
+                            <Icon icon="mdi:contacts-outline" className="h-12 w-12 opacity-30" />
+                            <p className="text-sm">No contact methods yet. Click &quot;Add&quot; to create one.</p>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     )
@@ -175,6 +318,7 @@ function ContactCard({
 
                 <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
+                        <span className="flex h-5 min-w-[1.5rem] items-center justify-center rounded bg-secondary px-1 text-[9px] font-mono font-bold text-muted-foreground">#{item.sort_order}</span>
                         <span className="text-sm font-medium text-foreground">{item.name}</span>
                         <span
                             className={`rounded-full px-2 py-0.5 text-[10px] font-mono ${isTextType
