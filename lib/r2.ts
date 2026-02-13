@@ -39,6 +39,45 @@ export async function listR2Objects(prefix = "", maxKeys = 100) {
   }))
 }
 
+/** List objects with delimiter to get virtual "folders" */
+export async function listR2Folder(prefix = "", maxKeys = 500) {
+  const client = getR2Client()
+  const bucket = process.env.R2_BUCKET_NAME!
+
+  // ensure prefix ends with / if not empty
+  const normalizedPrefix = prefix && !prefix.endsWith("/") ? `${prefix}/` : prefix
+
+  const command = new ListObjectsV2Command({
+    Bucket: bucket,
+    Prefix: normalizedPrefix,
+    Delimiter: "/",
+    MaxKeys: maxKeys,
+  })
+
+  const response = await client.send(command)
+
+  const folders = (response.CommonPrefixes || []).map((cp) => {
+    const full = cp.Prefix || ""
+    // extract folder name: remove trailing / then get last segment
+    const parts = full.replace(/\/$/, "").split("/")
+    return {
+      name: parts[parts.length - 1],
+      prefix: full,
+    }
+  })
+
+  const files = (response.Contents || [])
+    .filter((obj) => obj.Key !== normalizedPrefix) // exclude the prefix itself
+    .map((obj) => ({
+      key: obj.Key || "",
+      size: obj.Size || 0,
+      lastModified: obj.LastModified?.toISOString() || "",
+      url: `${process.env.R2_PUBLIC_URL}/${obj.Key}`,
+    }))
+
+  return { folders, files }
+}
+
 export async function uploadToR2(key: string, body: Buffer | Uint8Array, contentType: string) {
   const client = getR2Client()
   const bucket = process.env.R2_BUCKET_NAME!
