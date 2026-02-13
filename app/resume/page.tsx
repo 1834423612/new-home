@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useRef, useCallback } from "react"
+import { useState, useEffect, useMemo, useRef, useCallback } from "react"
 import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
 import { useSiteData } from "@/hooks/use-site-data"
@@ -104,23 +104,123 @@ export default function ResumePage() {
         </a>
       </div>
 
-      {/* Resume Paper — US Letter 816×1056 */}
-      <div className="flex justify-center px-4 py-8 sm:px-6 print:p-0">
-        <div className="resume-paper overflow-hidden rounded-lg shadow-2xl print:shadow-none" style={{ width: 816, minHeight: 1056, maxWidth: '100%', background: palette.bg }}>
-          <div style={{ minHeight: 1056, display: 'flex', flexDirection: 'column' }}>
-            <ResumeRenderer data={resumeData} palette={palette} layout={layout} locale={locale} showIcons={showIcons} />
+      {/* Resume Paper — US Letter 816×1056, scales down on mobile */}
+      <ResumePaperWrapper palette={palette}>
+        <ResumeRenderer data={resumeData} palette={palette} layout={layout} locale={locale} showIcons={showIcons} />
+      </ResumePaperWrapper>
+      <PdfPreviewModal open={pdfOpen} onClose={() => setPdfOpen(false)} locale={locale} data={resumeData} palette={palette} layout={layout} showIcons={showIcons} />
+    </div>
+  )
+}
+
+// ── Responsive paper wrapper (scales to fit mobile) ──────────────────
+
+const PAPER_W_CONST = 816
+const PAPER_H_CONST = 1056
+
+function ResumePaperWrapper({ palette, children }: { palette: PaletteOption; children: React.ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    const measure = () => {
+      if (!containerRef.current) return
+      const cs = window.getComputedStyle(containerRef.current)
+      const padL = parseFloat(cs.paddingLeft) || 0
+      const padR = parseFloat(cs.paddingRight) || 0
+      const available = containerRef.current.clientWidth - padL - padR
+      setScale(available < PAPER_W_CONST ? available / PAPER_W_CONST : 1)
+    }
+    measure()
+    window.addEventListener("resize", measure)
+    return () => window.removeEventListener("resize", measure)
+  }, [])
+
+  const scaledW = PAPER_W_CONST * scale
+  const scaledH = PAPER_H_CONST * scale
+
+  return (
+    <div ref={containerRef} className="flex justify-center px-4 py-8 sm:px-6 print:p-0">
+      {/* Outer shell: sized to the *scaled* dimensions so nothing overflows */}
+      <div
+        style={{
+          width: scale < 1 ? scaledW : PAPER_W_CONST,
+          height: scale < 1 ? scaledH : undefined,
+          minHeight: scale < 1 ? undefined : PAPER_H_CONST,
+          position: "relative",
+        }}
+      >
+        {/* Paper: always 816×1056, scaled via transform, absolute-positioned when shrunk */}
+        <div
+          className="resume-paper overflow-hidden rounded-lg shadow-2xl print:shadow-none print:!transform-none print:!static"
+          style={{
+            width: PAPER_W_CONST,
+            minHeight: PAPER_H_CONST,
+            background: palette.bg,
+            transformOrigin: "top left",
+            transform: scale < 1 ? `scale(${scale})` : undefined,
+            ...(scale < 1 ? { position: "absolute" as const, top: 0, left: 0 } : {}),
+          }}
+        >
+          <div style={{ minHeight: PAPER_H_CONST, display: "flex", flexDirection: "column" }}>
+            {children}
           </div>
         </div>
       </div>
-      <PdfPreviewModal open={pdfOpen} onClose={() => setPdfOpen(false)} locale={locale} data={resumeData} palette={palette} layout={layout} showIcons={showIcons} />
     </div>
   )
 }
 
 // ── PDF Preview helpers ───────────────────────────────────────────────
 
-const PAPER_W = 816
-const PAPER_H = 1056
+/** Scales the preview paper on small screens; children keep original 816px for capture */
+function PreviewPaperWrapper({ palette, children }: { palette: PaletteOption; children: React.ReactNode }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    const measure = () => {
+      if (!containerRef.current) return
+      const cs = window.getComputedStyle(containerRef.current)
+      const padL = parseFloat(cs.paddingLeft) || 0
+      const padR = parseFloat(cs.paddingRight) || 0
+      const available = containerRef.current.clientWidth - padL - padR
+      setScale(available < PAPER_W_CONST ? available / PAPER_W_CONST : 1)
+    }
+    measure()
+    window.addEventListener("resize", measure)
+    return () => window.removeEventListener("resize", measure)
+  }, [])
+
+  const scaledW = PAPER_W_CONST * scale
+  const scaledH = PAPER_H_CONST * scale
+
+  return (
+    <div ref={containerRef} className="mx-auto flex justify-center" style={{ maxWidth: "100%" }}>
+      <div
+        className="overflow-hidden rounded-lg shadow-2xl"
+        style={{
+          width: scale < 1 ? scaledW : PAPER_W_CONST,
+          height: scale < 1 ? scaledH : undefined,
+          minHeight: scale < 1 ? undefined : PAPER_H_CONST,
+          position: "relative",
+        }}
+      >
+        <div
+          style={{
+            width: PAPER_W_CONST,
+            minHeight: PAPER_H_CONST,
+            transformOrigin: "top left",
+            transform: scale < 1 ? `scale(${scale})` : undefined,
+            ...(scale < 1 ? { position: "absolute" as const, top: 0, left: 0 } : {}),
+          }}
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function extractTextPositions(container: HTMLElement) {
   const result: { text: string; x: number; y: number; fontSize: number; width: number }[] = []
@@ -230,7 +330,7 @@ function PdfPreviewModal({ open, onClose, locale, data, palette, layout, showIco
         @page { size: letter; margin: 10mm 8mm; }
         html, body { margin: 0 !important; padding: 0 !important; }
         body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        .resume-print-root { width: ${PAPER_W}px; min-height: ${PAPER_H}px; background: ${palette.bg}; overflow: visible; display: flex; flex-direction: column; }
+        .resume-print-root { width: ${PAPER_W_CONST}px; min-height: ${PAPER_H_CONST}px; background: ${palette.bg}; overflow: visible; display: flex; flex-direction: column; }
       </style>
       </head><body><div class="resume-print-root">${resumeHtml}</div></body></html>`)
     iframeDoc.close()
@@ -264,13 +364,13 @@ function PdfPreviewModal({ open, onClose, locale, data, palette, layout, showIco
         </div>
       </div>
       <div className="flex-1 overflow-auto p-4 sm:p-6">
-        <div className="mx-auto" style={{ width: PAPER_W, maxWidth: "100%" }}>
-          <div ref={previewRef} className="mx-auto overflow-hidden rounded-lg shadow-2xl" style={{ width: PAPER_W, minHeight: PAPER_H, maxWidth: "100%", background: palette.bg }}>
-            <div style={{ minHeight: PAPER_H, display: "flex", flexDirection: "column" }}>
+        <PreviewPaperWrapper palette={palette}>
+          <div ref={previewRef} style={{ width: PAPER_W_CONST, minHeight: PAPER_H_CONST, background: palette.bg }}>
+            <div style={{ minHeight: PAPER_H_CONST, display: "flex", flexDirection: "column" }}>
               <ResumeRenderer data={data} palette={palette} layout={layout} locale={locale} showIcons={showIcons} />
             </div>
           </div>
-        </div>
+        </PreviewPaperWrapper>
       </div>
     </div>
   )
