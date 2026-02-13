@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
 import { useInView } from "@/hooks/use-in-view"
@@ -30,7 +31,18 @@ export function ContactSection() {
           <div className="h-px flex-1 bg-border" />
         </div>
 
-        <p className="mb-10 font-mono text-sm text-muted-foreground">
+        <div className="mb-2 flex justify-center">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={512}
+            height={512}
+            className="h-24 w-24 rounded-2xl object-contain sm:h-32 sm:w-32 md:h-40 md:w-40"
+            priority={false}
+          />
+        </div>
+
+        <p className="mb-6 font-mono text-sm text-muted-foreground">
           {c("contact_subtitle", dict.contact.subtitle)}
         </p>
 

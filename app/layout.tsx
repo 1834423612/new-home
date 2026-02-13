@@ -30,6 +30,16 @@ export async function generateMetadata() {
     title: `${dict.meta.title} | ${host}`,
     description: dict.meta.description,
     keywords: ["kjch", "况佳城", "developer", "portfolio", "personal website"],
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "48x48" },
+        { url: "/icon.png", sizes: "32x32", type: "image/png" },
+      ],
+      apple: [
+        { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+      ],
+    },
+    manifest: "/site.webmanifest",
   }
 }
 
