@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { Icon } from "@iconify/react"
 import { InputField, TextAreaField, AdminButton, IconPreview } from "./form-fields"
 
@@ -15,6 +15,11 @@ export function ExperiencesManager() {
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<ExperienceRow | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [sortMode, setSortMode] = useState(false)
+  const [sortItems, setSortItems] = useState<ExperienceRow[]>([])
+  const [sortSaving, setSortSaving] = useState(false)
+  const dragItem = useRef<number | null>(null)
+  const dragOverItem = useRef<number | null>(null)
 
   const fetchItems = useCallback(async () => {
     setLoading(true)
@@ -33,29 +38,128 @@ export function ExperiencesManager() {
     fetchItems()
   }
 
+  // Sort mode
+  const enterSortMode = () => {
+    setSortItems(items.map((item, i) => ({ ...item, sort_order: item.sort_order ?? i })))
+    setSortMode(true)
+  }
+  const cancelSortMode = () => { setSortMode(false); setSortItems([]) }
+
+  const handleDragStart = (index: number) => { dragItem.current = index }
+  const handleDragEnter = (index: number) => { dragOverItem.current = index }
+  const handleDragEnd = () => {
+    if (dragItem.current === null || dragOverItem.current === null) return
+    const list = [...sortItems]
+    const draggedItem = list[dragItem.current]
+    list.splice(dragItem.current, 1)
+    list.splice(dragOverItem.current, 0, draggedItem)
+    const reordered = list.map((item, i) => ({ ...item, sort_order: i }))
+    setSortItems(reordered)
+    dragItem.current = null
+    dragOverItem.current = null
+  }
+
+  const moveSortItem = (index: number, direction: -1 | 1) => {
+    const newIndex = index + direction
+    if (newIndex < 0 || newIndex >= sortItems.length) return
+    const list = [...sortItems]
+    const temp = list[index]
+    list[index] = list[newIndex]
+    list[newIndex] = temp
+    setSortItems(list.map((item, i) => ({ ...item, sort_order: i })))
+  }
+
+  const handleSaveSortOrder = async () => {
+    setSortSaving(true)
+    try {
+      for (const item of sortItems) {
+        await fetch("/api/admin/experiences", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        })
+      }
+      setSortMode(false)
+      setSortItems([])
+      fetchItems()
+    } finally { setSortSaving(false) }
+  }
+
   if (loading) return <div className="flex items-center gap-2 text-sm text-muted-foreground"><Icon icon="mdi:loading" className="h-4 w-4 animate-spin" /> Loading...</div>
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-bold text-foreground">Experiences ({items.length})</h2>
-        <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}><Icon icon="mdi:plus" className="h-4 w-4" /> Add</AdminButton>
+        <div className="flex items-center gap-2 flex-wrap">
+          {sortMode ? (
+            <>
+              <AdminButton onClick={handleSaveSortOrder} disabled={sortSaving}>
+                <Icon icon={sortSaving ? "mdi:loading" : "mdi:content-save-outline"} className={`h-4 w-4 ${sortSaving ? "animate-spin" : ""}`} /> Save Order
+              </AdminButton>
+              <AdminButton variant="secondary" onClick={cancelSortMode}>Cancel</AdminButton>
+            </>
+          ) : (
+            <>
+              <AdminButton variant="secondary" onClick={enterSortMode}>
+                <Icon icon="mdi:sort" className="h-4 w-4" /> Reorder
+              </AdminButton>
+              <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}>
+                <Icon icon="mdi:plus" className="h-4 w-4" /> Add
+              </AdminButton>
+            </>
+          )}
+        </div>
       </div>
-      {showForm && <ExperienceForm initial={editing} onSave={handleSave} onCancel={() => { setShowForm(false); setEditing(null) }} />}
-      <div className="flex flex-col gap-3">
-        {items.map((item) => (
-          <div key={item.id} className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors sm:flex-row sm:items-center sm:justify-between sm:p-4">
-            <div className="min-w-0 flex-1">
-              <h3 className="text-sm font-bold text-foreground truncate">{item.title_zh}</h3>
-              <p className="font-mono text-[10px] text-muted-foreground truncate">{item.org_zh} / {item.start_date} - {item.end_date || "Present"}</p>
+      {showForm && !sortMode && <ExperienceForm initial={editing} onSave={handleSave} onCancel={() => { setShowForm(false); setEditing(null) }} />}
+
+      {sortMode ? (
+        <div className="flex flex-col gap-1">
+          {sortItems.map((item, index) => (
+            <div
+              key={item.id}
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragEnter={() => handleDragEnter(index)}
+              onDragEnd={handleDragEnd}
+              onDragOver={(e) => e.preventDefault()}
+              className="flex items-center gap-2 rounded-lg border border-border bg-card p-2 sm:p-3 cursor-grab active:cursor-grabbing hover:border-primary/30 transition-colors"
+            >
+              <Icon icon="mdi:drag-vertical" className="h-5 w-5 text-muted-foreground shrink-0" />
+              <span className="flex h-6 min-w-[28px] items-center justify-center rounded bg-primary/10 text-[11px] font-mono font-bold text-primary shrink-0">{index}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-foreground truncate">{item.title_zh}</p>
+                <p className="text-[10px] text-muted-foreground truncate">{item.org_zh}</p>
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <button onClick={() => moveSortItem(index, -1)} disabled={index === 0} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 disabled:opacity-30 transition-colors">
+                  <Icon icon="mdi:arrow-up" className="h-4 w-4" />
+                </button>
+                <button onClick={() => moveSortItem(index, 1)} disabled={index === sortItems.length - 1} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 disabled:opacity-30 transition-colors">
+                  <Icon icon="mdi:arrow-down" className="h-4 w-4" />
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
-              <button onClick={() => { setEditing(item); setShowForm(true) }} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"><Icon icon="mdi:pencil-outline" className="h-4 w-4" /></button>
-              <button onClick={() => handleDelete(item.id)} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-destructive hover:text-destructive transition-colors"><Icon icon="mdi:delete-outline" className="h-4 w-4" /></button>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {items.map((item) => (
+            <div key={item.id} className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors sm:flex-row sm:items-center sm:justify-between sm:p-4">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <span className="flex h-6 min-w-[28px] items-center justify-center rounded bg-secondary text-[10px] font-mono font-bold text-muted-foreground shrink-0">#{item.sort_order}</span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-sm font-bold text-foreground truncate">{item.title_zh}</h3>
+                  <p className="font-mono text-[10px] text-muted-foreground truncate">{item.org_zh} / {item.start_date} - {item.end_date || "Present"}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                <button onClick={() => { setEditing(item); setShowForm(true) }} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"><Icon icon="mdi:pencil-outline" className="h-4 w-4" /></button>
+                <button onClick={() => handleDelete(item.id)} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-destructive hover:text-destructive transition-colors"><Icon icon="mdi:delete-outline" className="h-4 w-4" /></button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

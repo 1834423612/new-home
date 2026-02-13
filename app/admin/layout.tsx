@@ -122,7 +122,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 rounded-lg bg-secondary/50 px-2 py-1.5 sm:px-3">
             <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="font-mono text-xs text-foreground hidden sm:inline">{user.username}</span>
+            <span className="font-mono text-xs text-foreground">{user.username}</span>
           </div>
           <button
             onClick={handleLogout}
@@ -133,6 +133,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </button>
         </div>
       </header>
+
+      {/* Mobile horizontal scroll nav */}
+      <div className="flex items-center gap-1 overflow-x-auto border-b border-border bg-card/60 px-2 py-1.5 md:hidden scrollbar-none">
+        {navItems.map((item) => {
+          const isActive = pathname.startsWith(item.href)
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1.5 text-[11px] font-medium transition-colors shrink-0",
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              )}
+            >
+              <Icon icon={item.icon} className="h-3.5 w-3.5" />
+              {item.label}
+            </Link>
+          )
+        })}
+      </div>
 
       <div className="flex relative">
         {/* Mobile sidebar overlay */}

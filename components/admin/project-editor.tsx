@@ -224,10 +224,10 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
                 type="checkbox"
                 checked={form.featured}
                 onChange={(e) => set("featured", e.target.checked)}
-                className="peer sr-only"
+                className="sr-only"
               />
-              <div className="flex h-5 w-9 items-center rounded-full bg-secondary p-0.5 transition-colors peer-checked:bg-primary">
-                <div className="h-4 w-4 rounded-full bg-background shadow-sm transition-transform peer-checked:translate-x-4" />
+              <div className={`flex h-5 w-9 items-center rounded-full p-0.5 transition-colors ${form.featured ? 'bg-primary' : 'bg-secondary'}`}>
+                <div className={`h-4 w-4 rounded-full bg-background shadow-sm transition-transform ${form.featured ? 'translate-x-4' : 'translate-x-0'}`} />
               </div>
               <div>
                 <span className="text-xs font-bold text-foreground">Featured Project</span>

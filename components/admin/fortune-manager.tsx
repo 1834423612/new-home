@@ -6,7 +6,7 @@ import { InputField, AdminButton } from "./form-fields"
 
 interface FortuneTag { id: number; text_zh: string; text_en: string }
 
-const PAGE_SIZE = 20
+const PAGE_SIZES = [10, 20, 50, 100] as const
 
 export function FortuneManager() {
   const [items, setItems] = useState<FortuneTag[]>([])
@@ -14,11 +14,16 @@ export function FortuneManager() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editForm, setEditForm] = useState({ text_zh: "", text_en: "" })
   const [showAdd, setShowAdd] = useState(false)
+  const [showBatchAdd, setShowBatchAdd] = useState(false)
   const [addForm, setAddForm] = useState({ text_zh: "", text_en: "" })
+  const [batchAddText, setBatchAddText] = useState("")
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState<number>(20)
   const [saving, setSaving] = useState(false)
   const [selected, setSelected] = useState<Set<number>>(new Set())
+  const [batchEditMode, setBatchEditMode] = useState(false)
+  const [batchEdits, setBatchEdits] = useState<Record<number, { text_zh: string; text_en: string }>>({})
 
   const fetchItems = useCallback(async () => {
     setLoading(true)
@@ -34,12 +39,12 @@ export function FortuneManager() {
     return items.filter(i => i.text_zh.toLowerCase().includes(q) || i.text_en.toLowerCase().includes(q) || String(i.id).includes(q))
   }, [items, search])
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
   const currentPage = Math.min(page, totalPages)
-  const paginatedItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+  const paginatedItems = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
-  // Reset page when search changes
-  useEffect(() => { setPage(1) }, [search])
+  // Reset page when search or pageSize changes
+  useEffect(() => { setPage(1) }, [search, pageSize])
 
   const startEdit = (item: FortuneTag) => {
     setEditingId(item.id)
@@ -68,6 +73,26 @@ export function FortuneManager() {
     } finally { setSaving(false) }
   }
 
+  const handleBatchAdd = async () => {
+    const lines = batchAddText.split("\n").map(l => l.trim()).filter(Boolean)
+    const entries = lines.map(line => {
+      const sep = line.indexOf("|")
+      if (sep === -1) return null
+      const text_zh = line.slice(0, sep).trim()
+      const text_en = line.slice(sep + 1).trim()
+      if (!text_zh || !text_en) return null
+      return { text_zh, text_en }
+    }).filter(Boolean) as { text_zh: string; text_en: string }[]
+    if (entries.length === 0) return
+    setSaving(true)
+    try {
+      for (const entry of entries) {
+        await fetch("/api/admin/fortune", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(entry) })
+      }
+      setShowBatchAdd(false); setBatchAddText(""); fetchItems()
+    } finally { setSaving(false) }
+  }
+
   const handleDelete = async (id: number) => {
     if (!confirm("Delete this fortune tag?")) return
     await fetch("/api/admin/fortune", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) })
@@ -83,6 +108,35 @@ export function FortuneManager() {
     }
     setSelected(new Set())
     fetchItems()
+  }
+
+  // Batch edit
+  const enterBatchEdit = () => {
+    const edits: Record<number, { text_zh: string; text_en: string }> = {}
+    for (const item of items) {
+      if (selected.has(item.id)) edits[item.id] = { text_zh: item.text_zh, text_en: item.text_en }
+    }
+    setBatchEdits(edits)
+    setBatchEditMode(true)
+    setEditingId(null)
+  }
+
+  const cancelBatchEdit = () => {
+    setBatchEditMode(false)
+    setBatchEdits({})
+  }
+
+  const handleSaveBatchEdit = async () => {
+    const ids = Object.keys(batchEdits).map(Number)
+    if (ids.length === 0) return
+    setSaving(true)
+    try {
+      for (const id of ids) {
+        const edit = batchEdits[id]
+        await fetch("/api/admin/fortune", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, ...edit }) })
+      }
+      setBatchEditMode(false); setBatchEdits({}); setSelected(new Set()); fetchItems()
+    } finally { setSaving(false) }
   }
 
   const toggleSelect = (id: number) => {
@@ -105,44 +159,78 @@ export function FortuneManager() {
 
   if (loading) return <div className="flex items-center gap-2 text-sm text-muted-foreground"><Icon icon="mdi:loading" className="h-4 w-4 animate-spin" /> Loading...</div>
 
+  const batchAddLineCount = batchAddText.split("\n").map(l => l.trim()).filter(l => l && l.includes("|")).length
+
   return (
     <div>
       {/* Header */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-bold text-foreground">Fortune Tags</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">{items.length} total{filtered.length !== items.length && ` · ${filtered.length} matching`}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{items.length} total{filtered.length !== items.length && ` · ${filtered.length} matching`}{selected.size > 0 && ` · ${selected.size} selected`}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          {selected.size > 0 && (
-            <AdminButton variant="danger" onClick={handleBatchDelete}>
-              <Icon icon="mdi:delete-outline" className="h-4 w-4" /> Delete ({selected.size})
-            </AdminButton>
+          {selected.size > 0 && !batchEditMode && (
+            <>
+              <AdminButton variant="secondary" onClick={enterBatchEdit}>
+                <Icon icon="mdi:pencil-outline" className="h-4 w-4" /> Edit ({selected.size})
+              </AdminButton>
+              <AdminButton variant="danger" onClick={handleBatchDelete}>
+                <Icon icon="mdi:delete-outline" className="h-4 w-4" /> Delete ({selected.size})
+              </AdminButton>
+            </>
           )}
-          <AdminButton onClick={() => { setShowAdd(true); setEditingId(null) }}>
-            <Icon icon="mdi:plus" className="h-4 w-4" /> Add
-          </AdminButton>
+          {batchEditMode && (
+            <>
+              <AdminButton onClick={handleSaveBatchEdit} disabled={saving}>
+                <Icon icon={saving ? "mdi:loading" : "mdi:content-save-outline"} className={`h-4 w-4 ${saving ? "animate-spin" : ""}`} /> Save All ({Object.keys(batchEdits).length})
+              </AdminButton>
+              <AdminButton variant="secondary" onClick={cancelBatchEdit}>Cancel</AdminButton>
+            </>
+          )}
+          {!batchEditMode && (
+            <>
+              <AdminButton variant="secondary" onClick={() => { setShowBatchAdd(true); setShowAdd(false) }}>
+                <Icon icon="mdi:playlist-plus" className="h-4 w-4" /> Batch Add
+              </AdminButton>
+              <AdminButton onClick={() => { setShowAdd(true); setShowBatchAdd(false); setEditingId(null) }}>
+                <Icon icon="mdi:plus" className="h-4 w-4" /> Add
+              </AdminButton>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Search bar */}
-      <div className="mb-4 relative">
-        <Icon icon="mdi:magnify" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
-          type="text"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Search fortune tags..."
-          className="w-full rounded-lg border border-border bg-background pl-9 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:border-primary focus:outline-none transition-colors"
-        />
-        {search && (
-          <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-            <Icon icon="mdi:close-circle" className="h-4 w-4" />
-          </button>
-        )}
+      {/* Search bar + page size */}
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Icon icon="mdi:magnify" className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search fortune tags..."
+            className="w-full rounded-lg border border-border bg-background pl-9 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:border-primary focus:outline-none transition-colors"
+          />
+          {search && (
+            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+              <Icon icon="mdi:close-circle" className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-[10px] text-muted-foreground font-mono">Per page:</span>
+          <select
+            value={pageSize}
+            onChange={e => setPageSize(Number(e.target.value))}
+            className="rounded-lg border border-border bg-background px-2 py-1.5 text-xs text-foreground focus:border-primary focus:outline-none transition-colors"
+          >
+            {PAGE_SIZES.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
       </div>
 
-      {/* Add form */}
+      {/* Single add form */}
       {showAdd && (
         <form onSubmit={(e) => { e.preventDefault(); handleAdd() }} className="mb-4 rounded-xl border border-primary/30 bg-card p-4">
           <h3 className="mb-3 text-sm font-bold text-foreground">New Fortune Tag</h3>
@@ -155,6 +243,28 @@ export function FortuneManager() {
             <AdminButton variant="secondary" onClick={() => setShowAdd(false)}>Cancel</AdminButton>
           </div>
         </form>
+      )}
+
+      {/* Batch add form */}
+      {showBatchAdd && (
+        <div className="mb-4 rounded-xl border border-primary/30 bg-card p-4">
+          <h3 className="mb-1 text-sm font-bold text-foreground">Batch Add Fortune Tags</h3>
+          <p className="mb-3 text-[10px] text-muted-foreground">One per line, format: <code className="rounded bg-secondary px-1 py-0.5">Chinese text | English text</code></p>
+          <textarea
+            value={batchAddText}
+            onChange={e => setBatchAddText(e.target.value)}
+            rows={6}
+            placeholder={"今天会收获惊喜 | A surprise awaits you today\n财运亨通 | Fortune smiles upon you\n万事如意 | Everything goes well"}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground/30 focus:border-primary focus:outline-none transition-colors resize-y"
+          />
+          <div className="mt-3 flex items-center gap-2">
+            <AdminButton onClick={handleBatchAdd} disabled={saving || batchAddLineCount === 0}>
+              <Icon icon={saving ? "mdi:loading" : "mdi:playlist-plus"} className={`h-4 w-4 ${saving ? "animate-spin" : ""}`} />
+              {saving ? "Adding..." : `Add ${batchAddLineCount} tag${batchAddLineCount !== 1 ? "s" : ""}`}
+            </AdminButton>
+            <AdminButton variant="secondary" onClick={() => { setShowBatchAdd(false); setBatchAddText("") }}>Cancel</AdminButton>
+          </div>
+        </div>
       )}
 
       {/* Table */}
@@ -173,8 +283,9 @@ export function FortuneManager() {
         <div className="divide-y divide-border">
           {paginatedItems.map((item) => {
             const isEditing = editingId === item.id
+            const isBatchEditing = batchEditMode && selected.has(item.id)
             return (
-              <div key={item.id} className={`group transition-colors ${isEditing ? 'bg-primary/5' : 'hover:bg-secondary/30'}`}>
+              <div key={item.id} className={`group transition-colors ${isEditing || isBatchEditing ? 'bg-primary/5' : 'hover:bg-secondary/30'}`}>
                 {isEditing ? (
                   <div className="p-3 sm:p-4">
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -206,17 +317,38 @@ export function FortuneManager() {
                       </button>
                     </div>
                   </div>
+                ) : isBatchEditing ? (
+                  <div className="flex items-start gap-2 px-3 py-2.5 sm:grid sm:grid-cols-[40px_1fr_1fr_80px] sm:gap-2 sm:px-4">
+                    <div className="flex items-center pt-2 shrink-0">
+                      <input type="checkbox" checked onChange={() => toggleSelect(item.id)} className="h-3.5 w-3.5 rounded border-border accent-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <input
+                        value={batchEdits[item.id]?.text_zh ?? item.text_zh}
+                        onChange={e => setBatchEdits(prev => ({ ...prev, [item.id]: { text_zh: e.target.value, text_en: prev[item.id]?.text_en ?? item.text_en } }))}
+                        className="w-full rounded border border-primary/30 bg-background px-2 py-1 text-sm text-foreground focus:border-primary focus:outline-none"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <input
+                        value={batchEdits[item.id]?.text_en ?? item.text_en}
+                        onChange={e => setBatchEdits(prev => ({ ...prev, [item.id]: { text_zh: prev[item.id]?.text_zh ?? item.text_zh, text_en: e.target.value } }))}
+                        className="w-full rounded border border-primary/30 bg-background px-2 py-1 text-sm text-foreground focus:border-primary focus:outline-none"
+                      />
+                    </div>
+                    <div />
+                  </div>
                 ) : (
                   <div className="flex items-center gap-2 px-3 py-2.5 sm:grid sm:grid-cols-[40px_1fr_1fr_80px] sm:gap-2 sm:px-4">
                     <div className="flex items-center shrink-0">
                       <input type="checkbox" checked={selected.has(item.id)} onChange={() => toggleSelect(item.id)} className="h-3.5 w-3.5 rounded border-border accent-primary" />
                     </div>
                     <div className="flex-1 min-w-0 sm:flex-none">
-                      <p className="text-sm text-foreground truncate">{item.text_zh}</p>
-                      <p className="text-xs text-muted-foreground truncate sm:hidden">{item.text_en}</p>
+                      <p className="text-sm text-foreground truncate" title={item.text_zh}>{item.text_zh}</p>
+                      <p className="text-xs text-muted-foreground truncate sm:hidden" title={item.text_en}>{item.text_en}</p>
                     </div>
-                    <div className="hidden sm:block">
-                      <p className="text-sm text-muted-foreground truncate">{item.text_en}</p>
+                    <div className="hidden sm:block min-w-0">
+                      <p className="text-sm text-muted-foreground truncate" title={item.text_en}>{item.text_en}</p>
                     </div>
                     <div className="flex items-center gap-1 shrink-0 ml-auto sm:ml-0 sm:justify-end">
                       <button onClick={() => startEdit(item)} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors" title="Edit">
@@ -245,7 +377,7 @@ export function FortuneManager() {
       {totalPages > 1 && (
         <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            Showing {(currentPage - 1) * PAGE_SIZE + 1}-{Math.min(currentPage * PAGE_SIZE, filtered.length)} of {filtered.length}
+            Showing {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, filtered.length)} of {filtered.length}
           </p>
           <div className="flex items-center gap-1">
             <button

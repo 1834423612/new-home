@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { Icon } from "@iconify/react"
 import { AdminButton } from "./form-fields"
 import { cn } from "@/lib/utils"
@@ -24,6 +24,16 @@ const categoryColors: Record<string, string> = {
 export function ProjectsManager() {
   const [items, setItems] = useState<ProjectRow[]>([])
   const [loading, setLoading] = useState(true)
+  const [sortMode, setSortMode] = useState(false)
+  const [sortItems, setSortItems] = useState<ProjectRow[]>([])
+  const [sortSaving, setSortSaving] = useState(false)
+  const dragItem = useRef<number | null>(null)
+  const dragOverItem = useRef<number | null>(null)
+
+  const parseTags = (t: string | string[]): string[] => {
+    if (Array.isArray(t)) return t
+    try { return JSON.parse(t) } catch { return [] }
+  }
 
   const fetchItems = useCallback(async () => {
     setLoading(true)
@@ -37,6 +47,50 @@ export function ProjectsManager() {
 
   useEffect(() => { fetchItems() }, [fetchItems])
 
+  // Sort mode
+  const enterSortMode = () => {
+    setSortItems(items.map((item, i) => ({ ...item, sort_order: item.sort_order ?? i })))
+    setSortMode(true)
+  }
+  const cancelSortMode = () => { setSortMode(false); setSortItems([]) }
+
+  const handleDragStart = (index: number) => { dragItem.current = index }
+  const handleDragEnter = (index: number) => { dragOverItem.current = index }
+  const handleDragEnd = () => {
+    if (dragItem.current === null || dragOverItem.current === null) return
+    const list = [...sortItems]
+    const draggedItem = list[dragItem.current]
+    list.splice(dragItem.current, 1)
+    list.splice(dragOverItem.current, 0, draggedItem)
+    setSortItems(list.map((item, i) => ({ ...item, sort_order: i })))
+    dragItem.current = null
+    dragOverItem.current = null
+  }
+
+  const moveSortItem = (index: number, direction: -1 | 1) => {
+    const newIndex = index + direction
+    if (newIndex < 0 || newIndex >= sortItems.length) return
+    const list = [...sortItems]
+    const temp = list[index]
+    list[index] = list[newIndex]
+    list[newIndex] = temp
+    setSortItems(list.map((item, i) => ({ ...item, sort_order: i })))
+  }
+
+  const handleSaveSortOrder = async () => {
+    setSortSaving(true)
+    try {
+      for (const item of sortItems) {
+        const tags = parseTags(item.tags)
+        await fetch("/api/admin/projects", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...item, tags }),
+        })
+      }
+      setSortMode(false); setSortItems([]); fetchItems()
+    } finally { setSortSaving(false) }
+  }
+
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this project?")) return
     await fetch("/api/admin/projects", {
@@ -47,9 +101,14 @@ export function ProjectsManager() {
     fetchItems()
   }
 
-  const parseTags = (t: string | string[]): string[] => {
-    if (Array.isArray(t)) return t
-    try { return JSON.parse(t) } catch { return [] }
+  const toggleFeatured = async (item: ProjectRow) => {
+    const tags = parseTags(item.tags)
+    const newFeatured = !(item.featured === 1 || item.featured === true)
+    await fetch("/api/admin/projects", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...item, tags, featured: newFeatured }),
+    })
+    fetchItems()
   }
 
   if (loading) {
@@ -62,18 +121,70 @@ export function ProjectsManager() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-bold text-foreground">Projects</h2>
           <p className="text-xs text-muted-foreground mt-0.5">{items.length} projects total</p>
         </div>
-        <Link href="/admin/projects/new">
-          <AdminButton>
-            <Icon icon="mdi:plus" className="h-4 w-4" /> New Project
-          </AdminButton>
-        </Link>
+        <div className="flex items-center gap-2 flex-wrap">
+          {sortMode ? (
+            <>
+              <AdminButton onClick={handleSaveSortOrder} disabled={sortSaving}>
+                <Icon icon={sortSaving ? "mdi:loading" : "mdi:content-save-outline"} className={`h-4 w-4 ${sortSaving ? "animate-spin" : ""}`} /> Save Order
+              </AdminButton>
+              <AdminButton variant="secondary" onClick={cancelSortMode}>Cancel</AdminButton>
+            </>
+          ) : (
+            <>
+              <AdminButton variant="secondary" onClick={enterSortMode}>
+                <Icon icon="mdi:sort" className="h-4 w-4" /> Reorder
+              </AdminButton>
+              <Link href="/admin/projects/new">
+                <AdminButton>
+                  <Icon icon="mdi:plus" className="h-4 w-4" /> New Project
+                </AdminButton>
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
+      {sortMode ? (
+        <div className="flex flex-col gap-1">
+          {sortItems.map((item, index) => {
+            const isFeatured = item.featured === 1 || item.featured === true
+            return (
+              <div
+                key={item.id}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragEnter={() => handleDragEnter(index)}
+                onDragEnd={handleDragEnd}
+                onDragOver={(e) => e.preventDefault()}
+                className="flex items-center gap-2 rounded-lg border border-border bg-card p-2 sm:p-3 cursor-grab active:cursor-grabbing hover:border-primary/30 transition-colors"
+              >
+                <Icon icon="mdi:drag-vertical" className="h-5 w-5 text-muted-foreground shrink-0" />
+                <span className="flex h-6 min-w-[28px] items-center justify-center rounded bg-primary/10 text-[11px] font-mono font-bold text-primary shrink-0">{index}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-sm font-bold text-foreground truncate">{item.title_zh}</p>
+                    {isFeatured && <Icon icon="mdi:star" className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
+                    <span className={cn("rounded-full border px-1.5 py-0.5 text-[9px] font-mono", categoryColors[item.category] || "bg-secondary text-muted-foreground border-border")}>{item.category}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button onClick={() => moveSortItem(index, -1)} disabled={index === 0} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 disabled:opacity-30 transition-colors">
+                    <Icon icon="mdi:arrow-up" className="h-4 w-4" />
+                  </button>
+                  <button onClick={() => moveSortItem(index, 1)} disabled={index === sortItems.length - 1} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 disabled:opacity-30 transition-colors">
+                    <Icon icon="mdi:arrow-down" className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      ) : (
       <div className="grid gap-3">
         {items.map((item) => {
           const tags = parseTags(item.tags)
@@ -94,11 +205,6 @@ export function ProjectsManager() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h3 className="text-sm font-bold text-foreground truncate">{item.title_zh}</h3>
-                  {isFeatured && (
-                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-mono text-primary border border-primary/20">
-                      featured
-                    </span>
-                  )}
                   <span className={cn(
                     "rounded-full border px-2 py-0.5 text-[10px] font-mono",
                     categoryColors[item.category] || "bg-secondary text-muted-foreground border-border"
@@ -136,6 +242,18 @@ export function ProjectsManager() {
 
               {/* Actions */}
               <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-start">
+                <button
+                  onClick={() => toggleFeatured(item)}
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center rounded-lg border transition-colors",
+                    isFeatured
+                      ? "border-amber-500/30 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
+                      : "border-border text-muted-foreground hover:border-amber-500/30 hover:text-amber-500"
+                  )}
+                  title={isFeatured ? "Unstar" : "Star as featured"}
+                >
+                  <Icon icon={isFeatured ? "mdi:star" : "mdi:star-outline"} className="h-4 w-4" />
+                </button>
                 <Link
                   href={`/admin/projects/${item.id}`}
                   className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
@@ -167,6 +285,7 @@ export function ProjectsManager() {
           </div>
         )}
       </div>
+      )}
     </div>
   )
 }
