@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from "react"
 import { Icon } from "@iconify/react"
 import { InputField, AdminButton, IconPreview } from "./form-fields"
+import { useSortable } from "@/hooks/use-sortable"
+import { SortToolbar, SortList, SortBadge } from "./sort-controls"
 
 function GameLogo({ icon, className }: { icon?: string | null; className?: string }) {
     if (!icon) return <Icon icon="mdi:gamepad-variant" className={className} />
@@ -40,6 +42,12 @@ export function GamesManager() {
     }, [])
     useEffect(() => { fetchItems() }, [fetchItems])
 
+    const sort = useSortable<GameRow>({
+        items,
+        apiEndpoint: "/api/admin/games",
+        onRefresh: fetchItems,
+    })
+
     const handleSave = async (data: Record<string, unknown>) => {
         const res = await fetch("/api/admin/games", {
             method: "POST",
@@ -74,12 +82,22 @@ export function GamesManager() {
                     <Icon icon="mdi:gamepad-variant-outline" className="mr-2 inline h-5 w-5 text-primary" />
                     Games ({items.length})
                 </h2>
-                <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}>
-                    <Icon icon="mdi:plus" className="h-4 w-4" /> Add Game
-                </AdminButton>
+                <div className="flex items-center gap-2">
+                    <SortToolbar
+                        sortMode={sort.sortMode}
+                        sortSaving={sort.sortSaving}
+                        onEnterSort={sort.enterSortMode}
+                        onSaveSort={sort.saveSortOrder}
+                        onCancelSort={sort.cancelSortMode}
+                    >
+                        <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}>
+                            <Icon icon="mdi:plus" className="h-4 w-4" /> Add Game
+                        </AdminButton>
+                    </SortToolbar>
+                </div>
             </div>
 
-            {showForm && (
+            {!sort.sortMode && showForm && (
                 <GameForm
                     initial={editing}
                     onSave={handleSave}
@@ -87,6 +105,28 @@ export function GamesManager() {
                 />
             )}
 
+            {sort.sortMode ? (
+                <SortList
+                    items={sort.sortItems}
+                    onDragStart={sort.handleDragStart}
+                    onDragEnter={sort.handleDragEnter}
+                    onDragEnd={sort.handleDragEnd}
+                    onMove={sort.moveItem}
+                    renderLabel={(item) => (
+                        <div className="flex items-center gap-3">
+                            {item.icon && (
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground overflow-hidden">
+                                    <GameLogo icon={item.icon} className="h-4 w-4" />
+                                </div>
+                            )}
+                            <div className="min-w-0">
+                                <p className="text-sm font-bold text-foreground truncate">{item.title_zh}</p>
+                                <p className="text-[10px] text-muted-foreground font-mono truncate">{item.title_en}</p>
+                            </div>
+                        </div>
+                    )}
+                />
+            ) : (
             <div className="flex flex-col gap-3">
                 {items.map((item) => (
                     <div
@@ -101,6 +141,7 @@ export function GamesManager() {
                             )}
                             <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2">
+                                    <SortBadge order={item.sort_order} />
                                     <h3 className="text-sm font-bold text-foreground truncate">{item.title_zh}</h3>
                                     <span className="text-[10px] text-muted-foreground/60 font-mono">{item.title_en}</span>
                                 </div>
@@ -134,6 +175,7 @@ export function GamesManager() {
                     </div>
                 )}
             </div>
+            )}  {/* end sort.sortMode ternary */}
         </div>
     )
 }

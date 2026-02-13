@@ -6,6 +6,8 @@ import { useEffect, useState, useCallback } from "react"
 import { Icon } from "@iconify/react"
 import { InputField, TextAreaField, AdminButton } from "./form-fields"
 import { RichTextEditor } from "./rich-text-editor"
+import { useSortable } from "@/hooks/use-sortable"
+import { SortToolbar, SortList, SortBadge } from "./sort-controls"
 
 interface AwardRow {
   id: string; slug: string; title_zh: string; title_en: string
@@ -27,6 +29,12 @@ export function AwardsManager() {
   }, [])
   useEffect(() => { fetchItems() }, [fetchItems])
 
+  const sort = useSortable<AwardRow>({
+    items,
+    apiEndpoint: "/api/admin/awards",
+    onRefresh: fetchItems,
+  })
+
   const handleSave = async (data: Record<string, unknown>) => {
     const res = await fetch("/api/admin/awards", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
     if (res.ok) { setShowForm(false); setEditing(null); fetchItems() }
@@ -43,15 +51,40 @@ export function AwardsManager() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-lg font-bold text-foreground">Awards ({items.length})</h2>
-        <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}><Icon icon="mdi:plus" className="h-4 w-4" /> Add Award</AdminButton>
+        <SortToolbar
+          sortMode={sort.sortMode}
+          sortSaving={sort.sortSaving}
+          onEnterSort={sort.enterSortMode}
+          onSaveSort={sort.saveSortOrder}
+          onCancelSort={sort.cancelSortMode}
+        >
+          <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}><Icon icon="mdi:plus" className="h-4 w-4" /> Add Award</AdminButton>
+        </SortToolbar>
       </div>
-      {showForm && <AwardForm initial={editing} onSave={handleSave} onCancel={() => { setShowForm(false); setEditing(null) }} />}
+      {!sort.sortMode && showForm && <AwardForm initial={editing} onSave={handleSave} onCancel={() => { setShowForm(false); setEditing(null) }} />}
+      {sort.sortMode ? (
+        <SortList
+          items={sort.sortItems}
+          onDragStart={sort.handleDragStart}
+          onDragEnter={sort.handleDragEnter}
+          onDragEnd={sort.handleDragEnd}
+          onMove={sort.moveItem}
+          renderLabel={(item) => (
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:trophy-outline" className="h-4 w-4 text-primary shrink-0" />
+              <p className="text-sm font-bold text-foreground truncate">{item.title_zh}</p>
+              {item.level && <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-mono text-secondary-foreground">{item.level}</span>}
+            </div>
+          )}
+        />
+      ) : (
       <div className="flex flex-col gap-3">
         {items.map((item) => (
           <div key={item.id} className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors sm:flex-row sm:items-center sm:justify-between sm:p-4">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <Icon icon="mdi:trophy-outline" className="h-4 w-4 text-primary shrink-0" />
+                <SortBadge order={item.sort_order} />
                 <h3 className="text-sm font-bold text-foreground truncate">{item.title_zh}</h3>
                 {item.level && <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-mono text-secondary-foreground">{item.level}</span>}
               </div>
@@ -64,6 +97,7 @@ export function AwardsManager() {
           </div>
         ))}
       </div>
+      )}
     </div>
   )
 }

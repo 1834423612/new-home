@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from "react"
 import { Icon } from "@iconify/react"
 import { InputField, TextAreaField, SelectField, AdminButton, IconPreview } from "./form-fields"
+import { useSortable } from "@/hooks/use-sortable"
+import { SortToolbar, SortList, SortBadge } from "./sort-controls"
 
 interface SiteToolRow {
   id: string; title_zh: string; title_en: string; description_zh: string
@@ -22,6 +24,17 @@ export function SitesToolsManager() {
     finally { setLoading(false) }
   }, [])
   useEffect(() => { fetchItems() }, [fetchItems])
+
+  const sort = useSortable<SiteToolRow>({
+    items,
+    apiEndpoint: "/api/admin/sites",
+    onRefresh: fetchItems,
+    transformBeforeSave: (item) => {
+      const tags = item.tags
+      const parsedTags = !tags ? [] : Array.isArray(tags) ? tags : (() => { try { return JSON.parse(tags as string) } catch { return String(tags).split(",").map(t => t.trim()).filter(Boolean) } })()
+      return { ...item, tags: parsedTags }
+    },
+  })
 
   const handleSave = async (data: Record<string, unknown>) => {
     const res = await fetch("/api/admin/sites", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
@@ -47,10 +60,41 @@ export function SitesToolsManager() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-lg font-bold text-foreground">Sites & Tools ({items.length})</h2>
-        <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}><Icon icon="mdi:plus" className="h-4 w-4" /> Add</AdminButton>
+        <SortToolbar
+          sortMode={sort.sortMode}
+          sortSaving={sort.sortSaving}
+          onEnterSort={sort.enterSortMode}
+          onSaveSort={sort.saveSortOrder}
+          onCancelSort={sort.cancelSortMode}
+        >
+          <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}><Icon icon="mdi:plus" className="h-4 w-4" /> Add</AdminButton>
+        </SortToolbar>
       </div>
-      {showForm && <SiteToolForm initial={editing} onSave={handleSave} onCancel={() => { setShowForm(false); setEditing(null) }} />}
+      {!sort.sortMode && showForm && <SiteToolForm initial={editing} onSave={handleSave} onCancel={() => { setShowForm(false); setEditing(null) }} />}
 
+      {sort.sortMode ? (
+        <SortList
+          items={sort.sortItems}
+          onDragStart={sort.handleDragStart}
+          onDragEnter={sort.handleDragEnter}
+          onDragEnd={sort.handleDragEnd}
+          onMove={sort.moveItem}
+          renderLabel={(item) => (
+            <div className="flex items-center gap-2">
+              {item.icon ? (
+                item.icon.startsWith("http") || item.icon.startsWith("/")
+                  ? <img src={item.icon} alt="" className="h-4 w-4 shrink-0 object-contain" />
+                  : <Icon icon={item.icon} className="h-4 w-4 shrink-0 text-muted-foreground" />
+              ) : (
+                <Icon icon={item.table === "tool" ? "mdi:wrench-outline" : "mdi:web"} className="h-4 w-4 shrink-0 text-muted-foreground" />
+              )}
+              <p className="text-sm font-bold text-foreground truncate">{item.title_zh}</p>
+              <span className="rounded-full bg-secondary px-2 py-0.5 text-[9px] font-mono text-secondary-foreground">{item.table}</span>
+            </div>
+          )}
+        />
+      ) : (
+      <>
       {personalSites.length > 0 && (
         <div className="mb-8">
           <h3 className="mb-3 font-mono text-xs font-bold uppercase tracking-widest text-primary">Personal Sites</h3>
@@ -71,17 +115,31 @@ export function SitesToolsManager() {
           </div>
         </div>
       )}
+      </>
+      )}
     </div>
   )
 }
 
 function SiteRow({ item, parseTags, onEdit, onDelete }: { item: SiteToolRow; parseTags: (t: string | string[] | null | undefined) => string; onEdit: () => void; onDelete: () => void }) {
+  const fallback = item.table === "tool" ? "mdi:wrench-outline" : "mdi:web"
+  const renderIcon = (icon: string | null, size: string) => {
+    const id = icon || fallback
+    if (id.startsWith("http") || id.startsWith("/")) {
+      // eslint-disable-next-line @next/next/no-img-element
+      return <img src={id} alt="" className={`${size} shrink-0 object-contain`} />
+    }
+    return <Icon icon={id} className={`${size} shrink-0 text-muted-foreground`} />
+  }
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 hover:border-primary/30 transition-colors sm:flex-row sm:items-center sm:justify-between sm:p-4">
       <div className="flex items-center gap-3 flex-1 min-w-0">
-        {item.icon && <Icon icon={item.icon} className="h-5 w-5 shrink-0 text-muted-foreground" />}
+        {renderIcon(item.icon, "h-5 w-5")}
         <div className="min-w-0">
-          <h3 className="text-sm font-bold text-foreground truncate">{item.title_zh}</h3>
+          <div className="flex items-center gap-2">
+            <SortBadge order={item.sort_order} />
+            <h3 className="text-sm font-bold text-foreground truncate">{item.title_zh}</h3>
+          </div>
           <p className="font-mono text-[10px] text-muted-foreground truncate">{item.url} / tags: {parseTags(item.tags)}</p>
         </div>
       </div>

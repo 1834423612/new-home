@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback } from "react"
 import { Icon } from "@iconify/react"
 import { InputField, AdminButton, IconPreview } from "./form-fields"
+import { useSortable } from "@/hooks/use-sortable"
+import { SortToolbar, SortList, SortBadge } from "./sort-controls"
 
 /* ── Types ── */
 interface FooterSponsor {
@@ -58,6 +60,13 @@ export function FooterManager() {
     }, [])
 
     useEffect(() => { fetchSponsors(); fetchConfig() }, [fetchSponsors, fetchConfig])
+
+    /* ── sponsor sort ── */
+    const sort = useSortable<FooterSponsor & { id: number }>({
+        items: sponsors.filter((s): s is FooterSponsor & { id: number } => s.id != null),
+        apiEndpoint: "/api/admin/footer-sponsors",
+        onRefresh: fetchSponsors,
+    })
 
     /* ── sponsor CRUD ── */
     const handleSaveSponsor = async (data: FooterSponsor) => {
@@ -191,12 +200,20 @@ export function FooterManager() {
             {activeTab === "sponsors" && (
                 <div className="space-y-4">
                     <div className="flex items-center justify-end">
-                        <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}>
-                            <Icon icon="mdi:plus" className="h-4 w-4" /> Add Sponsor
-                        </AdminButton>
+                        <SortToolbar
+                            sortMode={sort.sortMode}
+                            sortSaving={sort.sortSaving}
+                            onEnterSort={sort.enterSortMode}
+                            onSaveSort={sort.saveSortOrder}
+                            onCancelSort={sort.cancelSortMode}
+                        >
+                            <AdminButton onClick={() => { setEditing(null); setShowForm(true) }}>
+                                <Icon icon="mdi:plus" className="h-4 w-4" /> Add Sponsor
+                            </AdminButton>
+                        </SortToolbar>
                     </div>
 
-                    {showForm && (
+                    {!sort.sortMode && showForm && (
                         <SponsorForm
                             initial={editing}
                             onSave={handleSaveSponsor}
@@ -204,6 +221,29 @@ export function FooterManager() {
                         />
                     )}
 
+                    {sort.sortMode ? (
+                        <SortList
+                            items={sort.sortItems}
+                            onDragStart={sort.handleDragStart}
+                            onDragEnter={sort.handleDragEnter}
+                            onDragEnd={sort.handleDragEnd}
+                            onMove={sort.moveItem}
+                            renderLabel={(s) => (
+                                <div className="flex items-center gap-2">
+                                    {s.logo && (
+                                        s.logo.startsWith("http") || s.logo.startsWith("/") ? (
+                                            /* eslint-disable-next-line @next/next/no-img-element */
+                                            <img src={s.logo} alt={s.name} className="h-4 w-4 shrink-0 object-contain" />
+                                        ) : (
+                                            <Icon icon={s.logo} className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                        )
+                                    )}
+                                    <p className="text-sm font-bold text-foreground truncate">{s.name}</p>
+                                </div>
+                            )}
+                        />
+                    ) : (
+                    <>
                     {sponsors.length === 0 && !showForm && (
                         <div className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
                             No sponsors yet. Add one to display in the footer.
@@ -226,14 +266,14 @@ export function FooterManager() {
                                         )
                                     )}
                                     <div className="min-w-0">
-                                        <h3 className="text-sm font-bold text-foreground truncate">{s.name}</h3>
+                                        <div className="flex items-center gap-2">
+                                            <SortBadge order={s.sort_order} />
+                                            <h3 className="text-sm font-bold text-foreground truncate">{s.name}</h3>
+                                        </div>
                                         <p className="font-mono text-[10px] text-muted-foreground truncate">{s.url || "no link"}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
-                                    <span className="rounded-full bg-secondary px-2 py-0.5 text-[9px] font-mono text-secondary-foreground">
-                                        #{s.sort_order}
-                                    </span>
                                     <button
                                         onClick={() => { setEditing(s); setShowForm(true) }}
                                         className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors"
@@ -250,6 +290,8 @@ export function FooterManager() {
                             </div>
                         ))}
                     </div>
+                    </>
+                    )}
                 </div>
             )}
 
