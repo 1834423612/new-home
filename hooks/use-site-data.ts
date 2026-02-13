@@ -22,6 +22,13 @@ import {
 
 interface FortuneTag { zh: string; en: string }
 
+export interface FooterSponsor {
+  id: number
+  name: string
+  logo?: string
+  url?: string
+}
+
 interface SiteData {
   projects: Project[]
   experiences: Experience[]
@@ -32,6 +39,7 @@ interface SiteData {
   socialLinks: SocialLink[]
   fortuneTags: FortuneTag[]
   games: Game[]
+  footerSponsors: FooterSponsor[]
   source: "database" | "local"
 }
 
@@ -53,6 +61,7 @@ const fallback: SiteData = {
   socialLinks: localSocialLinks,
   fortuneTags: [],
   games: localGames,
+  footerSponsors: [],
   source: "local",
 }
 

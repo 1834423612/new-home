@@ -172,6 +172,18 @@ CREATE TABLE IF NOT EXISTS `site_config` (
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- footer_sponsors: service providers / sponsors displayed in footer
+CREATE TABLE IF NOT EXISTS `footer_sponsors` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(200) NOT NULL COMMENT 'Sponsor / service provider name',
+  `logo` VARCHAR(1000) DEFAULT NULL COMMENT 'Logo URL or Iconify icon name',
+  `url` VARCHAR(1000) DEFAULT NULL COMMENT 'Link to sponsor website',
+  `sort_order` INT DEFAULT 0,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- resume_profiles: user-customized resume data for DIY builder
 CREATE TABLE IF NOT EXISTS `resume_profiles` (
   `id` INT NOT NULL AUTO_INCREMENT,

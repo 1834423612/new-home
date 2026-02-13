@@ -28,6 +28,7 @@ const navItems: NavItem[] = [
   { id: "fortune", label: "Fortune", icon: "mdi:ticket-outline", href: "/admin/fortune", group: "content" },
   { id: "media", label: "Media", icon: "mdi:image-outline", href: "/admin/media", group: "system" },
   { id: "settings", label: "Site Settings", icon: "mdi:cog-outline", href: "/admin/settings", group: "system" },
+  { id: "footer", label: "Footer", icon: "mdi:page-layout-footer", href: "/admin/footer", group: "system" },
   { id: "profile", label: "Profile", icon: "mdi:account-cog-outline", href: "/admin/profile", group: "system" },
 ]
 

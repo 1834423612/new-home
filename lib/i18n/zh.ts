@@ -143,6 +143,9 @@ const zh = {
     copyright: "况佳城 (kjch)",
     builtWith: "使用 Next.js + TypeScript 构建",
     source: "最幽暗森林的尽头，新世界的起点。",
+    sponsors: "感谢以下服务提供支持",
+    filing: "备案信息",
+    visitorCount: "访客计数",
   },
   resume: {
     title: "简历",

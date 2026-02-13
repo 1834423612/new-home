@@ -143,6 +143,9 @@ const en = {
     copyright: "Kuang Jiacheng (kjch)",
     builtWith: "Built with Next.js + TypeScript",
     source: "At the end of the darkest forest lies the beginning of a new world.",
+    sponsors: "Thanks to the following services",
+    filing: "Filing",
+    visitorCount: "Visitors",
   },
   resume: {
     title: "Resume",

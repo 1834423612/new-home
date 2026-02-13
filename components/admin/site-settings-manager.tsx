@@ -74,7 +74,7 @@ const configGroups: ConfigGroup[] = [
     id: "footer",
     label: "Footer",
     icon: "mdi:page-layout-footer",
-    description: "Footer text and credits",
+    description: "Footer text & credits (sponsors, filing & visitor counter are in Footer Settings)",
     fields: [
       { key: "footer_copyright_zh", label: "Copyright text (zh)", type: "text" },
       { key: "footer_copyright_en", label: "Copyright text (en)", type: "text" },
