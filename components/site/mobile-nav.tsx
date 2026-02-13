@@ -10,12 +10,15 @@ const navItems = [
   { id: "hero", icon: "mdi:home-outline" },
   { id: "about", icon: "mdi:account-outline" },
   { id: "projects", icon: "mdi:folder-outline" },
+  { id: "awards", icon: "mdi:trophy-outline" },
+  { id: "experience", icon: "mdi:timeline-outline" },
   { id: "skills", icon: "mdi:code-tags" },
-  { id: "games", icon: "mdi:gamepad-variant-outline" },
   { id: "fortune", icon: "mdi:ticket-outline" },
+  { id: "games", icon: "mdi:gamepad-variant-outline" },
+  { id: "contact", icon: "mdi:email-outline" },
 ]
 
-const IDLE_TIMEOUT = 3000 // ms before collapsing into a ball
+const IDLE_TIMEOUT = 1500 // ms before collapsing into a ball
 
 export function MobileNav() {
   const { toggleLocale, locale, dict } = useLocale()
@@ -25,12 +28,15 @@ export function MobileNav() {
   const [showThemes, setShowThemes] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
   const pickerRef = useRef<HTMLDivElement>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const touchingRef = useRef(false)
 
   /* ── Reset idle timer: expand bar & schedule collapse ── */
   const resetIdleTimer = useCallback(() => {
     setCollapsed(false)
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
+    if (touchingRef.current) return // don't schedule collapse while finger is on the bar
     idleTimerRef.current = setTimeout(() => setCollapsed(true), IDLE_TIMEOUT)
   }, [])
 
@@ -56,6 +62,27 @@ export function MobileNav() {
   useEffect(() => {
     if (visible) resetIdleTimer()
   }, [visible, resetIdleTimer])
+
+  /* ── Auto-scroll navbar to keep active item visible ── */
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+    const activeIndex = navItems.findIndex((n) => n.id === active)
+    const activeEl = container.children[activeIndex] as HTMLElement | undefined
+    if (!activeEl) return
+    const left = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2
+    container.scrollTo({ left, behavior: "smooth" })
+  }, [active])
+
+  /* ── Touch: pause auto-collapse while finger on navbar ── */
+  const handleTouchStart = useCallback(() => {
+    touchingRef.current = true
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current)
+  }, [])
+  const handleTouchEnd = useCallback(() => {
+    touchingRef.current = false
+    resetIdleTimer()
+  }, [resetIdleTimer])
 
   /* ── Click outside to close theme picker ── */
   useEffect(() => {
@@ -91,12 +118,20 @@ export function MobileNav() {
 
   /* ── Expanded bar ── */
   return (
-    <nav className={cn(
-      "fixed bottom-4 left-1/2 z-50 -translate-x-1/2 flex items-center rounded-full border border-border bg-card/90 px-1 py-1.5 backdrop-blur-md transition-all duration-500 md:hidden",
-      "max-w-[calc(100vw-2rem)] overflow-x-auto scrollbar-none",
-      visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
-    )}>
-      <div className="flex items-center gap-1 px-1">
+    <nav
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className={cn(
+        "fixed bottom-4 left-1/2 z-50 -translate-x-1/2 flex items-center rounded-full border border-border bg-card/90 py-1.5 pl-1 pr-1 backdrop-blur-md transition-all duration-500 md:hidden",
+        "max-w-[calc(100vw-2rem)]",
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
+      )}
+    >
+      {/* Scrollable nav items */}
+      <div
+        ref={scrollContainerRef}
+        className="flex items-center gap-1 overflow-x-auto scrollbar-none px-1"
+      >
         {navItems.map((item) => (
           <a key={item.id} href={`#${item.id}`} onClick={resetIdleTimer} className={cn(
             "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-300",
@@ -105,7 +140,10 @@ export function MobileNav() {
             <Icon icon={item.icon} className="h-4 w-4" />
           </a>
         ))}
+      </div>
 
+      {/* Pinned right: divider + lang + theme */}
+      <div className="flex shrink-0 items-center gap-0.5 border-l border-border/40 pl-1 ml-0.5">
         <button onClick={() => { toggleLocale(); resetIdleTimer() }} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground" aria-label={dict.common.toggleLanguage}>
           <span className="text-[10px] font-mono font-bold">{dict.common.langSwitch}</span>
         </button>

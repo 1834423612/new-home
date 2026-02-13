@@ -28,7 +28,7 @@ export function Footer() {
         {/* ── Sponsors ── */}
         {hasSponsors && (
           <div className="flex flex-col items-center gap-1.5">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/40">
+            <span className="text-[10px] md:text-[12px] font-mono uppercase tracking-widest text-muted-foreground/80">
               {dict.footer.sponsors}
             </span>
             <div className="flex flex-wrap items-center justify-center gap-2">
@@ -41,15 +41,17 @@ export function Footer() {
 
         {/* ── ICP Filing (inline) ── */}
         {hasIcp && (
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 -mb-4 text-[12px] text-muted-foreground/40">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 mt-2 -mb-4 text-[10px] md:text-[12px] text-slate-600/70">
             {icpNumber && (
-              <a href={icpUrl} target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground transition-colors">
+              <a href={icpUrl} target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground hover:underline gap-1 transition-colors">
+                <img src="/beian.svg" alt="ICP" className="inline h-4 md:h-5 w-auto mr-1" />
                 {icpNumber}
               </a>
             )}
             {gonganNumber && (
-              <a href={gonganUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-muted-foreground transition-colors">
-                <Icon icon="mdi:shield-check-outline" className="h-3 w-3" />
+              <a href={gonganUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-muted-foreground hover:underline transition-colors">
+                {/* <Icon icon="mdi:shield-check-outline" className="h-3 w-3" /> */}
+                <img src="/gongan.png" alt="Gongan" className="inline h-4 md:h-5 w-auto" />
                 {gonganNumber}
               </a>
             )}
@@ -67,11 +69,11 @@ export function Footer() {
               loading="lazy"
             />
           )}
-          <p className="text-center text-xs italic text-muted-foreground/50">
+          <p className="text-center text-xs italic text-muted-foreground/60">
             {c("footer_source", dict.footer.source)}
           </p>
-          <div className="flex items-center gap-2 text-[11px] text-muted-foreground/40">
-            <span>&copy; {new Date().getFullYear()} {c("footer_copyright", dict.footer.copyright)}</span>
+          <div className="flex items-center gap-2 text-[11px] text-muted-foreground/70">
+            <span>&copy; 2019-{new Date().getFullYear()} {c("footer_copyright", dict.footer.copyright)}</span>
             <span className="text-border">|</span>
             <span className="font-mono">{c("footer_built_with", dict.footer.builtWith)}</span>
           </div>
@@ -84,21 +86,21 @@ export function Footer() {
 function SponsorItem({ sponsor }: { sponsor: FooterSponsor }) {
   const isIconify = sponsor.logo && !sponsor.logo.startsWith("http") && !sponsor.logo.startsWith("/")
   const content = (
-    <div className="flex items-center gap-2 rounded-lg border border-transparent px-3 py-1.5 text-muted-foreground/60 transition-colors hover:border-border hover:text-foreground hover:bg-muted/30">
+    <div className="flex flex-col items-center gap-2 rounded-lg border border-transparent px-1 py-1.5 text-muted-foreground/60 transition-colors hover:border-border hover:text-foreground hover:bg-muted/30">
       {sponsor.logo && (
         isIconify ? (
-          <Icon icon={sponsor.logo} className="h-4 w-4 shrink-0" />
+          <Icon icon={sponsor.logo} className="h-5 w-auto shrink-0" />
         ) : (
           <Image
             src={sponsor.logo}
             alt={sponsor.name}
-            width={16}
-            height={16}
-            className="h-4 w-4 shrink-0 object-contain"
+            width={40}
+            height={20}
+            className="h-5 w-auto shrink-0 object-contain"
           />
         )
       )}
-      <span className="text-xs font-medium">{sponsor.name}</span>
+      {/* <span className="text-[8px] md:text-[12px] font-medium">{sponsor.name}</span> */}
     </div>
   )
 
