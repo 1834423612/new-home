@@ -24,6 +24,7 @@ const navItems: NavItem[] = [
   { id: "experiences", label: "Experiences", icon: "mdi:timeline-outline", href: "/admin/experiences", group: "content" },
   { id: "skills", label: "Skills", icon: "mdi:code-tags", href: "/admin/skills", group: "content" },
   { id: "sites", label: "Sites/Tools", icon: "mdi:web", href: "/admin/sites", group: "content" },
+  { id: "games", label: "Games", icon: "mdi:gamepad-variant-outline", href: "/admin/games", group: "content" },
   { id: "fortune", label: "Fortune", icon: "mdi:ticket-outline", href: "/admin/fortune", group: "content" },
   { id: "media", label: "Media", icon: "mdi:image-outline", href: "/admin/media", group: "system" },
   { id: "settings", label: "Site Settings", icon: "mdi:cog-outline", href: "/admin/settings", group: "system" },

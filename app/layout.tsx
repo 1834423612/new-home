@@ -6,7 +6,7 @@ import { LocaleProvider } from "@/lib/locale-context"
 import { ThemeContextProvider } from "@/lib/theme-context"
 import { getDictionary, type Locale } from "@/lib/i18n"
 
-import "./globals.css"
+import "@/app/globals.css"
 
 const inter = Inter({
   subsets: ["latin"],

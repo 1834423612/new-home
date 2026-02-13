@@ -19,7 +19,7 @@ export function ContactSection() {
     <section id="contact" className="relative px-6 py-32 md:px-12" ref={ref}>
       <div className={cn("mx-auto max-w-3xl text-center transition-all duration-700", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12")}>
         <div className="mb-12 flex items-center gap-4">
-          <span className="font-mono text-xs uppercase tracking-widest text-primary">07</span>
+          <span className="font-mono text-xs uppercase tracking-widest text-primary">08</span>
           <div className="h-px flex-1 bg-border" />
           <h2 className="text-2xl font-bold md:text-3xl">{dict.contact.title}</h2>
           <div className="h-px flex-1 bg-border" />

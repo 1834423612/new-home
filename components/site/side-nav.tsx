@@ -14,6 +14,7 @@ const sections = [
   { id: "experience", icon: "mdi:timeline-outline" },
   { id: "skills", icon: "mdi:code-tags" },
   { id: "fortune", icon: "mdi:ticket-outline" },
+  { id: "games", icon: "mdi:gamepad-variant-outline" },
   { id: "contact", icon: "mdi:email-outline" },
 ]
 

@@ -111,6 +111,10 @@ const zh = {
     allSites: "全部站点与工具",
     backToHome: "返回首页",
   },
+  games: {
+    title: "我玩的游戏",
+    subtitle: "闲暇时光的数字世界冒险",
+  },
   theme: {
     title: "主题",
     darkGold: "暗黑金",

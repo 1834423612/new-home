@@ -77,6 +77,17 @@ export interface Site {
   tags: string[]
 }
 
+export interface Game {
+  id: string
+  title: { zh: string; en: string }
+  icon?: string
+  hoursPlayed?: string
+  maxLevel?: string
+  accountName?: string
+  showAccount?: boolean
+  url?: string
+}
+
 export const projects: Project[] = [
   {
     id: "zdschool",
@@ -390,5 +401,51 @@ export const tools: Tool[] = [
     icon: "mdi:card-account-details-outline",
     tags: ["API"],
     type: "tool",
+  },
+]
+
+export const games: Game[] = [
+  {
+    id: "minecraft",
+    title: { zh: "Minecraft", en: "Minecraft" },
+    icon: "simple-icons:minecraft",
+    hoursPlayed: "10000+",
+    accountName: "kjchmc",
+    showAccount: true,
+    url: "https://www.minecraft.net",
+  },
+  {
+    id: "terraria",
+    title: { zh: "泰拉瑞亚", en: "Terraria" },
+    icon: "mdi:sword-cross",
+    hoursPlayed: "500+",
+    url: "https://store.steampowered.com/app/105600/Terraria/",
+  },
+  {
+    id: "gta5",
+    title: { zh: "GTA5", en: "GTA5" },
+    icon: "mdi:car-sports",
+    hoursPlayed: "200+",
+    url: "https://store.steampowered.com/app/271590/Grand_Theft_Auto_V/",
+  },
+  {
+    id: "genshin",
+    title: { zh: "原神", en: "Genshin Impact" },
+    icon: "mdi:sword",
+    hoursPlayed: "300+",
+    maxLevel: "AR 55",
+    accountName: "800123456",
+    showAccount: true,
+    url: "https://genshin.hoyoverse.com",
+  },
+  {
+    id: "honkai-sr",
+    title: { zh: "崩坏：星穹铁道", en: "Honkai: Star Rail" },
+    icon: "mdi:star-shooting",
+    hoursPlayed: "100+",
+    maxLevel: "开拓等级 60",
+    accountName: "801234567",
+    showAccount: true,
+    url: "https://hsr.hoyoverse.com",
   },
 ]

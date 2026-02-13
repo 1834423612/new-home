@@ -9,6 +9,7 @@ import {
   awards as localAwards,
   tools as localTools,
   socialLinks as localSocialLinks,
+  games as localGames,
   type Project,
   type Experience,
   type Skill,
@@ -16,6 +17,7 @@ import {
   type Award,
   type Tool,
   type SocialLink,
+  type Game,
 } from "@/lib/data"
 
 interface FortuneTag { zh: string; en: string }
@@ -29,6 +31,7 @@ interface SiteData {
   tools: Tool[]
   socialLinks: SocialLink[]
   fortuneTags: FortuneTag[]
+  games: Game[]
   source: "database" | "local"
 }
 
@@ -49,6 +52,7 @@ const fallback: SiteData = {
   tools: localTools,
   socialLinks: localSocialLinks,
   fortuneTags: [],
+  games: localGames,
   source: "local",
 }
 

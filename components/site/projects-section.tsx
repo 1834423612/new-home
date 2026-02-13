@@ -71,16 +71,24 @@ export function ProjectsSection() {
               style={{ animationDelay: `${i * 0.08}s` }}
             >
               <div className="relative h-40 overflow-hidden bg-secondary">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Icon
-                    icon="mdi:folder-open-outline"
-                    className="h-12 w-12 text-muted-foreground/20 transition-transform duration-500 group-hover:scale-110"
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 z-10" />
+                {project.image ? (
+                  <img
+                    src={project.image}
+                    alt={project.title[locale]}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                </div>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Icon
+                      icon="mdi:folder-open-outline"
+                      className="h-12 w-12 text-muted-foreground/20 transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
+                )}
                 <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
                   {project.tags.slice(0, 3).map((tag) => (
-                    <span key={tag} className="rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-mono text-foreground backdrop-blur-sm">
+                    <span key={tag} className="rounded-full bg-background/10 px-2 py-0.5 text-[10px] font-mono text-foreground backdrop-blur-[2px]">
                       {tag}
                     </span>
                   ))}

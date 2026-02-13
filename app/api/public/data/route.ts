@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic"
 
 export async function GET() {
   try {
-    const [projectRows, experienceRows, skillRows, siteRows, awardRows, toolRows, socialRows, fortuneRows] =
+    const [projectRows, experienceRows, skillRows, siteRows, awardRows, toolRows, socialRows, fortuneRows, gameRows] =
       await Promise.all([
         query<Record<string, unknown>[]>("SELECT * FROM projects ORDER BY sort_order ASC, created_at DESC"),
         query<Record<string, unknown>[]>("SELECT * FROM experiences ORDER BY sort_order ASC"),
@@ -15,6 +15,7 @@ export async function GET() {
         query<Record<string, unknown>[]>("SELECT * FROM tools ORDER BY sort_order ASC"),
         query<Record<string, unknown>[]>("SELECT * FROM social_links ORDER BY sort_order ASC"),
         query<Record<string, unknown>[]>("SELECT * FROM fortune_tags ORDER BY id ASC"),
+        query<Record<string, unknown>[]>("SELECT * FROM games ORDER BY sort_order ASC"),
       ])
 
     const parseTags = (t: unknown): string[] => {
@@ -100,8 +101,19 @@ export async function GET() {
       zh: r.text_zh as string, en: r.text_en as string,
     }))
 
+    const games = gameRows.map((r) => ({
+      id: r.id,
+      title: { zh: r.title_zh, en: r.title_en },
+      icon: r.icon || undefined,
+      hoursPlayed: r.hours_played || undefined,
+      maxLevel: r.max_level || undefined,
+      accountName: r.account_name || undefined,
+      showAccount: !!(r.show_account),
+      url: r.url || undefined,
+    }))
+
     return NextResponse.json({
-      projects, experiences, skills, sites, awards, tools, socialLinks, fortuneTags,
+      projects, experiences, skills, sites, awards, tools, socialLinks, fortuneTags, games,
       source: "database",
     })
   } catch (error) {

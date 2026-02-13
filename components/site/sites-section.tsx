@@ -23,7 +23,7 @@ export function SitesSection() {
     <section className="relative px-6 py-24 md:px-12" ref={ref}>
       <div className={cn("mx-auto max-w-5xl transition-all duration-700", isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12")}>
         <div className="mb-10 flex items-center gap-4">
-          <span className="font-mono text-xs uppercase tracking-widest text-primary">07</span>
+          <span className="font-mono text-xs uppercase tracking-widest text-primary">06</span>
           <div className="h-px flex-1 bg-border" />
           <h2 className="text-xl font-bold md:text-2xl">{dict.sites.title}</h2>
           <div className="h-px flex-1 bg-border" />

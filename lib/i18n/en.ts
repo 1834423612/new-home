@@ -111,6 +111,10 @@ const en = {
     allSites: "All Sites & Tools",
     backToHome: "Back to Home",
   },
+  games: {
+    title: "Games I Play",
+    subtitle: "Digital world adventures in my free time",
+  },
   theme: {
     title: "Theme",
     darkGold: "Dark Gold",

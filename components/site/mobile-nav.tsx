@@ -11,6 +11,7 @@ const navItems = [
   { id: "about", icon: "mdi:account-outline" },
   { id: "projects", icon: "mdi:folder-outline" },
   { id: "skills", icon: "mdi:code-tags" },
+  { id: "games", icon: "mdi:gamepad-variant-outline" },
   { id: "fortune", icon: "mdi:ticket-outline" },
 ]
 

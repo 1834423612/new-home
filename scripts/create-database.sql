@@ -135,6 +135,23 @@ CREATE TABLE IF NOT EXISTS `social_links` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- games: games the user plays
+CREATE TABLE IF NOT EXISTS `games` (
+  `id` VARCHAR(100) NOT NULL,
+  `title_zh` VARCHAR(500) NOT NULL,
+  `title_en` VARCHAR(500) NOT NULL,
+  `icon` VARCHAR(200) DEFAULT NULL COMMENT 'Iconify icon or image URL for game logo',
+  `hours_played` VARCHAR(50) DEFAULT NULL,
+  `max_level` VARCHAR(100) DEFAULT NULL COMMENT 'Highest in-game level / rank if applicable',
+  `account_name` VARCHAR(200) DEFAULT NULL COMMENT 'UID or username in the game',
+  `show_account` BOOLEAN DEFAULT FALSE COMMENT 'Whether to display account_name publicly',
+  `url` VARCHAR(1000) DEFAULT NULL COMMENT 'Link to game page (Steam, etc.)',
+  `sort_order` INT DEFAULT 0,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ============================================================
 -- System Tables
 -- ============================================================
@@ -248,6 +265,14 @@ ON DUPLICATE KEY UPDATE `title_zh`=VALUES(`title_zh`);
 INSERT INTO `tools` (`id`, `title_zh`, `title_en`, `description_zh`, `description_en`, `url`, `icon`, `tags`, `sort_order`) VALUES
 ('random-anime', '随机二次元图片', 'Random Anime Image', '随机展示一张二次元壁纸', 'Random anime wallpaper display', '#', 'mdi:image-outline', '["API"]', 1),
 ('ip-sign', 'IP签名墙', 'IP Signature Wall', '快速生成一张带有IP信息的小图片', 'Generate a small image with IP info', '#', 'mdi:card-account-details-outline', '["API"]', 2)
+ON DUPLICATE KEY UPDATE `title_zh`=VALUES(`title_zh`);
+
+INSERT INTO `games` (`id`, `title_zh`, `title_en`, `icon`, `hours_played`, `max_level`, `account_name`, `show_account`, `url`, `sort_order`) VALUES
+('minecraft', 'Minecraft', 'Minecraft', 'simple-icons:minecraft', '10000+', NULL, 'kjchmc', TRUE, 'https://www.minecraft.net', 1),
+('terraria', '泰拉瑞亚', 'Terraria', 'mdi:sword-cross', '500+', NULL, NULL, FALSE, 'https://store.steampowered.com/app/105600/Terraria/', 2),
+('gta5', 'GTA5', 'GTA5', 'mdi:car-sports', '200+', NULL, NULL, FALSE, 'https://store.steampowered.com/app/271590/Grand_Theft_Auto_V/', 3),
+('genshin', '原神', 'Genshin Impact', 'mdi:sword', '300+', 'AR 55', '800123456', TRUE, 'https://genshin.hoyoverse.com', 4),
+('honkai-sr', '崩坏：星穹铁道', 'Honkai: Star Rail', 'mdi:star-shooting', '100+', '开拓等级 60', '801234567', TRUE, 'https://hsr.hoyoverse.com', 5)
 ON DUPLICATE KEY UPDATE `title_zh`=VALUES(`title_zh`);
 
 INSERT INTO `fortune_tags` (`text_zh`, `text_en`) VALUES

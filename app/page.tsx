@@ -8,6 +8,7 @@ import { ExperienceSection } from "@/components/site/experience-section"
 import { SkillsSection } from "@/components/site/skills-section"
 import { FortuneSection } from "@/components/site/fortune-section"
 import { SitesSection } from "@/components/site/sites-section"
+import { GamesSection } from "@/components/site/games-section"
 import { ContactSection } from "@/components/site/contact-section"
 import { Footer } from "@/components/site/footer"
 import { SideNav } from "@/components/site/side-nav"
@@ -26,6 +27,7 @@ export default function Home() {
       <SkillsSection />
       <FortuneSection />
       <SitesSection />
+      <GamesSection />
       <ContactSection />
       <Footer />
     </main>
