@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
 import { useTheme } from "@/lib/theme-context"
 import { cn } from "@/lib/utils"
+import { trackNavClick, trackLanguageToggle, trackThemeChange } from "@/lib/umami"
 
 const sections = [
   { id: "hero", icon: "mdi:home-outline" },
@@ -63,7 +64,7 @@ export function SideNav() {
       "max-md:hidden"
     )}>
       {sections.map((s) => (
-        <a key={s.id} href={`#${s.id}`} className="group relative flex items-center" aria-label={navLabels[s.id] || s.id}>
+        <a key={s.id} href={`#${s.id}`} onClick={() => trackNavClick(s.id, "side-nav")} className="group relative flex items-center" aria-label={navLabels[s.id] || s.id}>
           <span className={cn("absolute right-10 whitespace-nowrap rounded-md px-2 py-1 text-xs font-mono bg-card text-card-foreground border border-border opacity-0 translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0")}>
             {navLabels[s.id] || s.id}
           </span>
@@ -77,7 +78,7 @@ export function SideNav() {
       ))}
 
       {/* Lang toggle */}
-      <button onClick={toggleLocale} className="mt-4 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300 text-[10px] font-mono font-bold" aria-label={dict.common.toggleLanguage}>
+      <button onClick={() => { toggleLocale(); trackLanguageToggle(locale === "zh" ? "en" : "zh") }} className="mt-4 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300 text-[10px] font-mono font-bold" aria-label={dict.common.toggleLanguage}>
         {dict.common.langSwitch}
       </button>
 
@@ -91,7 +92,7 @@ export function SideNav() {
             {/* Mode toggle */}
             <div className="flex items-center justify-between gap-2 pb-2 border-b border-border">
               <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">{dict.theme.modeLabel}</span>
-              <button onClick={toggleMode} className="flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs transition-colors hover:border-primary">
+              <button onClick={() => { toggleMode(); trackThemeChange("mode", mode === "dark" ? "light" : "dark") }} className="flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs transition-colors hover:border-primary">
                 <Icon icon={mode === "dark" ? "mdi:weather-night" : "mdi:weather-sunny"} className="h-3.5 w-3.5 text-primary" />
                 <span className="font-mono text-[10px] text-foreground">{mode === "dark" ? dict.theme.dark : dict.theme.light}</span>
               </button>
@@ -103,7 +104,7 @@ export function SideNav() {
                 {colorOptions.map((opt) => (
                   <button
                     key={opt.id}
-                    onClick={() => setColor(opt.id)}
+                    onClick={() => { setColor(opt.id); trackThemeChange("color", opt.id) }}
                     className={cn(
                       "flex h-7 w-7 items-center justify-center rounded-full border-2 transition-all duration-200 hover:scale-110",
                       color === opt.id ? "border-foreground scale-110" : "border-transparent"
@@ -122,7 +123,7 @@ export function SideNav() {
       </div>
 
       {/* Resume */}
-      <a href="/resume" className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300" aria-label={dict.nav.resume}>
+      <a href="/resume" className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300" aria-label={dict.nav.resume} data-umami-event="nav-resume-click">
         <Icon icon="mdi:file-document-outline" className="h-4 w-4" />
       </a>
     </nav>

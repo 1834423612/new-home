@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
 import { useTheme } from "@/lib/theme-context"
 import { cn } from "@/lib/utils"
+import { trackLanguageToggle, trackThemeChange } from "@/lib/umami"
 
 export function GlobalToolbar() {
   const { toggleLocale, locale, dict } = useLocale()
@@ -22,7 +23,7 @@ export function GlobalToolbar() {
 
   return (
     <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
-      <button onClick={toggleLocale} className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/90 text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300 backdrop-blur-md text-[10px] font-mono font-bold" aria-label={dict.common.toggleLanguage}>
+      <button onClick={() => { toggleLocale(); trackLanguageToggle(locale === "zh" ? "en" : "zh") }} className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/90 text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300 backdrop-blur-md text-[10px] font-mono font-bold" aria-label={dict.common.toggleLanguage}>
         {dict.common.langSwitch}
       </button>
 
@@ -34,7 +35,7 @@ export function GlobalToolbar() {
           <div className="absolute right-0 top-11 flex flex-col gap-2 rounded-xl border border-border bg-card p-3 shadow-xl min-w-[140px]">
             <div className="flex items-center justify-between gap-2 pb-2 border-b border-border">
               <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">{dict.theme.modeLabel}</span>
-              <button onClick={toggleMode} className="flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs transition-colors hover:border-primary">
+              <button onClick={() => { toggleMode(); trackThemeChange("mode", mode === "dark" ? "light" : "dark") }} className="flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs transition-colors hover:border-primary">
                 <Icon icon={mode === "dark" ? "mdi:weather-night" : "mdi:weather-sunny"} className="h-3.5 w-3.5 text-primary" />
                 <span className="font-mono text-[10px] text-foreground">{mode === "dark" ? dict.theme.dark : dict.theme.light}</span>
               </button>
@@ -45,7 +46,7 @@ export function GlobalToolbar() {
                 {colorOptions.map((opt) => (
                   <button
                     key={opt.id}
-                    onClick={() => setColor(opt.id)}
+                    onClick={() => { setColor(opt.id); trackThemeChange("color", opt.id) }}
                     className={cn(
                       "flex h-7 w-7 items-center justify-center rounded-full border-2 transition-all duration-200 hover:scale-110",
                       color === opt.id ? "border-foreground scale-110" : "border-transparent"

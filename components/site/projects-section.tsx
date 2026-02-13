@@ -7,6 +7,7 @@ import { useLocale } from "@/lib/locale-context"
 import { useInView } from "@/hooks/use-in-view"
 import { useSiteData } from "@/hooks/use-site-data"
 import { cn } from "@/lib/utils"
+import { trackCategoryFilter, trackProjectClick, trackViewMore } from "@/lib/umami"
 
 const PREVIEW_COUNT = 6
 const categoryKeys = ["all", "website", "tool", "game", "design", "contribution"] as const
@@ -43,7 +44,7 @@ export function ProjectsSection() {
           {categoryKeys.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => { setActiveCategory(cat); trackCategoryFilter(cat) }}
               className={cn(
                 "rounded-full px-4 py-1.5 text-xs font-mono transition-all duration-300",
                 activeCategory === cat
@@ -61,6 +62,7 @@ export function ProjectsSection() {
             <Link
               key={project.id}
               href={`/projects/${project.slug}`}
+              onClick={() => trackProjectClick(project.slug, project.title[locale])}
               className={cn(
                 "group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-500",
                 "hover:border-primary/50 hover:shadow-[0_0_30px_hsl(var(--primary)/0.08)]",
@@ -121,6 +123,7 @@ export function ProjectsSection() {
           <div className="mt-8 flex justify-center">
             <Link
               href="/projects"
+              onClick={() => trackViewMore("projects", "/projects")}
               className="group flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-mono text-muted-foreground transition-all hover:border-primary hover:text-primary"
             >
               {dict.projects.viewMore}

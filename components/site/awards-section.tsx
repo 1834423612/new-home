@@ -6,6 +6,7 @@ import { useLocale } from "@/lib/locale-context"
 import { useInView } from "@/hooks/use-in-view"
 import { useSiteData } from "@/hooks/use-site-data"
 import { cn } from "@/lib/utils"
+import { trackAwardClick, trackViewMore } from "@/lib/umami"
 
 const PREVIEW_COUNT = 3
 
@@ -38,6 +39,7 @@ export function AwardsSection() {
             <Link
               key={award.id}
               href={`/awards/${award.slug}`}
+              onClick={() => trackAwardClick(award.slug, award.title[locale])}
               className="group flex items-start gap-5 rounded-xl border border-border bg-card p-6 transition-all duration-400 hover:border-primary/40 hover:shadow-[0_0_24px_hsl(var(--primary)/0.06)] hover:-translate-y-0.5"
               style={{ animationDelay: `${i * 0.1}s` }}
             >
@@ -84,6 +86,7 @@ export function AwardsSection() {
           <div className="mt-8 flex justify-center">
             <Link
               href="/awards"
+              onClick={() => trackViewMore("awards", "/awards")}
               className="group flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-mono text-muted-foreground transition-all hover:border-primary hover:text-primary"
             >
               {dict.awards.viewMore}

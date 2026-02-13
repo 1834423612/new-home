@@ -95,6 +95,18 @@ const configGroups: ConfigGroup[] = [
       { key: "site_keywords", label: "Keywords (comma-separated)", type: "text" },
     ],
   },
+  {
+    id: "analytics",
+    label: "Analytics (Umami)",
+    icon: "mdi:chart-line",
+    description: "Umami website analytics tracking — script URL and website ID",
+    fields: [
+      { key: "umami_script_url", label: "Umami Script URL", type: "url", placeholder: "https://tj.kjch.net/kjchtj_main.js", description: "The URL of your Umami tracking script" },
+      { key: "umami_website_id", label: "Website ID", type: "text", placeholder: "9f297033-9cf3-46e7-8c24-39f8a8253227", description: "Your Umami website ID (UUID format)" },
+      { key: "umami_domains", label: "Allowed Domains (optional)", type: "text", placeholder: "kjch.net,www.kjch.net", description: "Comma-separated list of domains to track (empty = all)" },
+      { key: "umami_enabled", label: "Enable Tracking", type: "text", placeholder: "true", description: "Set to 'true' to enable, 'false' to disable" },
+    ],
+  },
 ]
 
 export function SiteSettingsManager() {

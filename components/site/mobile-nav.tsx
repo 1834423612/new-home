@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
 import { useTheme } from "@/lib/theme-context"
 import { cn } from "@/lib/utils"
+import { trackNavClick, trackLanguageToggle, trackThemeChange } from "@/lib/umami"
 
 const navItems = [
   { id: "hero", icon: "mdi:home-outline" },
@@ -133,7 +134,7 @@ export function MobileNav() {
         className="flex items-center gap-1 overflow-x-auto scrollbar-none px-1"
       >
         {navItems.map((item) => (
-          <a key={item.id} href={`#${item.id}`} onClick={resetIdleTimer} className={cn(
+          <a key={item.id} href={`#${item.id}`} onClick={() => { resetIdleTimer(); trackNavClick(item.id, "mobile-nav") }} className={cn(
             "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-300",
             active === item.id ? "bg-primary text-primary-foreground" : "text-muted-foreground"
           )} aria-label={item.id}>
@@ -144,7 +145,7 @@ export function MobileNav() {
 
       {/* Pinned right: divider + lang + theme */}
       <div className="flex shrink-0 items-center gap-0.5 border-l border-border/40 pl-1 ml-0.5">
-        <button onClick={() => { toggleLocale(); resetIdleTimer() }} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground" aria-label={dict.common.toggleLanguage}>
+        <button onClick={() => { toggleLocale(); resetIdleTimer(); trackLanguageToggle(locale === "zh" ? "en" : "zh") }} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground" aria-label={dict.common.toggleLanguage}>
           <span className="text-[10px] font-mono font-bold">{dict.common.langSwitch}</span>
         </button>
 
@@ -156,14 +157,14 @@ export function MobileNav() {
             <div className="absolute bottom-12 right-0 flex flex-col gap-2 rounded-xl border border-border bg-card p-3 shadow-xl min-w-[140px]">
               <div className="flex items-center justify-between gap-2 pb-2 border-b border-border">
                 <span className="text-[10px] font-mono text-muted-foreground uppercase">{dict.theme.modeLabel}</span>
-                <button onClick={toggleMode} className="flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs">
+                <button onClick={() => { toggleMode(); trackThemeChange("mode", mode === "dark" ? "light" : "dark") }} className="flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs">
                   <Icon icon={mode === "dark" ? "mdi:weather-night" : "mdi:weather-sunny"} className="h-3 w-3 text-primary" />
                   <span className="font-mono text-[10px] text-foreground">{mode === "dark" ? dict.theme.dark : dict.theme.light}</span>
                 </button>
               </div>
               <div className="flex items-center gap-1.5">
                 {colorOptions.map((opt) => (
-                  <button key={opt.id} onClick={() => setColor(opt.id)} className={cn("flex h-7 w-7 items-center justify-center rounded-full border-2 transition-all", color === opt.id ? "border-foreground scale-110" : "border-transparent")} style={{ backgroundColor: opt.swatch }} title={dict.theme.colors[opt.id as keyof typeof dict.theme.colors] || opt.label}>
+                  <button key={opt.id} onClick={() => { setColor(opt.id); trackThemeChange("color", opt.id) }} className={cn("flex h-7 w-7 items-center justify-center rounded-full border-2 transition-all", color === opt.id ? "border-foreground scale-110" : "border-transparent")} style={{ backgroundColor: opt.swatch }} title={dict.theme.colors[opt.id as keyof typeof dict.theme.colors] || opt.label}>
                     {color === opt.id && <Icon icon="mdi:check" className="h-3.5 w-3.5 text-white" />}
                   </button>
                 ))}

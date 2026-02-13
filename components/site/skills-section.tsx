@@ -6,6 +6,7 @@ import { useLocale } from "@/lib/locale-context"
 import { useInView } from "@/hooks/use-in-view"
 import { useSiteData } from "@/hooks/use-site-data"
 import { cn } from "@/lib/utils"
+import { trackCategoryFilter } from "@/lib/umami"
 
 const categoryOrder = ["frontend", "backend", "devops", "design", "os", "ops"] as const
 
@@ -38,7 +39,7 @@ export function SkillsSection() {
           {categoryOrder.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveTab(cat)}
+              onClick={() => { setActiveTab(cat); trackCategoryFilter(`skills-${cat}`) }}
               className={cn(
                 "rounded-lg px-4 py-2 text-xs font-mono transition-all duration-300",
                 activeTab === cat

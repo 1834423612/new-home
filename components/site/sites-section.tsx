@@ -6,6 +6,7 @@ import { useLocale } from "@/lib/locale-context"
 import { useInView } from "@/hooks/use-in-view"
 import { useSiteData } from "@/hooks/use-site-data"
 import { cn } from "@/lib/utils"
+import { trackSiteClick, trackViewMore } from "@/lib/umami"
 
 const PREVIEW_SITES = 4
 const PREVIEW_TOOLS = 4
@@ -38,7 +39,10 @@ export function SitesSection() {
               href={site.url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackSiteClick(site.id, site.title[locale], site.url)}
               className="group rounded-xl border border-border bg-card p-5 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_0_20px_hsl(var(--primary)/0.06)] hover:-translate-y-1"
+              data-umami-event="site-click"
+              data-umami-event-site={site.title[locale]}
             >
               <div className="mb-2 flex items-center justify-between">
                 <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
@@ -75,7 +79,10 @@ export function SitesSection() {
                   href={tool.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackSiteClick(tool.id, tool.title[locale], tool.url)}
                   className="group flex items-start gap-3 rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/40 hover:-translate-y-1"
+                  data-umami-event="tool-click"
+                  data-umami-event-tool={tool.title[locale]}
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground group-hover:text-primary transition-colors">
                     <Icon icon={tool.icon || "mdi:wrench-outline"} className="h-5 w-5" />
@@ -96,6 +103,7 @@ export function SitesSection() {
           <div className="flex justify-center">
             <Link
               href="/sites"
+              onClick={() => trackViewMore("sites", "/sites")}
               className="group flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-mono text-muted-foreground transition-all hover:border-primary hover:text-primary"
             >
               {dict.sites.viewMore}

@@ -4,6 +4,7 @@ import { headers } from "next/headers"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import { LocaleProvider } from "@/lib/locale-context"
 import { ThemeContextProvider } from "@/lib/theme-context"
+import { UmamiTracker } from "@/components/umami-tracker"
 import { getDictionary, type Locale } from "@/lib/i18n"
 
 import "@/app/globals.css"
@@ -58,7 +59,10 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <ThemeContextProvider>
-          <LocaleProvider>{children}</LocaleProvider>
+          <LocaleProvider>
+            {children}
+            <UmamiTracker />
+          </LocaleProvider>
         </ThemeContextProvider>
       </body>
     </html>

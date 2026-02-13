@@ -5,6 +5,7 @@ import { useSiteConfig } from "@/hooks/use-site-config"
 import { useSiteData, type FooterSponsor } from "@/hooks/use-site-data"
 import { Icon } from "@iconify/react"
 import Image from "next/image"
+import { trackSponsorClick, trackFooterLink } from "@/lib/umami"
 
 export function Footer() {
   const { dict, locale } = useLocale()
@@ -43,13 +44,13 @@ export function Footer() {
         {hasIcp && (
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5 mt-2 -mb-4 text-[10px] md:text-[12px] text-slate-600/70">
             {icpNumber && (
-              <a href={icpUrl} target="_blank" rel="noopener noreferrer" className="hover:text-muted-foreground hover:underline gap-1 transition-colors">
+              <a href={icpUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackFooterLink("icp", icpUrl)} className="hover:text-muted-foreground hover:underline gap-1 transition-colors">
                 <img src="/beian.svg" alt="ICP" className="inline h-4 md:h-5 w-auto mr-1" />
                 {icpNumber}
               </a>
             )}
             {gonganNumber && (
-              <a href={gonganUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-muted-foreground hover:underline transition-colors">
+              <a href={gonganUrl} target="_blank" rel="noopener noreferrer" onClick={() => trackFooterLink("gongan", gonganUrl)} className="inline-flex items-center gap-1 hover:text-muted-foreground hover:underline transition-colors">
                 {/* <Icon icon="mdi:shield-check-outline" className="h-3 w-3" /> */}
                 <img src="/gongan.png" alt="Gongan" className="inline h-4 md:h-5 w-auto" />
                 {gonganNumber}
@@ -106,7 +107,7 @@ function SponsorItem({ sponsor }: { sponsor: FooterSponsor }) {
 
   if (sponsor.url) {
     return (
-      <a href={sponsor.url} target="_blank" rel="noopener noreferrer">
+      <a href={sponsor.url} target="_blank" rel="noopener noreferrer" onClick={() => trackSponsorClick(sponsor.name, sponsor.url!)} data-umami-event="sponsor-click" data-umami-event-sponsor={sponsor.name}>
         {content}
       </a>
     )

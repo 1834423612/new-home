@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react"
 import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
 import { useSiteConfig } from "@/hooks/use-site-config"
+import { trackButtonClick } from "@/lib/umami"
 
 interface HitokotoData {
   hitokoto: string
@@ -153,11 +154,12 @@ export function HeroSection() {
           <div className="mt-3 flex justify-center">
             <button
               type="button"
-              onClick={fetchHitokoto}
+              onClick={() => { fetchHitokoto(); trackButtonClick("hitokoto-refresh") }}
               disabled={refreshLocked}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
               title={dict.hero.refreshHitokoto}
               aria-label={dict.hero.refreshHitokoto}
+              data-umami-event="hitokoto-refresh"
             >
               <Icon
                 icon={refreshLocked ? "mdi:loading" : "mdi:refresh"}
@@ -178,6 +180,7 @@ export function HeroSection() {
           <a
             href="#about"
             className="group flex items-center gap-2 rounded-full border border-primary bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-all hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]"
+            data-umami-event="hero-cta-about"
           >
             {dict.nav.about}
             <Icon icon="mdi:arrow-down" className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
@@ -185,6 +188,7 @@ export function HeroSection() {
           <a
             href="/resume"
             className="flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-medium text-foreground transition-all hover:border-primary hover:text-primary"
+            data-umami-event="hero-cta-resume"
           >
             <Icon icon="mdi:file-document-outline" className="h-4 w-4" />
             {dict.nav.resume}

@@ -6,6 +6,7 @@ import { useLocale } from "@/lib/locale-context"
 import { useSiteData } from "@/hooks/use-site-data"
 import { useInView } from "@/hooks/use-in-view"
 import { cn } from "@/lib/utils"
+import { trackFortuneRoll } from "@/lib/umami"
 
 export function FortuneSection() {
   const { dict, locale } = useLocale()
@@ -34,9 +35,11 @@ export function FortuneSection() {
       if (count >= maxCount) {
         clearInterval(interval)
         const finalIdx = Math.floor(Math.random() * tags.length)
-        setResult(tags[finalIdx])
+        const finalTag = tags[finalIdx]
+        setResult(finalTag)
         setFlipKey((k) => k + 1)
         setIsDrawing(false)
+        trackFortuneRoll(finalTag)
       }
     }, 100)
   }, [isDrawing, tags])

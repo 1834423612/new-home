@@ -7,6 +7,7 @@ import { useInView } from "@/hooks/use-in-view"
 import { useSiteData } from "@/hooks/use-site-data"
 import { cn } from "@/lib/utils"
 import { useSiteConfig } from "@/hooks/use-site-config"
+import { trackEmailClick, trackSocialClick, trackCopyAction } from "@/lib/umami"
 
 export function ContactSection() {
   const { dict, locale } = useLocale()
@@ -36,7 +37,10 @@ export function ContactSection() {
         {/* Email */}
         <a
           href={`mailto:${contactEmail}`}
+          onClick={() => trackEmailClick(contactEmail)}
           className="group mb-10 inline-flex items-center gap-3 rounded-xl border border-border bg-card px-6 py-4 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_0_20px_hsl(var(--primary)/0.08)]"
+          data-umami-event="email-click"
+          data-umami-event-email={contactEmail}
         >
           <Icon icon="mdi:email-outline" className="h-5 w-5 text-primary" />
           <span className="font-mono text-sm text-foreground">{contactEmail}</span>
@@ -57,8 +61,11 @@ export function ContactSection() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackSocialClick(link.name, link.url)}
                 className="group flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 transition-all duration-300 hover:border-transparent hover:-translate-y-0.5"
                 style={{ ["--social-color" as string]: link.color }}
+                data-umami-event="social-click"
+                data-umami-event-platform={link.name}
               >
                 <Icon
                   icon={link.icon}
@@ -86,6 +93,7 @@ function TextContactButton({ link }: { link: { name: string; icon: string; color
     try {
       await navigator.clipboard.writeText(link.textContent)
       setCopied(true)
+      trackCopyAction(link.name, link.textContent)
       setTimeout(() => setCopied(false), 2000)
     } catch {
       // fallback
@@ -95,9 +103,11 @@ function TextContactButton({ link }: { link: { name: string; icon: string; color
   return (
     <div className="relative">
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => { setOpen(!open); trackSocialClick(link.name, "text-contact") }}
         className="group flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 transition-all duration-300 hover:border-transparent hover:-translate-y-0.5"
         style={{ ["--social-color" as string]: link.color }}
+        data-umami-event="social-click"
+        data-umami-event-platform={link.name}
       >
         <Icon
           icon={link.icon}

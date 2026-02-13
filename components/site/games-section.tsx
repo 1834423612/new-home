@@ -5,6 +5,7 @@ import { useLocale } from "@/lib/locale-context"
 import { useInView } from "@/hooks/use-in-view"
 import { useSiteData } from "@/hooks/use-site-data"
 import { cn } from "@/lib/utils"
+import { trackGameClick } from "@/lib/umami"
 
 function GameIcon({ icon, className }: { icon?: string; className?: string }) {
     if (!icon) return <Icon icon="mdi:gamepad-variant" className={className} />
@@ -100,6 +101,9 @@ export function GamesSection() {
                                         rel="noopener noreferrer"
                                         className="absolute inset-0 rounded-2xl"
                                         aria-label={game.title[locale]}
+                                        onClick={() => trackGameClick(game.id, game.title[locale])}
+                                        data-umami-event="game-click"
+                                        data-umami-event-game={game.title[locale]}
                                     />
                                 )}
                             </div>
