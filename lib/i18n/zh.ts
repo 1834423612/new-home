@@ -9,7 +9,8 @@ const zh = {
     admin: "管理",
   },
   hero: {
-    greeting: "你好，我是",
+    greeting: "你好哇",
+    is: "我是",
     name: "况佳城",
     alias: "kjch",
     tagline: "当你在凝视着网页的时候，网页也正在凝视着你。",
@@ -140,7 +141,7 @@ const zh = {
     social: "社交媒体",
   },
   footer: {
-    copyright: "况佳城 (kjch)",
+    copyright: "kjch.net",
     builtWith: "使用 Next.js + TypeScript 构建",
     source: "最幽暗森林的尽头，新世界的起点。",
     sponsors: "感谢以下服务提供支持",

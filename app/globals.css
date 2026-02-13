@@ -555,6 +555,71 @@ html {
   opacity: 0.8;
 }
 
+/* ─── Rich Text Editor: ProseMirror Caret & Selection ────────────── */
+
+.ProseMirror {
+  caret-color: hsl(var(--primary));
+}
+
+.ProseMirror ::selection {
+  background: hsl(var(--primary) / 0.18);
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+/* Placeholder when editor is empty */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--muted-foreground) / 0.5);
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+/* Selected node (image, video, etc) outline */
+.ProseMirror .ProseMirror-selectednode {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* Gapcursor (blinking line between block nodes) */
+.ProseMirror .ProseMirror-gapcursor::after {
+  border-top-color: hsl(var(--primary));
+}
+
+/* Code block styling in editor */
+.ProseMirror pre {
+  background: hsl(var(--secondary));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+}
+
+/* Image in editor */
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.ProseMirror img:hover {
+  box-shadow: 0 4px 16px hsl(var(--primary) / 0.1);
+}
+
+/* Highlight mark colors */
+.ProseMirror mark {
+  border-radius: 0.15em;
+  padding: 0.05em 0.15em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
 @media print {
   .no-print { display: none !important; }
   .resume-paper { max-width: none !important; border-radius: 0 !important; box-shadow: none !important; }

@@ -123,7 +123,8 @@ export function HeroSection() {
           <span className="text-muted-foreground text-2xl font-normal block mb-2 md:text-3xl">
             {c("hero_greeting", dict.hero.greeting)}
           </span>
-          <span className="text-foreground">{c("hero_name", dict.hero.name)}</span>
+          {/* <span className="text-foreground">{c("hero_name", dict.hero.name)}</span> */}
+          <span className="text-foreground">{dict.hero.is}</span>
           <span className="text-primary font-mono text-xl md:text-2xl ml-3 align-middle">
             @{config.hero_alias || dict.hero.alias}
           </span>

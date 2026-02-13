@@ -9,8 +9,9 @@ const en = {
     admin: "Admin",
   },
   hero: {
-    greeting: "Hi, I'm",
-    name: "Kuang Jiacheng",
+    greeting: "Hi there",
+    is: "I'm",
+    name: "Jiacheng Kuang",
     alias: "kjch",
     tagline: "When you gaze at the webpage, the webpage also gazes at you.",
     subtitle: "Passionate about the internet, love exploring new things",
@@ -140,11 +141,11 @@ const en = {
     social: "Social Media",
   },
   footer: {
-    copyright: "Kuang Jiacheng (kjch)",
+    copyright: "kjch.net",
     builtWith: "Built with Next.js + TypeScript",
     source: "At the end of the darkest forest lies the beginning of a new world.",
     sponsors: "Thanks to the following services",
-    filing: "Filing",
+    filing: "Compliance",
     visitorCount: "Visitors",
   },
   resume: {
