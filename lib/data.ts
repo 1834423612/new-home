@@ -66,6 +66,9 @@ export interface SocialLink {
   icon: string
   url: string
   color: string
+  linkType?: "link" | "text"
+  textContent?: string
+  visible?: boolean
 }
 
 export interface Site {
@@ -297,14 +300,14 @@ export const skills: Skill[] = [
 ]
 
 export const socialLinks: SocialLink[] = [
-  { name: "GitHub", icon: "mdi:github", url: "https://github.com/1834423612", color: "#f0f0f0" },
-  { name: "WeChat", icon: "mdi:wechat", url: "#", color: "#07c160" },
-  { name: "Telegram", icon: "mdi:telegram", url: "#", color: "#26a5e4" },
-  { name: "Email", icon: "mdi:email-outline", url: "mailto:admin@kjchmc.cn", color: "#ea4335" },
-  { name: "Twitter/X", icon: "mdi:twitter", url: "#", color: "#1da1f2" },
-  { name: "Weibo", icon: "mdi:sina-weibo", url: "#", color: "#e6162d" },
-  { name: "Instagram", icon: "mdi:instagram", url: "#", color: "#e4405f" },
-  { name: "Bilibili", icon: "simple-icons:bilibili", url: "#", color: "#00a1d6" },
+  { name: "GitHub", icon: "mdi:github", url: "https://github.com/1834423612", color: "#f0f0f0", linkType: "link" },
+  { name: "WeChat", icon: "mdi:wechat", url: "#", color: "#07c160", linkType: "text", textContent: "kjchmc" },
+  { name: "Telegram", icon: "mdi:telegram", url: "#", color: "#26a5e4", linkType: "link" },
+  { name: "Email", icon: "mdi:email-outline", url: "mailto:admin@kjchmc.cn", color: "#ea4335", linkType: "link" },
+  { name: "Twitter/X", icon: "mdi:twitter", url: "#", color: "#1da1f2", linkType: "link" },
+  { name: "Weibo", icon: "mdi:sina-weibo", url: "#", color: "#e6162d", linkType: "link" },
+  { name: "Instagram", icon: "mdi:instagram", url: "#", color: "#e4405f", linkType: "link" },
+  { name: "Bilibili", icon: "simple-icons:bilibili", url: "#", color: "#00a1d6", linkType: "link" },
 ]
 
 export const sites: Site[] = [

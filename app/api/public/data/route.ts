@@ -96,6 +96,9 @@ export async function GET() {
     const socialLinks = socialRows.map((r) => ({
       name: r.name as string, icon: r.icon as string,
       url: (r.url || "#") as string, color: (r.color || "#fff") as string,
+      linkType: (r.link_type || "link") as "link" | "text",
+      textContent: (r.text_content || undefined) as string | undefined,
+      visible: r.visible === undefined ? true : !!(r.visible),
     }))
 
     const fortuneTags = fortuneRows.map((r) => ({

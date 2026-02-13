@@ -26,6 +26,7 @@ const navItems: NavItem[] = [
   { id: "sites", label: "Sites/Tools", icon: "mdi:web", href: "/admin/sites", group: "content" },
   { id: "games", label: "Games", icon: "mdi:gamepad-variant-outline", href: "/admin/games", group: "content" },
   { id: "fortune", label: "Fortune", icon: "mdi:ticket-outline", href: "/admin/fortune", group: "content" },
+  { id: "contact", label: "Contact", icon: "mdi:contacts-outline", href: "/admin/contact", group: "content" },
   { id: "media", label: "Media", icon: "mdi:image-outline", href: "/admin/media", group: "system" },
   { id: "settings", label: "Site Settings", icon: "mdi:cog-outline", href: "/admin/settings", group: "system" },
   { id: "footer", label: "Footer", icon: "mdi:page-layout-footer", href: "/admin/footer", group: "system" },

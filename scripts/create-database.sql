@@ -129,9 +129,13 @@ CREATE TABLE IF NOT EXISTS `social_links` (
   `name` VARCHAR(100) NOT NULL,
   `icon` VARCHAR(200) NOT NULL,
   `url` VARCHAR(1000),
+  `link_type` VARCHAR(20) NOT NULL DEFAULT 'link' COMMENT 'link or text',
+  `text_content` VARCHAR(500) DEFAULT NULL COMMENT 'content for text-type contacts',
   `color` VARCHAR(20),
+  `visible` BOOLEAN NOT NULL DEFAULT TRUE,
   `sort_order` INT DEFAULT 0,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -253,15 +257,15 @@ INSERT INTO `skills` (`name`, `icon`, `category`, `sort_order`) VALUES
 ('Android', 'devicon:android', 'os', 35), ('SSH', 'mdi:console', 'ops', 36),
 ('VMware', 'simple-icons:vmware', 'ops', 37);
 
-INSERT INTO `social_links` (`name`, `icon`, `url`, `color`, `sort_order`) VALUES
-('GitHub', 'mdi:github', 'https://github.com/1834423612', '#f0f0f0', 1),
-('WeChat', 'mdi:wechat', '#', '#07c160', 2),
-('Telegram', 'mdi:telegram', '#', '#26a5e4', 3),
-('Email', 'mdi:email-outline', 'mailto:admin@kjchmc.cn', '#ea4335', 4),
-('Twitter/X', 'mdi:twitter', '#', '#1da1f2', 5),
-('Weibo', 'mdi:sina-weibo', '#', '#e6162d', 6),
-('Instagram', 'mdi:instagram', '#', '#e4405f', 7),
-('Bilibili', 'simple-icons:bilibili', '#', '#00a1d6', 8);
+INSERT INTO `social_links` (`name`, `icon`, `url`, `link_type`, `text_content`, `color`, `visible`, `sort_order`) VALUES
+('GitHub', 'mdi:github', 'https://github.com/1834423612', 'link', NULL, '#f0f0f0', TRUE, 1),
+('WeChat', 'mdi:wechat', NULL, 'text', 'kjchmc', '#07c160', TRUE, 2),
+('Telegram', 'mdi:telegram', '#', 'link', NULL, '#26a5e4', TRUE, 3),
+('Email', 'mdi:email-outline', 'mailto:admin@kjchmc.cn', 'link', NULL, '#ea4335', TRUE, 4),
+('Twitter/X', 'mdi:twitter', '#', 'link', NULL, '#1da1f2', TRUE, 5),
+('Weibo', 'mdi:sina-weibo', '#', 'link', NULL, '#e6162d', TRUE, 6),
+('Instagram', 'mdi:instagram', '#', 'link', NULL, '#e4405f', TRUE, 7),
+('Bilibili', 'simple-icons:bilibili', '#', 'link', NULL, '#00a1d6', TRUE, 8);
 
 INSERT INTO `sites` (`id`, `title_zh`, `title_en`, `description_zh`, `description_en`, `url`, `since`, `tags`, `sort_order`) VALUES
 ('file-drive', '老况的文件库', 'kjch''s File Drive', '一个存储着许多资源材料的站点', 'A site storing various resources and materials', '#', '2022', '["Cloud Drive"]', 1),
