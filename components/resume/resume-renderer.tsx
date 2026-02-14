@@ -87,6 +87,52 @@ function SkillTag({ name, icon, palette, showIcons }: { name: string; icon?: str
   )
 }
 
+// Helper: renders text with markdown-like formatting (bullet points via "- ", line breaks via "\n", pipe separators)
+function FormattedText({ text, className, style }: { text: string; className?: string; style?: React.CSSProperties }) {
+  if (!text) return null
+  const lines = text.split('\n')
+  const elements: React.ReactNode[] = []
+  let bulletItems: string[] = []
+  let keyIdx = 0
+
+  const flushBullets = () => {
+    if (bulletItems.length > 0) {
+      elements.push(
+        <ul key={keyIdx++} className="ml-4 list-disc space-y-0.5">
+          {bulletItems.map((item, i) => <li key={i}>{renderInline(item)}</li>)}
+        </ul>
+      )
+      bulletItems = []
+    }
+  }
+
+  const renderInline = (s: string): React.ReactNode => {
+    if (!s.includes('|')) return s
+    const parts = s.split('|')
+    return parts.map((part, i) => (
+      <React.Fragment key={i}>
+        {i > 0 && <span className="mx-1 opacity-50">|</span>}
+        {part.trim()}
+      </React.Fragment>
+    ))
+  }
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed) continue
+    if (/^[-•*]\s/.test(trimmed)) {
+      bulletItems.push(trimmed.replace(/^[-•*]\s+/, ''))
+    } else {
+      flushBullets()
+      elements.push(<div key={keyIdx++}>{renderInline(trimmed)}</div>)
+    }
+  }
+  flushBullets()
+
+  if (elements.length === 0) return null
+  return <div className={className} style={style}>{elements}</div>
+}
+
 // Contact info helper -- now supports multi-email + social links
 function ContactInfo({ data, palette, showIcons, direction = "column" }: { data: ResumeData; palette: PaletteOption; showIcons: boolean; direction?: "row" | "column" }) {
   const items: { icon: string; value: string }[] = []
@@ -240,7 +286,7 @@ function ClassicLayout({ data, palette, locale, showIcons, activeSection, onSect
                   </div>
                   <span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span>
                 </div>
-                <p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p>
+                <FormattedText text={exp.description[l]} className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }} />
               </div>
             ))}
           </div>
@@ -255,7 +301,7 @@ function ClassicLayout({ data, palette, locale, showIcons, activeSection, onSect
               <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}>
                 <p className="text-xs font-bold">{p.title[l]}</p>
                 <p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p>
-                <p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p>
+                <FormattedText text={p.description[l]} className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }} />
                 <div className="mt-1.5 flex flex-wrap gap-1">{p.tags.map((tag) => <span key={tag} className="rounded-full border px-1.5 py-px text-[9px] font-mono" style={{ borderColor: palette.border, color: palette.muted }}>{tag}</span>)}</div>
               </div>
             ))}
@@ -320,14 +366,14 @@ function ModernLayout({ data, palette, locale, showIcons, activeSection, onSecti
         {data.experiences.length > 0 && (
           <Section id="experience" active={activeSection === "experience"} onClick={sc} className="mb-5">
             <SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>{labels[l].experience}</SectionTitle>
-            <div className="flex flex-col gap-3">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><div><p className="text-xs font-bold">{exp.title[l]}</p><p className="text-[11px]" style={{ color: palette.accent, opacity: 0.8 }}>{exp.org[l]}</p></div><span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span></div><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p></div>)}</div>
+            <div className="flex flex-col gap-3">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><div><p className="text-xs font-bold">{exp.title[l]}</p><p className="text-[11px]" style={{ color: palette.accent, opacity: 0.8 }}>{exp.org[l]}</p></div><span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span></div><FormattedText text={exp.description[l]} className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }} /></div>)}</div>
           </Section>
         )}
 
         {data.projects.length > 0 && (
           <Section id="projects" active={activeSection === "projects"} onClick={sc}>
             <SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{labels[l].projects}</SectionTitle>
-            <div className="grid gap-2.5 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p><div className="mt-1.5 flex flex-wrap gap-1">{p.tags.map((tag) => <span key={tag} className="rounded-full border px-1.5 py-px text-[9px] font-mono" style={{ borderColor: palette.border, color: palette.muted }}>{tag}</span>)}</div></div>)}</div>
+            <div className="grid gap-2.5 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p><FormattedText text={p.description[l]} className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }} /><div className="mt-1.5 flex flex-wrap gap-1">{p.tags.map((tag) => <span key={tag} className="rounded-full border px-1.5 py-px text-[9px] font-mono" style={{ borderColor: palette.border, color: palette.muted }}>{tag}</span>)}</div></div>)}</div>
           </Section>
         )}
 
@@ -376,13 +422,13 @@ function SidebarLayout({ data, palette, locale, showIcons, activeSection, onSect
         {data.experiences.length > 0 && (
           <Section id="experience" active={activeSection === "experience"} onClick={sc} className="mb-5">
             <SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>{labels[l].experience}</SectionTitle>
-            <div className="flex flex-col gap-3">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><div><p className="text-xs font-bold">{exp.title[l]}</p><p className="text-[11px]" style={{ color: palette.accent, opacity: 0.8 }}>{exp.org[l]}</p></div><span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span></div><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p></div>)}</div>
+            <div className="flex flex-col gap-3">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><div><p className="text-xs font-bold">{exp.title[l]}</p><p className="text-[11px]" style={{ color: palette.accent, opacity: 0.8 }}>{exp.org[l]}</p></div><span className="whitespace-nowrap text-[11px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span></div><FormattedText text={exp.description[l]} className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }} /></div>)}</div>
           </Section>
         )}
         {data.projects.length > 0 && (
           <Section id="projects" active={activeSection === "projects"} onClick={sc}>
             <SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{labels[l].projects}</SectionTitle>
-            <div className="flex flex-col gap-2.5">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p></div><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p></div>)}</div>
+            <div className="flex flex-col gap-2.5">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><div className="flex items-start justify-between"><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p></div><FormattedText text={p.description[l]} className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }} /></div>)}</div>
           </Section>
         )}
         <CustomSections sections={data.customSections} palette={palette} locale={l} showIcons={showIcons} activeSection={activeSection} onSectionClick={sc} />
@@ -411,8 +457,8 @@ function CompactLayout({ data, palette, locale, showIcons, activeSection, onSect
         {data.education.length > 0 && <Section id="education" active={activeSection === "education"} onClick={sc}><SectionTitle palette={palette} icon="mdi:school-outline" showIcons={showIcons}>{labels[l].education}</SectionTitle>{data.education.map((e, i) => <div key={i} className="mb-1"><p className="text-[11px] font-bold">{e.school}</p><p className="text-[10px]" style={{ color: palette.muted }}>{deg(e.degree, l) ? `${deg(e.degree, l)} - ` : ""}{typeof e.detail === "string" ? e.detail : e.detail[l]} &middot; {e.period}</p></div>)}</Section>}
       </div>
       <hr className="my-4" style={{ borderColor: palette.border }} />
-      {data.experiences.length > 0 && <Section id="experience" active={activeSection === "experience"} onClick={sc} className="mb-4"><SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>{labels[l].experience}</SectionTitle><div className="flex flex-col gap-2">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between gap-2"><div><p className="text-[11px] font-bold">{exp.title[l]}<span className="font-normal" style={{ color: palette.accent }}> @ {exp.org[l]}</span></p></div><span className="whitespace-nowrap text-[10px] font-mono" style={{ color: palette.muted }}>{exp.startDate}-{exp.endDate || labels[l].now}</span></div><p className="text-[10px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p></div>)}</div></Section>}
-      {data.projects.length > 0 && <Section id="projects" active={activeSection === "projects"} onClick={sc} className="mb-4"><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{labels[l].projects}</SectionTitle><div className="grid gap-2 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded border p-2" style={{ borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-[11px] font-bold">{p.title[l]} <span className="font-mono font-normal text-[9px]" style={{ color: palette.muted }}>{p.date}</span></p><p className="text-[10px]" style={{ color: palette.muted }}>{p.description[l]}</p></div>)}</div></Section>}
+      {data.experiences.length > 0 && <Section id="experience" active={activeSection === "experience"} onClick={sc} className="mb-4"><SectionTitle palette={palette} icon="mdi:briefcase-outline" showIcons={showIcons}>{labels[l].experience}</SectionTitle><div className="flex flex-col gap-2">{data.experiences.map((exp, i) => <div key={i} style={{ pageBreakInside: "avoid" }}><div className="flex items-start justify-between gap-2"><div><p className="text-[11px] font-bold">{exp.title[l]}<span className="font-normal" style={{ color: palette.accent }}> @ {exp.org[l]}</span></p></div><span className="whitespace-nowrap text-[10px] font-mono" style={{ color: palette.muted }}>{exp.startDate}-{exp.endDate || labels[l].now}</span></div><FormattedText text={exp.description[l]} className="text-[10px] leading-relaxed" style={{ color: palette.muted }} /></div>)}</div></Section>}
+      {data.projects.length > 0 && <Section id="projects" active={activeSection === "projects"} onClick={sc} className="mb-4"><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{labels[l].projects}</SectionTitle><div className="grid gap-2 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded border p-2" style={{ borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-[11px] font-bold">{p.title[l]} <span className="font-mono font-normal text-[9px]" style={{ color: palette.muted }}>{p.date}</span></p><FormattedText text={p.description[l]} className="text-[10px]" style={{ color: palette.muted }} /></div>)}</div></Section>}
       {data.skillGroups.length > 0 && <Section id="skills" active={activeSection === "skills"} onClick={sc}><SectionTitle palette={palette} icon="mdi:code-tags" showIcons={showIcons}>{labels[l].skills}</SectionTitle><div className="grid gap-2 sm:grid-cols-2">{data.skillGroups.map((g, i) => <div key={i}><p className="mb-0.5 text-[10px] font-bold">{g.label[l]}</p><div className="flex flex-wrap gap-1">{g.items.map((s) => <SkillTag key={s.name} name={s.name} icon={s.icon} palette={palette} showIcons={showIcons} />)}</div></div>)}</div></Section>}
       <CustomSections sections={data.customSections} palette={palette} locale={l} showIcons={showIcons} activeSection={activeSection} onSectionClick={sc} />
     </div>
@@ -442,14 +488,14 @@ function TimelineLayout({ data, palette, locale, showIcons, activeSection, onSec
                 {item.type === "edu" ? (
                   <><p className="text-xs font-bold">{item.school}</p><p className="text-[10px]" style={{ color: palette.muted }}>{typeof item.detail === "string" ? item.detail : item.detail[l]} &middot; {item.period}</p></>
                 ) : (
-                  <><div className="flex items-start justify-between gap-2"><div><p className="text-xs font-bold">{item.title[l]}</p><p className="text-[10px]" style={{ color: palette.accent, opacity: 0.8 }}>{item.org[l]}</p></div><span className="whitespace-nowrap text-[10px] font-mono" style={{ color: palette.muted }}>{item.startDate} - {item.endDate || labels[l].present}</span></div><p className="mt-0.5 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{item.description[l]}</p></>
+                  <><div className="flex items-start justify-between gap-2"><div><p className="text-xs font-bold">{item.title[l]}</p><p className="text-[10px]" style={{ color: palette.accent, opacity: 0.8 }}>{item.org[l]}</p></div><span className="whitespace-nowrap text-[10px] font-mono" style={{ color: palette.muted }}>{item.startDate} - {item.endDate || labels[l].present}</span></div><FormattedText text={item.description[l]} className="mt-0.5 text-[11px] leading-relaxed" style={{ color: palette.muted }} /></>
                 )}
               </div>
             ))}
           </div>
         </Section>
       )}
-      {data.projects.length > 0 && <Section id="projects" active={activeSection === "projects"} onClick={sc} className="mb-5"><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{labels[l].projects}</SectionTitle><div className="grid gap-2.5 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p><p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p></div>)}</div></Section>}
+      {data.projects.length > 0 && <Section id="projects" active={activeSection === "projects"} onClick={sc} className="mb-5"><SectionTitle palette={palette} icon="mdi:folder-outline" showIcons={showIcons}>{labels[l].projects}</SectionTitle><div className="grid gap-2.5 sm:grid-cols-2">{data.projects.map((p, i) => <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}><p className="text-xs font-bold">{p.title[l]}</p><p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p><FormattedText text={p.description[l]} className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }} /></div>)}</div></Section>}
       {data.skillGroups.length > 0 && <Section id="skills" active={activeSection === "skills"} onClick={sc}><SectionTitle palette={palette} icon="mdi:code-tags" showIcons={showIcons}>{labels[l].skills}</SectionTitle><div className="grid gap-3 sm:grid-cols-2">{data.skillGroups.map((g, i) => <div key={i}><p className="mb-1 text-[11px] font-bold">{g.label[l]}</p><div className="flex flex-wrap gap-1">{g.items.map((s) => <SkillTag key={s.name} name={s.name} icon={s.icon} palette={palette} showIcons={showIcons} />)}</div></div>)}</div></Section>}
       <CustomSections sections={data.customSections} palette={palette} locale={l} showIcons={showIcons} activeSection={activeSection} onSectionClick={sc} />
     </div>
@@ -506,7 +552,7 @@ function ElegantLayout({ data, palette, locale, showIcons, activeSection, onSect
                   <div><p className="text-xs font-bold">{exp.title[l]}</p><p className="text-[11px]" style={{ color: palette.accent }}>{exp.org[l]}</p></div>
                   <span className="whitespace-nowrap rounded-full border px-2 py-0.5 text-[9px] font-mono" style={{ borderColor: palette.border, color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span>
                 </div>
-                <p className="mt-2 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p>
+                <FormattedText text={exp.description[l]} className="mt-2 text-[11px] leading-relaxed" style={{ color: palette.muted }} />
               </div>
             ))}
           </div>
@@ -521,7 +567,7 @@ function ElegantLayout({ data, palette, locale, showIcons, activeSection, onSect
               <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}>
                 <p className="text-xs font-bold">{p.title[l]}</p>
                 <p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p>
-                <p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p>
+                <FormattedText text={p.description[l]} className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }} />
                 <div className="mt-1.5 flex flex-wrap gap-1">{p.tags.map((tag) => <span key={tag} className="rounded-full border px-1.5 py-px text-[9px] font-mono" style={{ borderColor: palette.border, color: palette.muted }}>{tag}</span>)}</div>
               </div>
             ))}
@@ -569,7 +615,7 @@ function MinimalLayout({ data, palette, locale, showIcons, activeSection, onSect
               <div key={i} style={{ pageBreakInside: "avoid" }}>
                 <div className="flex items-baseline justify-between"><p className="text-sm font-medium">{exp.title[l]}</p><span className="text-[10px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span></div>
                 <p className="text-[11px]" style={{ color: palette.accent }}>{exp.org[l]}</p>
-                <p className="mt-1.5 text-[11px] leading-loose" style={{ color: palette.muted }}>{exp.description[l]}</p>
+                <FormattedText text={exp.description[l]} className="mt-1.5 text-[11px] leading-loose" style={{ color: palette.muted }} />
               </div>
             ))}
           </div>
@@ -595,7 +641,7 @@ function MinimalLayout({ data, palette, locale, showIcons, activeSection, onSect
             {data.projects.map((p, i) => (
               <div key={i} style={{ pageBreakInside: "avoid" }}>
                 <div className="flex items-baseline justify-between"><p className="text-sm font-medium">{p.title[l]}</p><span className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</span></div>
-                <p className="mt-1 text-[11px] leading-loose" style={{ color: palette.muted }}>{p.description[l]}</p>
+                <FormattedText text={p.description[l]} className="mt-1 text-[11px] leading-loose" style={{ color: palette.muted }} />
               </div>
             ))}
           </div>
@@ -704,7 +750,7 @@ function CreativeLayout({ data, palette, locale, showIcons, activeSection, onSec
                     <div><p className="text-xs font-bold">{exp.title[l]}</p><p className="text-[11px]" style={{ color: palette.accent }}>{exp.org[l]}</p></div>
                     <span className="whitespace-nowrap text-[10px] font-mono" style={{ color: palette.muted }}>{exp.startDate} - {exp.endDate || labels[l].present}</span>
                   </div>
-                  <p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{exp.description[l]}</p>
+                  <FormattedText text={exp.description[l]} className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }} />
                 </div>
               ))}
             </div>
@@ -719,7 +765,7 @@ function CreativeLayout({ data, palette, locale, showIcons, activeSection, onSec
                 <div key={i} className="rounded-lg border p-3" style={{ background: palette.cardBg, borderColor: palette.border, pageBreakInside: "avoid" }}>
                   <p className="text-xs font-bold">{p.title[l]}</p>
                   <p className="text-[10px] font-mono" style={{ color: palette.muted }}>{p.date}</p>
-                  <p className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }}>{p.description[l]}</p>
+                  <FormattedText text={p.description[l]} className="mt-1 text-[11px] leading-relaxed" style={{ color: palette.muted }} />
                   <div className="mt-1.5 flex flex-wrap gap-1">{p.tags.map((tag) => <span key={tag} className="rounded-full border px-1.5 py-px text-[9px] font-mono" style={{ borderColor: palette.border, color: palette.muted }}>{tag}</span>)}</div>
                 </div>
               ))}

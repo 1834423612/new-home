@@ -4,6 +4,52 @@ import React from "react"
 import { Icon } from "@iconify/react"
 import type { ResumeData, PaletteOption } from "@/lib/resume-templates"
 
+// Helper: renders text with markdown-like formatting (bullet points via "- ", line breaks via "\n", pipe separators)
+function FormattedText({ text, className, style }: { text: string; className?: string; style?: React.CSSProperties }) {
+  if (!text) return null
+  const lines = text.split('\n')
+  const elements: React.ReactNode[] = []
+  let bulletItems: string[] = []
+  let keyIdx = 0
+
+  const flushBullets = () => {
+    if (bulletItems.length > 0) {
+      elements.push(
+        <ul key={keyIdx++} className="ml-4 list-disc space-y-0.5">
+          {bulletItems.map((item, i) => <li key={i}>{renderInline(item)}</li>)}
+        </ul>
+      )
+      bulletItems = []
+    }
+  }
+
+  const renderInline = (s: string): React.ReactNode => {
+    if (!s.includes('|')) return s
+    const parts = s.split('|')
+    return parts.map((part, i) => (
+      <React.Fragment key={i}>
+        {i > 0 && <span className="mx-1 opacity-50">|</span>}
+        {part.trim()}
+      </React.Fragment>
+    ))
+  }
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed) continue
+    if (/^[-•*]\s/.test(trimmed)) {
+      bulletItems.push(trimmed.replace(/^[-•*]\s+/, ''))
+    } else {
+      flushBullets()
+      elements.push(<div key={keyIdx++}>{renderInline(trimmed)}</div>)
+    }
+  }
+  flushBullets()
+
+  if (elements.length === 0) return null
+  return <div className={className} style={style}>{elements}</div>
+}
+
 interface LayoutProps {
   data: ResumeData
   palette: PaletteOption
@@ -304,7 +350,7 @@ export function T01_BluePinkBlobs({ data, palette, locale, showIcons, activeSect
                     </div>
                     <div className="shrink-0 text-[10px] font-mono" style={{ color: "#888" }}>{exp.startDate} - {exp.endDate || labels[l].present}</div>
                   </div>
-                  <div className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#555" }}>{exp.description[l]}</div>
+                  <FormattedText text={exp.description[l]} className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#555" }} />
                 </div>
               ))}
             </Section>
@@ -319,7 +365,7 @@ export function T01_BluePinkBlobs({ data, palette, locale, showIcons, activeSect
                     <div className="text-[11.5px] font-bold">{p.title[l]}</div>
                     <div className="shrink-0 text-[10px] font-mono" style={{ color: "#888" }}>{p.date}</div>
                   </div>
-                  <div className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#555" }}>{p.description[l]}</div>
+                  <FormattedText text={p.description[l]} className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#555" }} />
                   {p.tags?.length ? (
                     <div className="mt-1 flex flex-wrap gap-1">
                       {p.tags.map((tag, j) => <span key={j} className="rounded-full border px-2 py-px text-[9px]" style={{ borderColor: "#e0e0e0", color: "#888" }}>{tag}</span>)}
@@ -421,7 +467,7 @@ export function T02_HelloGradient({ data, palette, locale, showIcons, activeSect
                     </div>
                     <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#999" }}>{exp.startDate} - {exp.endDate || labels[l].present}</div>
                   </div>
-                  <div className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#555" }}>{exp.description[l]}</div>
+                  <FormattedText text={exp.description[l]} className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#555" }} />
                 </div>
               ))}
             </Section>
@@ -436,7 +482,7 @@ export function T02_HelloGradient({ data, palette, locale, showIcons, activeSect
                     <div className="text-[10.5px] font-bold">{p.title[l]}</div>
                     <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#999" }}>{p.date}</div>
                   </div>
-                  <div className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#555" }}>{p.description[l]}</div>
+                  <FormattedText text={p.description[l]} className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#555" }} />
                 </div>
               ))}
             </Section>
@@ -552,7 +598,7 @@ export function T03_MinimalBluePhoto({ data, palette, locale, showIcons, activeS
                     <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#888" }}>{exp.startDate} - {exp.endDate || labels[l].present}</div>
                   </div>
                   <div className="text-[10px] font-semibold" style={{ color: blue }}>{exp.title[l]}</div>
-                  <div className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#555" }}>{exp.description[l]}</div>
+                  <FormattedText text={exp.description[l]} className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#555" }} />
                 </div>
               ))}
             </Section>
@@ -564,7 +610,7 @@ export function T03_MinimalBluePhoto({ data, palette, locale, showIcons, activeS
               {data.projects.map((p, i) => (
                 <div key={i} className="mb-2.5">
                   <div className="text-[10.5px] font-bold">{p.title[l]}</div>
-                  <div className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#555" }}>{p.description[l]}</div>
+                  <FormattedText text={p.description[l]} className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#555" }} />
                 </div>
               ))}
             </Section>
@@ -659,7 +705,7 @@ export function T04_PurpleWave({ data, palette, locale, showIcons, activeSection
                     </div>
                     <div className="shrink-0 text-[10px] font-mono" style={{ color: "#888" }}>{exp.startDate} - {exp.endDate || labels[l].present}</div>
                   </div>
-                  <div className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#555" }}>{exp.description[l]}</div>
+                  <FormattedText text={exp.description[l]} className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#555" }} />
                 </div>
               ))}
             </div>
@@ -676,7 +722,7 @@ export function T04_PurpleWave({ data, palette, locale, showIcons, activeSection
                     <div className="text-[11.5px] font-bold">{p.title[l]}</div>
                     <div className="shrink-0 text-[10px] font-mono" style={{ color: "#888" }}>{p.date}</div>
                   </div>
-                  <div className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#555" }}>{p.description[l]}</div>
+                  <FormattedText text={p.description[l]} className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#555" }} />
                 </div>
               ))}
             </div>
@@ -778,7 +824,7 @@ export function T05_DarkHeaderTable({ data, palette, locale, showIcons, activeSe
                       </div>
                       <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#888" }}>{exp.startDate} - {exp.endDate || labels[l].present}</div>
                     </div>
-                    <div className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#666" }}>{exp.description[l]}</div>
+                    <FormattedText text={exp.description[l]} className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#666" }} />
                   </div>
                 ))}
               </div>
@@ -795,7 +841,7 @@ export function T05_DarkHeaderTable({ data, palette, locale, showIcons, activeSe
                       <div className="text-[11px] font-bold">{p.title[l]}</div>
                       <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#888" }}>{p.date}</div>
                     </div>
-                    <div className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#666" }}>{p.description[l]}</div>
+                    <FormattedText text={p.description[l]} className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#666" }} />
                   </div>
                 ))}
               </div>
@@ -933,7 +979,7 @@ export function T06_CuteDoodle({ data, palette, locale, showIcons, activeSection
                       </div>
                       <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#999" }}>{exp.startDate} - {exp.endDate || labels[l].present}</div>
                     </div>
-                    <div className="mt-1.5 text-[10px] leading-relaxed" style={{ color: "#666" }}>{exp.description[l]}</div>
+                    <FormattedText text={exp.description[l]} className="mt-1.5 text-[10px] leading-relaxed" style={{ color: "#666" }} />
                   </div>
                 ))}
               </div>
@@ -947,7 +993,7 @@ export function T06_CuteDoodle({ data, palette, locale, showIcons, activeSection
                 {data.projects.map((p, i) => (
                   <div key={i} className="rounded-xl border bg-white p-3.5" style={{ borderColor: "#f0d4c7" }}>
                     <div className="text-[10.5px] font-bold">{p.title[l]}</div>
-                    <div className="mt-1 text-[10px] leading-relaxed" style={{ color: "#666" }}>{p.description[l]}</div>
+                    <FormattedText text={p.description[l]} className="mt-1 text-[10px] leading-relaxed" style={{ color: "#666" }} />
                   </div>
                 ))}
               </div>
@@ -1024,7 +1070,7 @@ export function T07_TealPinkCard({ data, palette, locale, showIcons, activeSecti
                           <span className="ml-2 text-[9.5px] font-mono font-normal" style={{ color: "#888" }}>{exp.startDate} - {exp.endDate || labels[l].present}</span>
                         </div>
                         <div className="text-[10px] font-semibold" style={{ color: pink }}>{exp.title[l]}</div>
-                        <div className="mt-0.5 text-[10px] leading-relaxed" style={{ color: "#666" }}>{exp.description[l]}</div>
+                        <FormattedText text={exp.description[l]} className="mt-0.5 text-[10px] leading-relaxed" style={{ color: "#666" }} />
                       </div>
                     ))}
                   </div>
@@ -1074,7 +1120,7 @@ export function T07_TealPinkCard({ data, palette, locale, showIcons, activeSecti
                     {data.projects.map((p, i) => (
                       <div key={i}>
                         <div className="text-[10.5px] font-bold">{p.title[l]}</div>
-                        <div className="mt-0.5 text-[10px] leading-relaxed" style={{ color: "#666" }}>{p.description[l]}</div>
+                        <FormattedText text={p.description[l]} className="mt-0.5 text-[10px] leading-relaxed" style={{ color: "#666" }} />
                       </div>
                     ))}
                   </div>
@@ -1192,7 +1238,7 @@ export function T08_RedSidebar({ data, palette, locale, showIcons, activeSection
                   </div>
                   <div className="mt-1.5 text-[11.5px] font-bold">{exp.org[l]}</div>
                   <div className="text-[10.5px] font-semibold" style={{ color: red }}>{exp.title[l]}</div>
-                  <div className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#666" }}>{exp.description[l]}</div>
+                  <FormattedText text={exp.description[l]} className="mt-1 text-[10.5px] leading-relaxed" style={{ color: "#666" }} />
                 </div>
               ))}
             </div>
@@ -1208,7 +1254,7 @@ export function T08_RedSidebar({ data, palette, locale, showIcons, activeSection
               {data.projects.map((p, i) => (
                 <div key={i}>
                   <div className="text-[11px] font-bold">{p.title[l]}</div>
-                  <div className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#666" }}>{p.description[l]}</div>
+                  <FormattedText text={p.description[l]} className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#666" }} />
                 </div>
               ))}
             </div>
@@ -1336,7 +1382,7 @@ export function T09_BunnyGrass({ data, palette, locale, showIcons, activeSection
                     </div>
                     <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#888" }}>{exp.startDate} - {exp.endDate || labels[l].present}</div>
                   </div>
-                  <div className="mt-1.5 text-[10.5px] leading-relaxed" style={{ color: "#666" }}>{exp.description[l]}</div>
+                  <FormattedText text={exp.description[l]} className="mt-1.5 text-[10.5px] leading-relaxed" style={{ color: "#666" }} />
                 </div>
               ))}
             </div>
@@ -1352,7 +1398,7 @@ export function T09_BunnyGrass({ data, palette, locale, showIcons, activeSection
               {data.projects.map((p, i) => (
                 <div key={i} className="rounded-xl bg-white p-3 shadow-sm">
                   <div className="text-[10.5px] font-bold">{p.title[l]}</div>
-                  <div className="mt-0.5 text-[10px] leading-relaxed" style={{ color: "#666" }}>{p.description[l]}</div>
+                  <FormattedText text={p.description[l]} className="mt-0.5 text-[10px] leading-relaxed" style={{ color: "#666" }} />
                 </div>
               ))}
             </div>
@@ -1470,7 +1516,7 @@ export function T10_BrownPinkCards({ data, palette, locale, showIcons, activeSec
                         <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#6b3f2f" }}>{exp.startDate} - {exp.endDate || labels[l].present}</div>
                       </div>
                       <div className="text-[10.5px] font-semibold" style={{ color: "#6b3f2f" }}>{exp.title[l]}</div>
-                      <div className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#6b3f2f" }}>{exp.description[l]}</div>
+                      <FormattedText text={exp.description[l]} className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#6b3f2f" }} />
                     </div>
                   ))}
                 </div>
@@ -1602,7 +1648,7 @@ export function T11_GridChibi({ data, palette, locale, showIcons, activeSection,
                       </div>
                       <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#6b7280" }}>{exp.startDate} - {exp.endDate || labels[l].present}</div>
                     </div>
-                    <div className="mt-1.5 text-[10.5px] leading-relaxed" style={{ color: "#6b7280" }}>{exp.description[l]}</div>
+                    <FormattedText text={exp.description[l]} className="mt-1.5 text-[10.5px] leading-relaxed" style={{ color: "#6b7280" }} />
                   </div>
                 ))}
               </div>
@@ -1620,7 +1666,7 @@ export function T11_GridChibi({ data, palette, locale, showIcons, activeSection,
                 {data.projects.map((p, i) => (
                   <div key={i}>
                     <div className="text-[11px] font-bold">{p.title[l]}</div>
-                    <div className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#6b7280" }}>{p.description[l]}</div>
+                    <FormattedText text={p.description[l]} className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#6b7280" }} />
                   </div>
                 ))}
               </div>
@@ -1707,7 +1753,7 @@ export function T12_YellowTable({ data, palette, locale, showIcons, activeSectio
                       <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#888" }}>{exp.startDate} - {exp.endDate || labels[l].present}</div>
                     </div>
                     <div className="font-semibold" style={{ color: yellowDark }}>{exp.title[l]}</div>
-                    <div className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#666" }}>{exp.description[l]}</div>
+                    <FormattedText text={exp.description[l]} className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#666" }} />
                   </div>
                 ))}
               </div>
@@ -1724,7 +1770,7 @@ export function T12_YellowTable({ data, palette, locale, showIcons, activeSectio
                       <div className="font-bold">{p.title[l]}</div>
                       <div className="shrink-0 text-[9.5px] font-mono" style={{ color: "#888" }}>{p.date}</div>
                     </div>
-                    <div className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#666" }}>{p.description[l]}</div>
+                    <FormattedText text={p.description[l]} className="mt-0.5 text-[10.5px] leading-relaxed" style={{ color: "#666" }} />
                   </div>
                 ))}
               </div>
