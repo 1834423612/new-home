@@ -29,8 +29,21 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
     )
   }
 
-  const projectDetail = project.detail?.[locale] || ""
-  const projectLinks = (project.links || []) as Array<{ title: { zh: string; en: string }; url: string; icon?: string }>
+  const pickLocaleText = (value?: { zh?: string; en?: string } | null) => {
+    if (!value) return ""
+    return (value[locale] || value.en || value.zh || "").trim()
+  }
+
+  const projectTitle = pickLocaleText(project.title)
+  const projectDescription = pickLocaleText(project.description)
+  const projectDetail = pickLocaleText(project.detail)
+  const projectLinks = (project.links || []) as Array<{
+    title?: { zh?: string; en?: string } | null
+    title_zh?: string
+    title_en?: string
+    url?: string
+    icon?: string
+  }>
 
   return (
     <main className="min-h-screen bg-background">
@@ -46,7 +59,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
           {project.image ? (
             <img
               src={project.image}
-              alt={project.title[locale]}
+                alt={projectTitle || "project image"}
               className="w-full h-64 object-cover"
             />
           ) : (
@@ -66,12 +79,12 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
           )}
         </div>
 
-        <h1 className="mb-2 text-3xl font-bold text-foreground md:text-4xl">{project.title[locale]}</h1>
+        <h1 className="mb-2 text-3xl font-bold text-foreground md:text-4xl">{projectTitle}</h1>
         <p className="mb-8 font-mono text-sm text-muted-foreground/60">{project.date}</p>
 
         {/* Description */}
         <div className="mb-8 text-base leading-relaxed text-foreground/80">
-          <p className="mb-4">{project.description[locale]}</p>
+          <p className="mb-4">{projectDescription}</p>
           {projectDetail && (
             <RichTextRenderer content={projectDetail} className="text-foreground/80" />
           )}
@@ -109,7 +122,10 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
             <div className="border-t border-border pt-6">
               <h2 className="mb-4 text-sm font-bold text-foreground">{dict.projects.relatedLinks}</h2>
               <div className="grid gap-3 sm:grid-cols-2">
-                {projectLinks.map((link, idx) => (
+                {projectLinks.map((link, idx) => {
+                  const linkTitle = pickLocaleText(link.title) || link.title_zh || link.title_en || "Link"
+                  if (!link.url) return null
+                  return (
                   <a
                     key={idx}
                     href={link.url}
@@ -118,10 +134,11 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
                     className="flex items-center gap-3 rounded-lg border border-border px-4 py-3 transition-all hover:border-primary hover:bg-primary/5"
                   >
                     {link.icon && <Icon icon={link.icon} className="h-4 w-4 flex-shrink-0" />}
-                    <span className="text-sm text-foreground">{link.title[locale]}</span>
+                    <span className="text-sm text-foreground">{linkTitle}</span>
                     <Icon icon="mdi:arrow-top-right" className="ml-auto h-3 w-3 text-muted-foreground" />
                   </a>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )}

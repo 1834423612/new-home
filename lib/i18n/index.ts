@@ -2,7 +2,7 @@ import zh from "./zh"
 import en from "./en"
 
 export type Locale = "zh" | "en"
-export type Dictionary = typeof zh
+export type Dictionary = typeof zh | typeof en
 
 const dictionaries: Record<Locale, Dictionary> = { zh, en }
 

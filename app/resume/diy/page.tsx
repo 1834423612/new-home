@@ -1031,7 +1031,6 @@ export default function DIYResumePage() {
   underline: <div className="flex w-full flex-col p-0.5 gap-0.5"><div className="h-2 border-b border-muted/50" /><div className="flex-1 rounded-sm bg-muted/20" /><div className="h-2 border-b border-muted/50" /><div className="flex-1 rounded-sm bg-muted/20" /></div>,
   "pro-table": <div className="flex w-full flex-col"><div className="h-1/4 bg-slate-800" /><div className="flex-1 bg-muted/20 p-0.5"><div className="h-full rounded-sm border border-muted/30" /></div></div>,
   playful: <div className="flex w-full flex-col p-0.5 gap-0.5"><div className="flex items-center gap-0.5"><div className="h-2 w-2 rounded-full bg-pink-300/60" /><div className="h-2 w-2 rounded-full bg-amber-300/60" /><div className="flex-1 h-2 rounded-full bg-muted/30" /></div><div className="flex-1 rounded-sm bg-muted/20" /></div>,
-  nickname: <div className="flex w-full flex-col p-0.5"><div className="h-1/3 flex items-end"><div className="w-1/2 h-2 rounded-sm bg-muted/50" /></div><div className="flex-1 rounded-sm bg-muted/20 mt-0.5" /></div>,
   }
 
   // Section nav icons

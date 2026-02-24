@@ -26,18 +26,68 @@ export async function GET() {
       return []
     }
 
-    const parseLinks = (t: unknown): { title: { zh: string; en: string }; url: string; icon?: string }[] => {
+    const parseJsonArray = (t: unknown): unknown[] => {
       if (!t) return []
       if (Array.isArray(t)) return t
-      if (typeof t === "string") { 
-        try { 
+      if (typeof t === "string") {
+        try {
           const parsed = JSON.parse(t)
           return Array.isArray(parsed) ? parsed : []
-        } catch { 
-          return [] 
-        } 
+        } catch {
+          return []
+        }
       }
       return []
+    }
+
+    const parseProjectLinks = (t: unknown): { title: { zh: string; en: string }; url: string; icon?: string }[] => {
+      const raw = parseJsonArray(t)
+      const normalized: { title: { zh: string; en: string }; url: string; icon?: string }[] = []
+      const toText = (v: unknown): string => (typeof v === "string" ? v : "")
+
+      for (const item of raw) {
+        if (!item || typeof item !== "object") continue
+        const candidate = item as Record<string, unknown>
+        const url = typeof candidate.url === "string" ? candidate.url.trim() : ""
+        if (!url) continue
+
+        const titleRecord =
+          candidate.title && typeof candidate.title === "object"
+            ? (candidate.title as Record<string, unknown>)
+            : undefined
+
+        const zh = toText(titleRecord?.zh)
+          || toText(candidate.title_zh)
+          || toText(candidate.title)
+          || toText(candidate.label)
+
+        const en = toText(titleRecord?.en)
+          || toText(candidate.title_en)
+          || toText(candidate.title)
+          || toText(candidate.label)
+
+        normalized.push({
+          title: { zh, en },
+          url,
+          icon: typeof candidate.icon === "string" && candidate.icon.trim() ? candidate.icon : undefined,
+        })
+      }
+
+      return normalized
+    }
+
+    const parseOfficialLinks = (t: unknown): { title: string; url: string }[] => {
+      const raw = parseJsonArray(t)
+      const normalized: { title: string; url: string }[] = []
+      for (const item of raw) {
+        if (!item || typeof item !== "object") continue
+        const candidate = item as Record<string, unknown>
+        const title = typeof candidate.title === "string" ? candidate.title.trim() : ""
+        const url = typeof candidate.url === "string" ? candidate.url.trim() : ""
+        if (!title || !url) continue
+        normalized.push({ title, url })
+      }
+      return normalized
     }
 
     const projects = projectRows.map((r) => ({
@@ -45,7 +95,7 @@ export async function GET() {
       title: { zh: r.title_zh, en: r.title_en },
       description: { zh: r.description_zh || "", en: r.description_en || "" },
       detail: { zh: r.detail_zh || "", en: r.detail_en || "" },
-      links: parseLinks(r.links_json),
+      links: parseProjectLinks(r.links_json),
       category: r.category || "website", tags: parseTags(r.tags),
       image: r.image || undefined, link: r.link || undefined,
       source: r.source || undefined, date: r.date || "",
@@ -81,7 +131,7 @@ export async function GET() {
       org: { zh: r.org_zh, en: r.org_en },
       date: r.date || "", level: r.level || undefined,
       image: r.image || undefined,
-      officialLinks: parseLinks(r.official_links),
+      officialLinks: parseOfficialLinks(r.official_links),
     }))
 
     const tools = toolRows.map((r) => ({

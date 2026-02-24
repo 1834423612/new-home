@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo, useRef, useCallback } from "react"
+import { useState, useEffect, useMemo, useRef, useCallback, type MouseEvent } from "react"
 import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
 import { useSiteData } from "@/hooks/use-site-data"
@@ -28,6 +28,7 @@ export default function ResumePage() {
 
   const palette = PALETTES.find((p) => p.id === paletteId) || PALETTES[0]
   const [pdfOpen, setPdfOpen] = useState(false)
+  const [jsonCopied, setJsonCopied] = useState(false)
 
   const handleLayout = (l: LayoutId) => { setLayout(l); localStorage.setItem("kjch-resume-layout", l) }
   const handlePalette = (p: PaletteId) => { setPaletteId(p); localStorage.setItem("kjch-resume-palette", p) }
@@ -96,12 +97,32 @@ export default function ResumePage() {
         onPrint={() => setPdfOpen(true)} backHref="/"
       />
 
-      {/* DIY Link */}
-      <div className="no-print flex justify-center py-2">
+      {/* DIY Link + Copy JSON */}
+      <div className="no-print flex flex-wrap items-center justify-center gap-2 py-2">
         <a href="/resume/diy" className="flex items-center gap-1.5 rounded-full border border-dashed border-border px-4 py-2 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary">
           <Icon icon="mdi:pencil-ruler" className="h-3.5 w-3.5" />
           {locale === "zh" ? "DIY - 自己制作简历" : "DIY - Build Your Own Resume"}
         </a>
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(JSON.stringify(resumeData, null, 2)).then(() => {
+              setJsonCopied(true)
+              setTimeout(() => setJsonCopied(false), 2000)
+            })
+          }}
+          className={cn(
+            "flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs transition-colors",
+            jsonCopied
+              ? "border-green-500 text-green-600 dark:text-green-400"
+              : "border-dashed border-border text-muted-foreground hover:border-primary hover:text-primary"
+          )}
+        >
+          <Icon icon={jsonCopied ? "mdi:check-circle-outline" : "mdi:code-json"} className="h-3.5 w-3.5" />
+          {jsonCopied
+            ? (locale === "zh" ? "已复制!" : "Copied!")
+            : (locale === "zh" ? "复制简历 JSON 数据" : "Copy Resume JSON Data")
+          }
+        </button>
       </div>
 
       {/* Resume Paper — US Letter 816×1056, scales down on mobile */}
