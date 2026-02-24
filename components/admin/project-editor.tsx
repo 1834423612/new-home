@@ -71,10 +71,33 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
       if (typeof value === "string") {
         try {
           const parsed = JSON.parse(value)
-          return Array.isArray(parsed) ? parsed : []
+          if (Array.isArray(parsed)) return parsed
+          if (typeof parsed === "string") {
+            try {
+              const parsedTwice = JSON.parse(parsed)
+              if (Array.isArray(parsedTwice)) return parsedTwice
+              if (parsedTwice && typeof parsedTwice === "object") return [parsedTwice]
+            } catch {
+              return []
+            }
+          }
+          if (parsed && typeof parsed === "object") return [parsed]
+          return []
         } catch {
           return []
         }
+      }
+      if (value && typeof value === "object") {
+        const candidate = value as Record<string, unknown>
+        if (
+          "url" in candidate
+          || "title" in candidate
+          || "title_zh" in candidate
+          || "title_en" in candidate
+        ) {
+          return [candidate]
+        }
+        return Object.values(candidate).filter((entry) => !!entry)
       }
       return []
     }
