@@ -7,7 +7,7 @@ import { InputField } from "./form-fields"
 import { Card } from "@/components/ui/card"
 
 interface ProjectLink {
-    id?: string
+    id: string
     title_zh: string
     title_en: string
     url: string
@@ -23,13 +23,22 @@ export function LinksManager({ value, onChange }: LinksManagerProps) {
     const [editingId, setEditingId] = useState<string | null>(null)
     const [formData, setFormData] = useState<Partial<ProjectLink>>({})
 
+    const createAlphaId = (length = 12) => {
+        const chars = "abcdefghjkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ"
+        let result = ""
+        for (let i = 0; i < length; i += 1) {
+            result += chars[Math.floor(Math.random() * chars.length)]
+        }
+        return result
+    }
+
     const handleAdd = () => {
         setEditingId("new")
         setFormData({ title_zh: "", title_en: "", url: "", icon: "" })
     }
 
     const handleEdit = (link: ProjectLink) => {
-        setEditingId(link.id || Math.random().toString())
+        setEditingId(link.id)
         setFormData(link)
     }
 
@@ -41,7 +50,7 @@ export function LinksManager({ value, onChange }: LinksManagerProps) {
 
         if (editingId === "new") {
             const newLink: ProjectLink = {
-                id: Math.random().toString(),
+                id: createAlphaId(),
                 title_zh: formData.title_zh,
                 title_en: formData.title_en,
                 url: formData.url,
@@ -51,7 +60,7 @@ export function LinksManager({ value, onChange }: LinksManagerProps) {
         } else {
             onChange(
                 value.map((link) =>
-                    link.id === editingId || (editingId === "new" && !link.id)
+                    link.id === editingId
                         ? {
                             ...link,
                             title_zh: formData.title_zh || link.title_zh,
@@ -68,8 +77,7 @@ export function LinksManager({ value, onChange }: LinksManagerProps) {
         setFormData({})
     }
 
-    const handleDelete = (id: string | undefined) => {
-        if (!id) return
+    const handleDelete = (id: string) => {
         onChange(value.filter((link) => link.id !== id))
     }
 

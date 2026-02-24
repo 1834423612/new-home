@@ -10,7 +10,7 @@ import { TagInput } from "./tag-input"
 import Link from "next/link"
 
 interface ProjectLink {
-  id?: string
+  id: string
   title_zh: string
   title_en: string
   url: string
@@ -62,9 +62,61 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
 
   const set = (k: string, v: unknown) => setForm((f) => ({ ...f, [k]: v }))
 
-  const parseLinks = (t: string | undefined | null): ProjectLink[] => {
-    if (!t) return []
-    try { const p = JSON.parse(t); return Array.isArray(p) ? p : [] } catch { return [] }
+  const createAlphaId = (length = 12) => {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    let result = ""
+    for (let i = 0; i < length; i += 1) {
+      result += chars[Math.floor(Math.random() * chars.length)]
+    }
+    return result
+  }
+
+  const parseLinks = (raw: unknown): ProjectLink[] => {
+    if (!raw) return []
+
+    const toArray = (value: unknown): unknown[] => {
+      if (Array.isArray(value)) return value
+      if (typeof value === "string") {
+        try {
+          const parsed = JSON.parse(value)
+          return Array.isArray(parsed) ? parsed : []
+        } catch {
+          return []
+        }
+      }
+      return []
+    }
+
+    const normalized: ProjectLink[] = []
+
+    for (const item of toArray(raw)) {
+      if (!item || typeof item !== "object") continue
+      const link = item as Record<string, unknown>
+      const titleObj = link.title && typeof link.title === "object" ? (link.title as Record<string, unknown>) : undefined
+
+      const title_zh =
+        (typeof link.title_zh === "string" ? link.title_zh : "")
+        || (typeof titleObj?.zh === "string" ? titleObj.zh : "")
+        || (typeof link.title === "string" ? link.title : "")
+
+      const title_en =
+        (typeof link.title_en === "string" ? link.title_en : "")
+        || (typeof titleObj?.en === "string" ? titleObj.en : "")
+        || (typeof link.title === "string" ? link.title : "")
+
+      const url = typeof link.url === "string" ? link.url.trim() : ""
+      if (!url) continue
+
+      normalized.push({
+        id: typeof link.id === "string" && link.id.trim() ? link.id : createAlphaId(),
+        title_zh,
+        title_en,
+        url,
+        icon: typeof link.icon === "string" && link.icon.trim() ? link.icon : undefined,
+      })
+    }
+
+    return normalized
   }
 
   const parseTags = (t: string | string[] | undefined | null): string[] => {
