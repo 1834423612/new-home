@@ -1,12 +1,32 @@
 "use client"
 
-import { use } from "react"
+import { use, useState } from "react"
 import Link from "next/link"
 import { Icon } from "@iconify/react"
 import { useLocale } from "@/lib/locale-context"
 import { useSiteData } from "@/hooks/use-site-data"
 import { GlobalToolbar } from "@/components/site/global-toolbar"
 import { RichTextRenderer } from "@/components/site/rich-text-renderer"
+
+function RelatedLinkIcon({ icon }: { icon?: string }) {
+  const [imageFailed, setImageFailed] = useState(false)
+
+  const isImageIcon = (iconValue?: string) => {
+    if (!iconValue) return false
+    return /^(https?:\/\/|\/|data:image\/)/i.test(iconValue)
+      || /\.(svg|png|jpe?g|gif|webp|avif)(\?.*)?$/i.test(iconValue)
+  }
+
+  if (!icon || imageFailed) {
+    return <Icon icon="mdi:link-variant" className="h-4 w-4 flex-shrink-0" />
+  }
+
+  if (isImageIcon(icon)) {
+    return <img src={icon} alt="" className="h-4 w-4 flex-shrink-0" onError={() => setImageFailed(true)} />
+  }
+
+  return <Icon icon={icon} className="h-4 w-4 flex-shrink-0" />
+}
 
 export default function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
@@ -133,7 +153,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 rounded-lg border border-border px-4 py-3 transition-all hover:border-primary hover:bg-primary/5"
                   >
-                    {link.icon && <Icon icon={link.icon} className="h-4 w-4 flex-shrink-0" />}
+                    <RelatedLinkIcon icon={link.icon} />
                     <span className="text-sm text-foreground">{linkTitle}</span>
                     <Icon icon="mdi:arrow-top-right" className="ml-auto h-3 w-3 text-muted-foreground" />
                   </a>

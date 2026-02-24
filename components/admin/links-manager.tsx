@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react"
 import { Button } from "@/components/ui/button"
 import { InputField } from "./form-fields"
 import { Card } from "@/components/ui/card"
+import { generateRandomAlphaId, RELATED_LINK_ID_LENGTH } from "@/lib/utils"
 
 interface ProjectLink {
     id: string
@@ -19,18 +20,29 @@ interface LinksManagerProps {
     onChange: (links: ProjectLink[]) => void
 }
 
+function LinkIconPreview({ icon, className = "h-3.5 w-3.5" }: { icon?: string; className?: string }) {
+    const [imageFailed, setImageFailed] = useState(false)
+
+    const isImageIcon = (iconValue?: string) => {
+        if (!iconValue) return false
+        return /^(https?:\/\/|\/|data:image\/)/i.test(iconValue)
+            || /\.(svg|png|jpe?g|gif|webp|avif)(\?.*)?$/i.test(iconValue)
+    }
+
+    if (!icon || imageFailed) {
+        return <Icon icon="mdi:link-variant" className={className} />
+    }
+
+    if (isImageIcon(icon)) {
+        return <img src={icon} alt="" className={className} onError={() => setImageFailed(true)} />
+    }
+
+    return <Icon icon={icon} className={className} />
+}
+
 export function LinksManager({ value, onChange }: LinksManagerProps) {
     const [editingId, setEditingId] = useState<string | null>(null)
     const [formData, setFormData] = useState<Partial<ProjectLink>>({})
-
-    const createAlphaId = (length = 12) => {
-        const chars = "abcdefghjkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ"
-        let result = ""
-        for (let i = 0; i < length; i += 1) {
-            result += chars[Math.floor(Math.random() * chars.length)]
-        }
-        return result
-    }
 
     const handleAdd = () => {
         setEditingId("new")
@@ -48,13 +60,15 @@ export function LinksManager({ value, onChange }: LinksManagerProps) {
             return
         }
 
+        const normalizedIcon = typeof formData.icon === "string" ? formData.icon.trim() : ""
+
         if (editingId === "new") {
             const newLink: ProjectLink = {
-                id: createAlphaId(),
+                id: generateRandomAlphaId(RELATED_LINK_ID_LENGTH),
                 title_zh: formData.title_zh,
                 title_en: formData.title_en,
                 url: formData.url,
-                icon: formData.icon || undefined,
+                icon: normalizedIcon || undefined,
             }
             onChange([...value, newLink])
         } else {
@@ -66,7 +80,7 @@ export function LinksManager({ value, onChange }: LinksManagerProps) {
                             title_zh: formData.title_zh || link.title_zh,
                             title_en: formData.title_en || link.title_en,
                             url: formData.url || link.url,
-                            icon: formData.icon || link.icon,
+                            icon: normalizedIcon || undefined,
                         }
                         : link
                 )
@@ -106,41 +120,39 @@ export function LinksManager({ value, onChange }: LinksManagerProps) {
             {/* 现有链接列表 */}
             {value.length > 0 && (
                 <div className="grid gap-3">
-                    {value.map((link) => (
+                    {value.filter((link) => link.id !== editingId).map((link) => (
                         <Card
                             key={link.id}
-                            className={`p-3 transition-colors ${editingId === link.id ? "border-primary bg-primary/5" : ""
-                                }`}
+                            className="p-3 transition-colors"
                         >
-                            {editingId === link.id ? null : (
-                                <div className="flex items-start justify-between gap-3">
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs font-bold text-foreground truncate">
-                                            {link.title_en} / {link.title_zh}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground truncate mt-1">{link.url}</p>
-                                        {link.icon && (
-                                            <p className="text-xs text-secondary-foreground mt-1 font-mono">
-                                                Icon: {link.icon}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => handleEdit(link)}
-                                            className="flex h-6 w-6 items-center justify-center rounded border border-border text-muted-foreground hover:text-primary transition-colors"
-                                        >
-                                            <Icon icon="mdi:pencil-outline" className="h-3 w-3" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(link.id)}
-                                            className="flex h-6 w-6 items-center justify-center rounded border border-border text-muted-foreground hover:text-destructive transition-colors"
-                                        >
-                                            <Icon icon="mdi:delete-outline" className="h-3 w-3" />
-                                        </button>
-                                    </div>
+                            <div className="flex items-start justify-between gap-3">
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-bold text-foreground truncate">
+                                        {link.title_en} / {link.title_zh}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground truncate mt-1">{link.url}</p>
+                                    {link.icon && (
+                                        <div className="mt-1 flex items-center gap-1.5 text-xs text-secondary-foreground font-mono">
+                                            <LinkIconPreview icon={link.icon} />
+                                            <span className="truncate">{link.icon}</span>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => handleEdit(link)}
+                                        className="flex h-6 w-6 items-center justify-center rounded border border-border text-muted-foreground hover:text-primary transition-colors"
+                                    >
+                                        <Icon icon="mdi:pencil-outline" className="h-3 w-3" />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(link.id)}
+                                        className="flex h-6 w-6 items-center justify-center rounded border border-border text-muted-foreground hover:text-destructive transition-colors"
+                                    >
+                                        <Icon icon="mdi:delete-outline" className="h-3 w-3" />
+                                    </button>
+                                </div>
+                            </div>
                         </Card>
                     ))}
                 </div>
@@ -176,11 +188,18 @@ export function LinksManager({ value, onChange }: LinksManagerProps) {
                             required
                         />
                         <InputField
-                            label="Icon (Iconify icon name, optional)"
+                            label="Icon (Iconify name or image URL, optional)"
                             value={formData.icon || ""}
                             onChange={(v) => setFormData({ ...formData, icon: v })}
-                            placeholder="e.g., mdi:book-outline"
+                            placeholder="e.g., mdi:book-outline or https://.../icon.png"
                         />
+                        {formData.icon && (
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <span>Preview:</span>
+                                <LinkIconPreview icon={formData.icon} className="h-4 w-4" />
+                                <span className="truncate">{formData.icon}</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex items-center gap-2">

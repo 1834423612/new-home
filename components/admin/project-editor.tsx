@@ -8,6 +8,7 @@ import { RichTextEditor } from "./rich-text-editor"
 import { LinksManager } from "./links-manager"
 import { TagInput } from "./tag-input"
 import Link from "next/link"
+import { generateRandomAlphaId, RELATED_LINK_ID_LENGTH } from "@/lib/utils"
 
 interface ProjectLink {
   id: string
@@ -62,15 +63,6 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
 
   const set = (k: string, v: unknown) => setForm((f) => ({ ...f, [k]: v }))
 
-  const createAlphaId = (length = 12) => {
-    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    let result = ""
-    for (let i = 0; i < length; i += 1) {
-      result += chars[Math.floor(Math.random() * chars.length)]
-    }
-    return result
-  }
-
   const parseLinks = (raw: unknown): ProjectLink[] => {
     if (!raw) return []
 
@@ -108,7 +100,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
       if (!url) continue
 
       normalized.push({
-        id: typeof link.id === "string" && link.id.trim() ? link.id : createAlphaId(),
+        id: typeof link.id === "string" && link.id.trim() ? link.id : generateRandomAlphaId(RELATED_LINK_ID_LENGTH),
         title_zh,
         title_en,
         url,
