@@ -18,6 +18,7 @@ interface ProjectLink {
 interface LinksManagerProps {
     value: ProjectLink[]
     onChange: (links: ProjectLink[]) => void
+    onCommit?: (links: ProjectLink[]) => void
 }
 
 function LinkIconPreview({ icon, className = "h-3.5 w-3.5" }: { icon?: string; className?: string }) {
@@ -40,7 +41,7 @@ function LinkIconPreview({ icon, className = "h-3.5 w-3.5" }: { icon?: string; c
     return <Icon icon={icon} className={className} />
 }
 
-export function LinksManager({ value, onChange }: LinksManagerProps) {
+export function LinksManager({ value, onChange, onCommit }: LinksManagerProps) {
     const [editingId, setEditingId] = useState<string | null>(null)
     const [formData, setFormData] = useState<Partial<ProjectLink>>({})
 
@@ -70,21 +71,23 @@ export function LinksManager({ value, onChange }: LinksManagerProps) {
                 url: formData.url,
                 icon: normalizedIcon || undefined,
             }
-            onChange([...value, newLink])
+            const nextLinks = [...value, newLink]
+            onChange(nextLinks)
+            onCommit?.(nextLinks)
         } else {
-            onChange(
-                value.map((link) =>
-                    link.id === editingId
-                        ? {
-                            ...link,
-                            title_zh: formData.title_zh || link.title_zh,
-                            title_en: formData.title_en || link.title_en,
-                            url: formData.url || link.url,
-                            icon: normalizedIcon || undefined,
-                        }
-                        : link
-                )
+            const nextLinks = value.map((link) =>
+                link.id === editingId
+                    ? {
+                        ...link,
+                        title_zh: formData.title_zh || link.title_zh,
+                        title_en: formData.title_en || link.title_en,
+                        url: formData.url || link.url,
+                        icon: normalizedIcon || link.icon,
+                    }
+                    : link
             )
+            onChange(nextLinks)
+            onCommit?.(nextLinks)
         }
 
         setEditingId(null)

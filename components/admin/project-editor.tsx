@@ -127,7 +127,11 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
         title_zh,
         title_en,
         url,
-        icon: typeof link.icon === "string" && link.icon.trim() ? link.icon : undefined,
+        icon:
+          (typeof link.icon === "string" && link.icon.trim() ? link.icon : "")
+          || (typeof link.icon_url === "string" && link.icon_url.trim() ? link.icon_url : "")
+          || (typeof link.iconUrl === "string" && link.iconUrl.trim() ? link.iconUrl : "")
+          || undefined,
       })
     }
 
@@ -177,7 +181,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
 
   useEffect(() => { fetchProject() }, [fetchProject])
 
-  const handleSave = async () => {
+  const saveProject = async (overrideLinks?: ProjectLink[], redirect = true) => {
     if (!form.id || !form.title_zh || !form.title_en) {
       alert("Please fill in ID, Title (zh), and Title (en)")
       return
@@ -190,17 +194,28 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
         body: JSON.stringify({
           ...form,
           tags: form.tags,
-          links_json: JSON.stringify(form.links),
+          links_json: JSON.stringify(overrideLinks || form.links),
         }),
       })
       if (res.ok) {
-        router.push("/admin/projects")
+        if (redirect) {
+          router.push("/admin/projects")
+        }
       } else {
         alert("Failed to save project")
       }
     } finally {
       setSaving(false)
     }
+  }
+
+  const handleSave = async () => {
+    await saveProject(undefined, true)
+  }
+
+  const handleLinksCommit = async (links: ProjectLink[]) => {
+    setForm((prev) => ({ ...prev, links }))
+    await saveProject(links, false)
   }
 
   if (loading) {
@@ -389,7 +404,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
           </div>
 
           <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
-            <LinksManager value={form.links} onChange={(links) => set("links", links)} />
+            <LinksManager value={form.links} onChange={(links) => set("links", links)} onCommit={handleLinksCommit} />
           </div>
         </div>
       )}
